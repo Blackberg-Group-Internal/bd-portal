@@ -1,0 +1,62 @@
+.navbar-toggler {
+    color: $primary;
+    border: 0;
+
+    &-title {
+        font-family: $font-family-sans-serif;
+        font-size: $font-size-sm;
+        font-weight: $font-weight-bold;
+    }   
+
+    &-icon {
+        background-image: none;
+        background-color: $primary;
+        height: 2px;
+        width: 20px;
+        margin: 10px 0;
+        position: relative;
+        transition: all 0.2s ease-out;
+        transform-origin: center;
+
+        &::before {
+            display: block;
+            background-color: $primary;
+            height: 2px;
+            content: "";
+            position: relative;
+            top: -6px;
+            transition: all 0.1s ease-out;
+            transform-origin: center;
+        }
+
+        &::after {
+            display: block;
+            background-color: $primary;
+            height: 2px;
+            content: "";
+            position: relative;
+            top: 4px;
+            transition: all 0.2s ease-out;
+            transform-origin: center;
+        }
+
+    }
+
+  &:not(.collapsed) {
+    
+    .navbar-toggler-icon {
+      transform: rotate(45deg);
+
+      &::before {
+        opacity: 0;
+      }
+
+      &::after {
+        transform: rotate(-90deg) translateX(6px);
+      }
+
+    }
+
+  }
+
+}

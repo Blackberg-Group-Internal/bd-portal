@@ -1,0 +1,32 @@
+{
+  "name": "blackberg-website",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "@apollo/client": "^3.10.3",
+    "@graphcms/rich-text-react-renderer": "^0.6.1",
+    "@popperjs/core": "^2.11.8",
+    "@sendgrid/mail": "^8.1.3",
+    "@studio-freight/react-lenis": "^0.0.47",
+    "bootstrap": "^5.3.3",
+    "graphql": "^16.8.1",
+    "gsap": "^3.12.5",
+    "next": "14.2.3",
+    "next-auth": "^4.24.7",
+    "next-sitemap": "^4.2.3",
+    "nodemailer": "^6.9.13",
+    "react": "^18",
+    "react-dom": "^18",
+    "sass": "^1.77.2"
+  },
+  "devDependencies": {
+    "eslint": "^8",
+    "eslint-config-next": "14.2.3"
+  }
+}
