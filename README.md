@@ -42,14 +42,6 @@ npm run dev
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-## Hygraph
-
-To load data from Hygraph you will need to setup a .env.local file in the root directory. This is not stored in the repository for security purposes. Once you create the file add these two keys and get the values by logging into your Hygraph project. 
-
-```bash
-NEXT_PUBLIC_HYGRAPH_ENDPOINT=""
-HYGRAPH_TOKEN=""
-```
 
 ## Deploy 
 
