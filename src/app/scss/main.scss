@@ -1,7 +1,6 @@
-// scss/main.scss
 @import 'fonts/fonts';
 @import 'abstracts/variables';
-@import 'vendors/bootstrap'; // Bootstrap after custom variables
+@import 'vendors/bootstrap';
 @import 'base/utilities';
 @import 'base/typography';
 @import 'base/animations';

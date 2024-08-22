@@ -1,9 +1,11 @@
 
+"use client";
+
 import React from 'react';
 import { signOut, useSession, signIn } from 'next-auth/react';
 import Link from 'next/link';
 
-const HomePage = () => {
+function DashboardPage ({ page }) {
   const { data, status } = useSession();
 
   return status === 'authenticated' ? (
@@ -33,7 +35,7 @@ const HomePage = () => {
               <div className="col-12 text-center">
                 <button className="btn btn-primary" onClick={() => {
                         signIn( 'azure-ad',
-                        { callbackUrl: '/' },
+                        { callbackUrl: '/dashboard' },
                         { prompt: 'login' } )}}>
                     Sign in
                   </button>
@@ -41,7 +43,7 @@ const HomePage = () => {
         </div>
       </div>
     </section>
-  );
-};
+);
+}
 
-export default HomePage;
+export default DashboardPage;
