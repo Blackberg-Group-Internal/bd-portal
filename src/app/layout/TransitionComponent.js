@@ -11,14 +11,12 @@ export default function TransitionComponent({ children }) {
   useEffect(() => {
     const el = containerRef.current;
 
-    // Animation for entering the page
     gsap.fromTo(
       el,
       { opacity: 0, y: 20 },
       { opacity: 1, y: 0, duration: 0.5, ease: "power1.out" }
     );
 
-    // Cleanup function for exit animation
     return () => {
       gsap.to(el, {
         opacity: 0,

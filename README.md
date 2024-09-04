@@ -32,6 +32,8 @@ VERCEL_ENV=development
 AZURE_AD_CLIENT_ID=""
 AZURE_AD_CLIENT_SECRET=""
 AZURE_AD_TENANT_ID=""
+NEXTAUTH_URL=""
+NEXTAUTH_SECRET=""
 ```
 
 Third, run the development server:

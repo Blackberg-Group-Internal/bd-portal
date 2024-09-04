@@ -1,17 +1,9 @@
-// src/lib/graph.js
 import { Client } from "@microsoft/microsoft-graph-client";
-import { getSession } from "next-auth/react";
 
-// Function to get the Graph client initialized with the access token
-async function getClient() {
-    const session = await getSession();
-    console.log('Session: ', session);
-
-    if (!session || !session.accessToken) {
-        throw new Error("No valid session or access token found");
+async function getClient(accessToken) {
+    if (!accessToken) {
+        throw new Error("No valid access token found");
     }
-
-    const accessToken = session.accessToken;
 
     return Client.init({
         authProvider: (done) => {
@@ -20,21 +12,30 @@ async function getClient() {
     });
 }
 
-// Function to get the user profile
-export async function getUserProfile() {
-    const client = await getClient();
-    return client.api('/me').get();
-}
-
-// Function to get the user photo
-export async function getUserPhoto() {
-    const client = await getClient();
+export async function getUserProfile(accessToken) {
     try {
-        const photo = await client.api('/me/photo/$value').get();
-        const blob = await photo.blob();
-        return URL.createObjectURL(blob);
+        const client = await getClient(accessToken);
+        const profile = await client.api('/me').get();
+        return profile;
     } catch (error) {
-        console.error('Failed to fetch user photo:', error);
-        return null; // Return null if photo is not available or if there's an error
+        console.error("Failed to fetch user profile:", error);
+        return null; 
     }
 }
+
+export async function getUserPhoto(accessToken) {
+    try {
+        const client = await getClient(accessToken);
+        const photoResponse = await client
+            .api('/me/photo/$value')
+            .responseType('blob')
+            .get();
+        
+        const photoUrl = URL.createObjectURL(photoResponse);
+        return photoUrl;
+    } catch (error) {
+        console.error('Failed to fetch user photo:', error);
+        return null; 
+    }
+}
+
