@@ -2,9 +2,10 @@
 
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
-import { getUserProfile, getUserPhoto } from "@/app/lib/graph";
+import { getUserProfile, getUserPhoto } from "@/app/lib/microsoft/graph";
 import gsap from 'gsap';
 import { useSession } from 'next-auth/react';
+import { fetchEmployeeHygraph } from '@/app/lib/hygraph/employees';
 
 const Header = () => {
     const [activeLink, setActiveLink] = useState('/dashboard');
@@ -13,16 +14,22 @@ const Header = () => {
     const [photo, setPhoto] = useState(null);
     const [profile, setProfile] = useState(null);
 
-    // Fetch user profile and photo
     useEffect(() => {
         if (status === "authenticated" && session?.accessToken) {
             const fetchData = async () => {
                 try {
                     const userProfile = await getUserProfile(session.accessToken);
+
+                    const firstName = session.user.name.split(' ')[0];
+                    const lastName = session.user.name.split(' ')[1];
+                  
+                    const hygraphUser = await fetchEmployeeHygraph(firstName, lastName);
+
+                    //console.log('Hyraph Useer: ', hygraphUser);
                     setProfile(userProfile);
 
-                    const userPhoto = await getUserPhoto(session.accessToken);
-                    setPhoto(userPhoto);
+                    //const userPhoto = await getUserPhoto(session.accessToken);
+                    setPhoto(hygraphUser.image.url);
                 } catch (error) {
                     console.error("Failed to fetch user data:", error);
                 }
@@ -60,7 +67,21 @@ const Header = () => {
             case '/dashboard':
                 return (
                     <div className="d-flex flex-column">
-                        <span className="submenu-title">Dashboard</span>
+                        <span className="submenu-title mb-3">Dashboard</span>
+                        <div className="d-flex flex-column submenu-list">
+                            <Link href="/dashboard/overview" className="d-flex">
+                                <img src="images/overview-icon.svg" alt="" width="24" height="24" />
+                                Overview
+                            </Link>
+                            <Link href="/dashboard/activity" className="d-flex">
+                                <img src="images/recent-activity-icon.svg" alt="" width="24" height="24" />
+                                Recent Activty
+                            </Link>
+                            <Link href="/dashboard/submission-deadlines" className="d-flex">
+                                <img src="images/submission-deadline-icon.svg" alt="" width="24" height="24" />
+                                Submission Deadlines
+                            </Link>
+                        </div>
                     </div>
                 );
             case '/pipeline':
@@ -72,12 +93,21 @@ const Header = () => {
             case '/dam':
                 return (
                     <div className="d-flex flex-column">
-                        <span className="submenu-title">Digital Asset Manager</span>
-                        <ul>
-                        <li><Link href="/dam/collections">Collections</Link></li>
-                        <li><Link href="/dam/files">Files</Link></li>
-                        <li><Link href="/dam/favorites">Favorites</Link></li>
-                    </ul>
+                        <span className="submenu-title mb-3">Digital Asset Manager</span>
+                        <div className="d-flex flex-column submenu-list">
+                            <Link href="/dam/collections" className="d-flex">
+                                <img src="images/collections-icon.svg" alt="" width="24" height="24" />
+                                Collections
+                            </Link>
+                            <Link href="/dam/files" className="d-flex">
+                                <img src="images/files-icon.svg" alt="" width="24" height="24" />
+                                Files
+                            </Link>
+                            <Link href="/dam/favorites" className="d-flex">
+                                <img src="images/favorites-icon.svg" alt="" width="24" height="24" />
+                                Favorites
+                            </Link>
+                        </div>
                     </div>
                 );
             case '/org':
@@ -139,11 +169,11 @@ const Header = () => {
             <div className="submenu px-3 py-5 position-absolute top-0 d-flex flex-column text-figtree">
                     {renderSubMenu()}
 
-                    <div class="menu-user-text position-relative mt-auto">
+                    <div className="menu-user-text position-relative mt-auto">
                         {profile && (
                             <div className="user-info d-flex flex-column text-figtree">
                                 <span className="fw-bold">{profile.displayName}</span>
-                                <span class="email">{profile.mail}</span>
+                                <span className="email">{profile.mail}</span>
                             </div>
                         )}
                     </div>

@@ -13,18 +13,8 @@ function DashboardPage () {
           <div className="row">
               <div className="col-12">
                   <h1>Dashboard</h1>
-                  {/* {data && (
-                    <>
-                      <div>{`Name : ${data.user?.name}`}</div>
-                      <div>{`Email : ${data.user?.email}`}</div>
-                      <div>{`Token: ${data.accessToken}`}</div>
-                    </>
-                  )}
-                  <button className="btn btn-primary mt-4" onClick={() => signOut({ callbackUrl: '/login' })}>
-                    Log out
-                  </button> */}
-                </div>
-        </div>
+              </div>
+          </div>
       </div>
     </section>
   )

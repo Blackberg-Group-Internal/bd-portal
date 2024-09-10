@@ -1,5 +1,4 @@
-//import { getUserProfile, getUserPhoto} from "@/app/lib/graph";
-import { getUserProfile, getUserPhoto } from '../../../lib/graph';
+import { getUserProfile, getUserPhoto } from '@/app/lib/microsoft/graph';
 
 export async function GET(request) {
     try {

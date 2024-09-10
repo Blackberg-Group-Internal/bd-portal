@@ -21,13 +21,13 @@ export default function RootLayout({ children }) {
         <SessionProvider>
           <Header />
           <SmoothScrolling>
-              <TransitionComponent>
-                <ProtectedRoute>
-                  <main aria-label="Main content">
-                    {children}
-                  </main>
-                </ProtectedRoute>
-              </TransitionComponent>
+            <TransitionComponent>
+              <ProtectedRoute>
+                <main aria-label="Main content">
+                  {children}
+                </main>
+              </ProtectedRoute>
+            </TransitionComponent>
           </SmoothScrolling>
           <Footer />
         </SessionProvider>

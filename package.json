@@ -17,6 +17,7 @@
     "@studio-freight/react-lenis": "^0.0.47",
     "bootstrap": "^5.3.3",
     "graphql": "^16.8.1",
+    "graphql-request": "^7.1.0",
     "gsap": "^3.12.5",
     "next": "14.2.3",
     "next-auth": "^4.24.7",

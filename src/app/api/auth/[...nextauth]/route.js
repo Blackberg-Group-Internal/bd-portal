@@ -22,14 +22,12 @@ export const authOptions = {
   callbacks: {
     async jwt({ token, user, account }) {
       if (account && user) {
-        // Use access_token from account, not id_token
         token.accessToken = account.access_token;
         token.accessTokenExpires = account.expires_at * 1000;
         token.refreshToken = account.refresh_token;
         token.user = user;
       }
 
-      // If token has expired, refresh it
       if (Date.now() >= token.accessTokenExpires) {
         token = await refreshAccessToken(token);
       }
@@ -58,7 +56,6 @@ export async function GET(req, res) {
   return NextAuth(authOptions)(req, res);
 }
 
-// Helper function to refresh the access token
 async function refreshAccessToken(token) {
   try {
     const url =

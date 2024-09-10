@@ -11,7 +11,6 @@ The project follows a standard structure with source files in the `src` director
 
 - `src`: Contains all the source files
 - `app`: Contains all Next.js files inlcuding components, APIs, and assets
-- `pages`: Contains all pages, utilizng Next.js router
 
 ## Development Setup
 
@@ -34,6 +33,9 @@ AZURE_AD_CLIENT_SECRET=""
 AZURE_AD_TENANT_ID=""
 NEXTAUTH_URL=""
 NEXTAUTH_SECRET=""
+HYGRAPH_TOKEN=""
+HYGRAPH_DEV_TOKEN=""
+NEXT_PUBLIC_HYGRAPH_ENDPOINT=""
 ```
 
 Third, run the development server:

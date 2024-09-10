@@ -17,9 +17,11 @@ header {
             width: 48px;
             height: 48px;
             margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             
             &.active {
-                // background: $jade-green-50;
                 background: transparent;
             }
         }
@@ -37,8 +39,6 @@ header {
         height: 48px;
         background-color: $jade-green-50;
         border-radius: 8px;
-        // transition: transform 0.25s ease-in-out;
-        // transition-delay: .05;
         z-index: -1;
       }
       
@@ -72,9 +72,20 @@ header {
   }
 }
 
+.submenu-list {
+  a {
+    padding: 8px 12px;
+    text-decoration: none;
+    font-weight: 600;
+    color: #0C111D;
+
+    img {
+      margin-right: 12px;
+    }
+  }
+}
+
 .menu-user-text {
-
-
   span {
     font-size: 14px;
 
