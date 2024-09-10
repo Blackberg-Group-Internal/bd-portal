@@ -23,13 +23,13 @@ export default function RootLayout({ children }) {
           <SmoothScrolling>
             <TransitionComponent>
               <ProtectedRoute>
-                <main aria-label="Main content">
+                <main aria-label="Main content" className="position-relative">
                   {children}
                 </main>
               </ProtectedRoute>
             </TransitionComponent>
           </SmoothScrolling>
-          <Footer />
+          {/* <Footer /> */}
         </SessionProvider>
       </body>
     </html>

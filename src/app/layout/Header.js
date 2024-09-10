@@ -29,7 +29,7 @@ const Header = () => {
                     setProfile(userProfile);
 
                     //const userPhoto = await getUserPhoto(session.accessToken);
-                    setPhoto(hygraphUser.image.url);
+                    setPhoto(hygraphUser[0].image.url);
                 } catch (error) {
                     console.error("Failed to fetch user data:", error);
                 }
