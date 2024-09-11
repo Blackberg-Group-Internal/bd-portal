@@ -8,11 +8,16 @@ import { SessionProvider } from "next-auth/react";
 import TransitionComponent from "./layout/TransitionComponent";
 import { usePathname } from "next/navigation";
 import ProtectedRoute from "./layout/ProtectedRoute";
+import { useEffect } from "react";
 
 export default function RootLayout({ children }) {
 
   const pathname = usePathname();
   const bodyClass = pathname === "/" ? "home" : pathname.replace(/\//g, "-").replace(/^-|-$/g, "");
+
+  useEffect(() => {
+    import('bootstrap/dist/js/bootstrap.bundle.min.js');
+}, []);
 
   return (
     <html lang="en">

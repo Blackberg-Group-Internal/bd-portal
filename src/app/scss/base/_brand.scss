@@ -1,6 +1,6 @@
 body {
     background: #F2F4F7;
-    padding-left: 362px;
+    padding-left: 130px;
     color: #0C111D;
 
     &.login {
@@ -14,9 +14,12 @@ body {
             z-index: 99999;
         }
     }
+
+    @include media-breakpoint-up(lg) {
+        padding-left: 362px;
+      }
 }
 
 main {
-    // min-height: 100vh;
     overflow: scroll;
 }

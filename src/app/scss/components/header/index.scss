@@ -60,11 +60,15 @@ header {
 .submenu {
   left: 100%;
   background: #fff;
-  width: 282px;
+  width: 50px;
   height: 100%;
   box-shadow: 0px 24px 48px -12px rgba(16, 24, 40, 0.18);
   border-left: 1px solid #EAECF0;
   z-index:1;
+
+  @include media-breakpoint-up(lg) {
+    width: 282px;
+  }
 
   .submenu-title {
     font-weight: 600;
@@ -78,10 +82,27 @@ header {
     text-decoration: none;
     font-weight: 600;
     color: #0C111D;
+    border-radius: 6px;
+
+    &.active {
+      color: $jade-green-800;
+      background: $gray-100;
+
+      svg {
+        stroke: $jade-green-800;
+        background: $jade-green-800;
+      }
+    }
 
     img {
       margin-right: 12px;
     }
+  }
+}
+
+.menu-user {
+  .dropdown-toggle::after {
+    display: none;
   }
 }
 

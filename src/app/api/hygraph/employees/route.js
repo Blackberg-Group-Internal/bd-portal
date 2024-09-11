@@ -1,19 +1,17 @@
 import { gql } from 'graphql-request';
 import { request } from 'graphql-request';
 
-// Hygraph API endpoint and token (server-side)
 const HYGRAPH_API_URL = process.env.NEXT_PUBLIC_HYGRAPH_ENDPOINT;
 const HYGRAPH_TOKEN = process.env.HYGRAPH_TOKEN;
 
 export async function POST(req) {
   const { firstName, lastName, searchString } = await req.json();
 
-  // Define queries based on the provided fields
   let query;
   let variables;
 
   if (firstName && lastName) {
-    // Use the firstName and lastName to find an exact match
+
     query = gql`
       query FindEmployee($firstName: String!, $lastName: String!) {
         employees(where: { firstName_contains: $firstName, lastName_contains: $lastName }) {
@@ -32,7 +30,7 @@ export async function POST(req) {
       lastName: lastName.trim(),
     };
   } else if (searchString) {
-    // Use searchString to find partial matches for firstName or lastName
+
     query = gql`
       query SearchEmployees($searchString: String!) {
         employees(
@@ -64,7 +62,6 @@ export async function POST(req) {
   }
 
   try {
-    // Make the request to Hygraph API
     const data = await request(HYGRAPH_API_URL, query, variables, {
       Authorization: `Bearer ${HYGRAPH_TOKEN}`,
     });

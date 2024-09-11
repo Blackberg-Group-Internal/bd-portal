@@ -8,6 +8,7 @@ const SearchModal = ({ show, handleClose }) => {
   const usersRef = useRef(null);
   const resumesRef = useRef(null);
   const proposalsRef = useRef(null);
+  const previousResultsRef = useRef({ users: [] });
   const [searchInput, setSearchInput] = useState('');
   const [results, setResults] = useState({
     users: [],
@@ -45,36 +46,28 @@ const SearchModal = ({ show, handleClose }) => {
     }
   }, [debouncedSearchInput]);
 
-  useEffect(() => {
-    if (results.users.length > 0) {
-      gsap.from(usersRef.current.children, {
+useEffect(() => {
+    const previousUsers = previousResultsRef.current.users;
+    const currentUsers = results.users;
+
+    const newUsers = currentUsers.filter(
+      (newUser) => !previousUsers.some((oldUser) => oldUser.id === newUser.id)
+    );
+
+    if (newUsers.length > 0 && usersRef.current) {
+
+      const newElements = usersRef.current.children;
+      gsap.from(newElements, {
         opacity: 0,
         y: 20,
         stagger: 0.1,
         ease: 'power1.out',
-        duration: 0.5
+        duration: 0.5,
       });
     }
-    if (results.resumes.length > 0) {
-      gsap.from(resumesRef.current.children, {
-        opacity: 0,
-        y: 20,
-        stagger: 0.1,
-        ease: 'power1.out',
-        duration: 0.5
-      });
-    }
-    if (results.proposals.length > 0) {
-      gsap.from(proposalsRef.current.children, {
-        opacity: 0,
-        y: 20,
-        stagger: 0.1,
-        ease: 'power1.out',
-        duration: 0.5
-      });
-    }
-  }, [results]);
-  
+    
+    previousResultsRef.current = { users: currentUsers };
+  }, [results.users]);
 
   return (
     <Modal show={show} onHide={handleClose} size="lg" centered className="search-modal text-figtree">
@@ -98,22 +91,22 @@ const SearchModal = ({ show, handleClose }) => {
           {/* Users Section */}
           <div className="search-section">
             <div className="p-3 d-flex flex-column">
-                <span className="section-title">Users</span>
-                <div ref={usersRef}>
+              <span className="section-title">Users</span>
+              <div ref={usersRef}>
                 {results.users.length > 0 ? (
-                results.users.map((user, index) => (
+                  results.users.map((user, index) => (
                     <div key={index} className="search-item search-item-user d-flex align-items-center p-2">
-                    <img src={user.image.url} alt="avatar" width="30" height="30" className="me-2" />
-                    <span>{user.firstName} {user.lastName}</span>
-                    <span className="ms-2 text-lowercase user-handle">@{user.firstName.trim()}.{user.lastName.trim()}</span>
+                      <img src={user.image.url} alt="avatar" width="30" height="30" className="me-2" />
+                      <span>{user.firstName} {user.lastName}</span>
+                      <span className="ms-2 text-lowercase user-handle">@{user.firstName.trim()}.{user.lastName.trim()}</span>
                     </div>
-                ))
+                  ))
                 ) : (
-                <span className="no-results">No users found</span>
+                  <span className="no-results">No users found</span>
                 )}
-                </div>
+              </div>
             </div>
-            </div>
+          </div>
 
           {/* Resumes Section */}
           <div className="search-section">
@@ -177,7 +170,7 @@ const SearchModal = ({ show, handleClose }) => {
             </div>
             <div className="search-settings d-flex align-items-center ms-auto">
                 <button className="border-0 bg-transparent">
-                    <img src="images/search-settings-icon.svg" alt="" width="17" height="17" />
+                    <img src="images/settings-icon.svg" alt="" width="17" height="17" />
                 </button>
             </div>
         </div>
