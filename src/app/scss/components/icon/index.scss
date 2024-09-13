@@ -1,0 +1,12 @@
+.icon {
+    
+    * {
+        transition: all 0.3s ease;
+    }
+
+    &:hover, &:active, &:focus {
+        * {
+            stroke: $jade-green-800;
+        }
+    }
+}

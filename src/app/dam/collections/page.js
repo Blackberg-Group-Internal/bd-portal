@@ -2,9 +2,9 @@
 "use client";
 
 import React from 'react';
-import Breadcrumbs from '../components/Breadcrumbs';
+import Breadcrumbs from '../../components/Breadcrumbs';
 
-const DamPage = () => {
+const CollectionsPage = () => {
 
   return (
     <section className="p-4 py-lg-5 px-lg-5">
@@ -23,4 +23,4 @@ const DamPage = () => {
 
 };
 
-export default DamPage;
+export default CollectionsPage;

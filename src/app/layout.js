@@ -1,23 +1,17 @@
 "use client";
 
-import Header from "./layout/Header";
-import Footer from "./layout/Footer";
+import Header from "./components/layout/header/Header";
 import "./scss/main.scss";
-import SmoothScrolling from "./layout/SmoothScrolling";
+import SmoothScrolling from "./components/layout/SmoothScrolling";
 import { SessionProvider } from "next-auth/react";
-import TransitionComponent from "./layout/TransitionComponent";
+import TransitionComponent from "./components/layout/TransitionComponent";
 import { usePathname } from "next/navigation";
-import ProtectedRoute from "./layout/ProtectedRoute";
-import { useEffect } from "react";
+import ProtectedRoute from "./components/layout/ProtectedRoute";
 
 export default function RootLayout({ children }) {
 
   const pathname = usePathname();
   const bodyClass = pathname === "/" ? "home" : pathname.replace(/\//g, "-").replace(/^-|-$/g, "");
-
-  useEffect(() => {
-    import('bootstrap/dist/js/bootstrap.bundle.min.js');
-}, []);
 
   return (
     <html lang="en">

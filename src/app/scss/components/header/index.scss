@@ -8,11 +8,19 @@ header {
     height: 100vh;
     width: 80px;
 
-    @include media-breakpoint-up(md) {
-
-    }
-
     .nav-pills {
+
+      .nav-item {
+        ul {
+          display: none;
+        }
+
+        &.active {
+          ul {
+            display: flex;
+          }
+        }
+      }
         .nav-link {
             width: 48px;
             height: 48px;
@@ -20,32 +28,45 @@ header {
             display: flex; 
             align-items: center;
             justify-content: center;
+            padding: 0;
+            transition: all 0.3s ease;
 
             &.active {
                 background: transparent;
+
+                svg * {
+                  stroke: $jade-green-800;
+                }
             }
         }
     }
 
-    .nav-pills {
-        position: relative;
-      }
-      
-      .nav-pills .highlight {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 48px; 
-        height: 48px;
-        background-color: $jade-green-50;
-        border-radius: 8px;
-        z-index: -1;
-      }
-      
-      .nav-link {
-        position: relative;
-        z-index: 1;
-      }
+    .highlight {
+      position: absolute;
+      top: 0;
+      width: 48px; 
+      height: 48px;
+      background-color: $jade-green-50;
+      border-radius: 8px;
+      z-index: -1;
+      opacity: 0;
+    }
+
+    .highlight-subitem {
+      position: absolute;
+      top: 0;
+      left: 16px;
+      width: 48px; 
+      height: 48px;
+      background-color: $gray-100;
+      border-radius: 8px;
+      z-index: -1;
+      opacity: 0;
+    }
+
+    @include media-breakpoint-up(md) {
+
+    }
 }
 
 .dropdown-user {
@@ -88,9 +109,16 @@ header {
       color: $jade-green-800;
       background: $gray-100;
 
-      svg {
+      svg * {
         stroke: $jade-green-800;
-        background: $jade-green-800;
+      }
+    }
+
+    &:hover {
+      color: $jade-green-800;
+
+      svg * {
+        stroke: $jade-green-800;
       }
     }
 

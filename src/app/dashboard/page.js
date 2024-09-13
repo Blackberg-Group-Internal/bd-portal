@@ -4,6 +4,9 @@
 import React, { useState } from 'react';
 import { useSession } from 'next-auth/react';
 import SearchModal from '@/app/components/SearchModal';
+import HomeIcon from '../../../public/images/icons/home.svg';
+import ChevronIcon from '../../../public/images/icons/chevron.svg';
+import SearchIcon from '../../../public/images/icons/search.svg';
 
 function DashboardPage () {
   const { data } = useSession();
@@ -18,18 +21,18 @@ function DashboardPage () {
           <div className="row">
               <div className="col-12">
                 <div className="breadcrumbs d-flex align-items-center text-figtree">
-                  <img src="images/home-icon.svg" alt="" width="20" height="20" />
-                  <img src="images/chevron-right.svg" alt="" width="16" height="16" />
+                  <HomeIcon />
+                  <ChevronIcon />
                   <span>Dashboard</span>
-                  <img src="images/chevron-right.svg" alt="" width="16" height="16" />
-                  <span>Overview</span>
+                  <ChevronIcon />
+                  <span className="active">Overview</span>
                 </div>
               </div>
               <div className="col-12 d-flex justify-content-between align-items-center page-info">
                   <h1 className="fw-bold-600 my-4">Welcome back, {firstName}</h1>
                   <div className="search">
-                    <button className="border-0 bg-transparent" onClick={handleShow}>
-                      <img src="images/search-icon.svg" alt="" width="20" height="20" />
+                    <button className="border-0 bg-trandsparent" onClick={handleShow}>
+                      <SearchIcon className="icon" />
                     </button>
                   </div>
               </div>

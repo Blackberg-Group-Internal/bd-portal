@@ -2,6 +2,13 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Modal, Form } from 'react-bootstrap';
 import { searchEmployeesHygraph } from '../lib/hygraph/employees';
 import gsap from 'gsap';
+import SettingsIcon from '../../../public/images/icons/settings.svg';
+import SearchIcon from '../../../public/images/icons/search.svg';
+import ArrowUpIcon from '../../../public/images/icons/arrow-up.svg';
+import ArrowDownIcon from '../../../public/images/icons/arrow-down.svg';
+import ArrowLeftIcon from '../../../public/images/icons/arrow-left.svg';
+import CornerDownLeftIcon from '../../../public/images/icons/corner-down-left.svg';
+import ShortcutIcon from '../../../public/images/icons/command-shortcut.svg';
 
 const SearchModal = ({ show, handleClose }) => {
 
@@ -73,7 +80,7 @@ useEffect(() => {
     <Modal show={show} onHide={handleClose} size="lg" centered className="search-modal text-figtree">
       <Modal.Body className="p-0">
         <Form className="search-bar d-flex align-items-center p-3">
-            <img src="images/search-icon.svg" alt="" width="20" height="20" className="d-flex mr-2"/>
+          <SearchIcon />
           <Form.Control
             type="text"
             placeholder="Search..."
@@ -83,7 +90,7 @@ useEffect(() => {
             autoFocus
           />
           <div className="btn-shortcut">
-            <img src="images/command-shortcut-icon.svg" alt="" width="20" height="20" className="d-flex ms-auto"/>
+            <ShortcutIcon />
           </div>
         </Form>
 
@@ -149,14 +156,14 @@ useEffect(() => {
         <div className="search-shortcuts px-3 py-2 d-flex justify-content-between">
             <div className="shortcuts d-none d-md-flex align-items-center">
                 <div className="btn-shortcut">
-                    <img src="images/arrow-down-icon.svg" alt="" width="17" height="17" />
+                    <ArrowDownIcon />
                 </div>
                 <div className="btn-shortcut">
-                    <img src="images/arrow-up-icon.svg" alt="" width="17" height="17" />
+                    <ArrowUpIcon />
                 </div>
                 <span className="me-3">to navigate</span>
                 <div className="btn-shortcut">
-                    <img src="images/corner-down-left-icon.svg" alt="" width="17" height="17" />
+                    <CornerDownLeftIcon />
                 </div>
                 <span className="me-3">to select</span>
                 <div className="btn-shortcut">
@@ -164,13 +171,13 @@ useEffect(() => {
                 </div>
                 <span className="me-3">to close</span>
                 <div className="btn-shortcut">
-                    <img src="images/arrow-left-icon.svg" alt="" width="17" height="17" />
+                    <ArrowLeftIcon />
                 </div>
                 <span>return to parent</span>
             </div>
             <div className="search-settings d-flex align-items-center ms-auto">
                 <button className="border-0 bg-transparent">
-                    <img src="images/settings-icon.svg" alt="" width="17" height="17" />
+                    <SettingsIcon />
                 </button>
             </div>
         </div>

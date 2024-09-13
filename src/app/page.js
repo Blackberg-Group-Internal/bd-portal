@@ -5,6 +5,8 @@ import React, { useState, useRef, useEffect} from 'react';
 import { useSession } from 'next-auth/react';
 import SearchModal from '@/app/components/SearchModal';
 import gsap from 'gsap';
+import SearchIcon from '../../public/images/icons/search.svg';
+import Breadcrumbs from './components/Breadcrumbs';
 
 function OverviewPage () {
   const { data } = useSession();
@@ -67,13 +69,7 @@ function OverviewPage () {
       <div className="container">
           <div className="row">
               <div className="col-12">
-                <div className="breadcrumbs d-flex align-items-center text-figtree">
-                  <img src="images/home-icon.svg" alt="" width="20" height="20" />
-                  <img src="images/chevron-right.svg" alt="" width="16" height="16" />
-                  <span>Dashboard</span>
-                  <img src="images/chevron-right.svg" alt="" width="16" height="16" />
-                  <span>Overview</span>
-                </div>
+                <Breadcrumbs item="Dashboard" subItem="Overview" />
               </div>
               <div className="col-12 d-flex justify-content-between align-items-center page-info">
                 <h1 className="fw-bold-600 my-4">
@@ -88,7 +84,7 @@ function OverviewPage () {
                   </h1>
                   <div className="search">
                     <button className="border-0 bg-transparent" onClick={handleShow} ref={searchRef}>
-                      <img src="images/search-icon.svg" alt="" width="20" height="20" />
+                      <SearchIcon className="icon" />
                     </button>
                   </div>
               </div>

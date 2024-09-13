@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
-import Login from '../components/Login';
-import Loader from '../components/Loader';
+import Login from '../Login';
+import Loader from '../Loader';
 
 
 function ProtectedRoute({ children }) {
