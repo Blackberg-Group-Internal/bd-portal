@@ -34,17 +34,17 @@ const DamSubMenu = () => {
     <div ref={submenuRef}>
         <span className="submenu-title mb-3 d-none d-lg-flex">Digital Asset Manager</span>
         <div className="d-flex flex-column submenu-list">
-        <Link href="/dam/collections" className={`d-flex ${pathname === '/dam' ? 'active' : ''}`}>
+        <Link href="/dam" className={`d-flex ${pathname === '/dam' ? 'active' : ''}`}>
             <CollectionsIcon />
-            <span className="ms-2">Collections</span>
+            <span className="d-none d-lg-flex ms-2 ps-1">Collections</span>
         </Link>
         <Link href="/dam/files" className={`d-flex ${pathname === '/dam/files' ? 'active' : ''}`}>
             <FilesIcon />
-            <span className="ms-2">Files</span>
+            <span className="d-none d-lg-flex ms-2 ps-1">Files</span>
         </Link>
         <Link href="/dam/favorites" className={`d-flex ${pathname === '/dam/favorites' ? 'active' : ''}`}>
             <FavoritesIcon />
-            <span className="ms-2">Favorites</span>
+            <span className="d-none d-lg-flex ms-2 ps-1">Favorites</span>
         </Link>
         </div>
     </div>

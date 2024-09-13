@@ -1,0 +1,38 @@
+.btn {
+    border-radius: 8px;
+    pointer-events: all;
+
+    &--layout {
+        border: 1px solid #D0D5DD;
+
+        &:hover, &:active {
+            border: 1px solid #D0D5DD !important;
+            color: $jade-green !important;
+            outline: none;
+            box-shadow: none !important;
+
+            svg * {
+                stroke: $jade-green;
+            }
+        }
+
+        &:first-child {
+            border-top-right-radius: 0;
+            border-bottom-right-radius: 0;
+        }
+
+        &:last-child {
+            border-top-left-radius: 0;
+            border-bottom-left-radius: 0;
+        }
+
+        &.active {
+            border: 1px solid #D0D5DD;
+            background: #F9FAFB;
+        }
+    }
+
+    &--login {
+        border-radius: 50vw;
+    }
+}

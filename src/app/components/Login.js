@@ -14,7 +14,7 @@ const Login = () => {
               <div className="d-flex flex-column align-items-center mt-auto">
               <img src="images/logos/bg-logo-full.svg" alt="" width="124" height="50" className="mb-4" />
               <h1 className="fs-4 mb-5">Business Development Portal</h1>
-                <button className="btn btn-primary w-100" onClick={() => {
+                <button className="btn btn-primary btn--login w-100" onClick={() => {
                         signIn( 'azure-ad',
                         { callbackUrl: '/' },
                         { prompt: 'login' } )}}>

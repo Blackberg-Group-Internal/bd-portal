@@ -35,15 +35,15 @@ const OrgSubMenu = () => {
         <div className="d-flex flex-column submenu-list">
             <Link href="#" className={`d-flex ${pathname === '/dam/collections' ? 'active' : ''}`}>
                 <CollectionsIcon />
-                <span className="ms-2">Org Item 1</span>
+                <span className="d-none d-lg-flex ms-2 ps-1">Org Item 1</span>
             </Link>
             <Link href="#" className={`d-flex ${pathname === '/dam/files' ? 'active' : ''}`}>
                 <FilesIcon />
-                <span className="ms-2">Org Item 2</span>
+                <span className="d-none d-lg-flex ms-2 ps-1">Org Item 2</span>
             </Link>
             <Link href="#" className={`d-flex ${pathname === '/dam/favorites' ? 'active' : ''}`}>
                 <FavoritesIcon />
-                <span className="ms-2">Org Item 3</span>
+                <span className="d-none d-lg-flex ms-2 ps-1">Org Item 3</span>
             </Link>
         </div>
     </div>
