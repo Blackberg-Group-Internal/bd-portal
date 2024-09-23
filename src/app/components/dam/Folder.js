@@ -4,6 +4,7 @@ import MenuIcon from '../../../../public/images/icons/dots-vertical.svg';
 import ShareIcon from '../../../../public/images/icons/share.svg';
 import FavoritesIcon from '../../../../public/images/icons/favorites-small.svg';
 import DownloadIcon from '../../../../public/images/icons/download.svg';
+import Link from 'next/link';
 
 const Folder = ({ folder, viewMode }) => {
 
@@ -12,16 +13,16 @@ const Folder = ({ folder, viewMode }) => {
   const toggleActions = () => {
     setShowActions((prevState) => !prevState);
   };
-
   return (
-    <div 
-      className={`folder text-figtree text-center p-3 mb-4 col-6 col-sm-4 col-md-3 col-xl-2 d-flex flex-column align-items-center position-relative ${viewMode} ${folder.isEmpty ? 'empty-folder' : ''}`} 
+    <div
+      className={`folder text-figtree text-center p-3 mb-4 col-6 col-sm-4 col-md-3 col-xl-2 d-flex flex-column  align-items-center position-relative ${viewMode} ${folder.isEmpty ? 'folder-empty' : ''}`} 
       onMouseLeave={() => setShowActions(false)}
     >
-      <div className="folder-icon">
-        <FolderIcon className="icon--folder" />
-      </div>
-      <div className="folder-name mt-3">{folder.name}</div>
+      <Link 
+      href={`/dam/collections/${folder.name.toLowerCase().replace(/\s+/g, '-')}`} className="folder-icon text-black text-decoration-none">
+        <FolderIcon className="icon--folder" width="48" height="48" />
+        <div className="folder-name mt-3">{folder.name}</div>
+      </Link>
 
       <button 
         className="btn-action border-0 bg-transparent position-absolute top-0 end-0 mt-2" 
@@ -31,7 +32,7 @@ const Folder = ({ folder, viewMode }) => {
       </button>
 
       {showActions && (
-        <div className="action-panel w-100 position-absolute top-0 mt-6 end-0 bg-white text-left d-flex flex-column align-items-stretch">
+        <div className="action-panel position-absolute top-0 mt-6 end-0 bg-white text-left d-flex flex-column align-items-stretch">
           <button className="btn-text px-3 py-2 border-0 text-left" onClick={() => alert('Share & Get Link')}>
             <ShareIcon className="icon me-2" />
             Share & Get Link

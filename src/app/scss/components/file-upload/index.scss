@@ -1,0 +1,18 @@
+.file-upload {
+
+    .modal-dialog {
+        max-width: 480px;
+    }
+
+    .btn-icon {
+        padding: 10px;
+
+        svg * {
+            stroke: #344054;
+        }
+    }
+
+    .upload-area {
+        border: 2px solid $jade-green-800;
+    }
+}

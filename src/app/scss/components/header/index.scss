@@ -1,8 +1,7 @@
 header {
     background: $white;
-    position: relative;
     z-index: 5;
-    position: absolute;
+    position: fixed;
     left: 0;
     top: 0;
     height: 100vh;
@@ -104,6 +103,7 @@ header {
     font-weight: 600;
     color: #0C111D;
     border-radius: 6px;
+    opacity: 0;
 
     &.active {
       color: $jade-green-800;

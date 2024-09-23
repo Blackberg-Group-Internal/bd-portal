@@ -11,7 +11,7 @@ const SubmissionsPage = () => {
       <div className="container">
           <div className="row">
               <div className="col-12">
-                <Breadcrumbs item="Dashboard" subItem="Submission Deadlines" />
+                <Breadcrumbs first="Dashboard" second="Submission Deadlines" />
               </div>
               <div className="col-12 d-flex justify-content-between align-items-center page-info">
                 <h1 className="fw-bold-600 my-4">Submission Deadlines</h1>

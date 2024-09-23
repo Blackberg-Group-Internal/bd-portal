@@ -3,7 +3,7 @@
 
 import React, { useState } from 'react';
 import Breadcrumbs from '@/app/components/Breadcrumbs';
-import Folder from '@/app/components/folder/Folder';
+import Folder from '@/app/components/dam/Folder';
 import { useEffect, useRef } from 'react';
 import gsap from 'gsap';
 import SearchIcon from '../../../public/images/icons/search.svg';
@@ -11,6 +11,8 @@ import UploadIcon from '../../../public/images/icons/upload.svg';
 import ListIcon from '../../../public/images/icons/list.svg';
 import TilesIcon from '../../../public/images/icons/tiles.svg';
 import SearchModal from '@/app/components/SearchModal';
+import CollectionList from '@/app/components/dam/CollectionList';
+import FileUploadButton from '@/app/components/dam/FileUploadButton';
 
 const DamPage = () => {
 
@@ -23,20 +25,63 @@ const DamPage = () => {
 
   const toggleView = (mode) => {
     setViewMode(mode);
+    localStorage.setItem('viewMode', mode);
   };
 
   const data = [
-    { name: 'Performance Records', isEmpty: false },
-    { name: 'Technical', isEmpty: false },
-    { name: 'Management', isEmpty: true },
-    { name: 'Awards', isEmpty: false },
-    { name: 'Graphics', isEmpty: false },
-    { name: 'Resumes', isEmpty: true },
-    { name: 'Prior Proposals', isEmpty: false },
+    {
+      id: 1,
+      name: 'Performance Records',
+      isEmpty: false,
+      lastUpdated: 'Aug 9, 2024',
+      modifiedBy: 'Ross Burmeister',
+    },
+    {
+      id: 2,
+      name: 'Technical',
+      isEmpty: false,
+      lastUpdated: 'Aug 9, 2024',
+      modifiedBy: 'Ross Burmeister',
+    },
+    {
+      id: 3,
+      name: 'Management',
+      isEmpty: true,
+      lastUpdated: 'Jul 15, 2024',
+      modifiedBy: 'Will Elder',
+    },
+    {
+      id: 4,
+      name: 'Awards',
+      isEmpty: false,
+      lastUpdated: 'Aug 9, 2024',
+      modifiedBy: 'Ross Burmeister',
+    },
+    {
+      id: 5,
+      name: 'Graphics',
+      isEmpty: false,
+      lastUpdated: 'Aug 9, 2024',
+      modifiedBy: 'Ross Burmeister',
+    },
+    {
+      id: 6,
+      name: 'Resumes',
+      isEmpty: true,
+      lastUpdated: 'Jul 1, 2024',
+      modifiedBy: 'Ross Burmeister',
+    },
+    {
+      id: 7,
+      name: 'Prior Proposals',
+      isEmpty: false,
+      lastUpdated: 'Aug 9, 2024',
+      modifiedBy: 'Ross Burmeister',
+    },
   ];
+  
 
   useEffect(() => {
-
     if (folderContainerRef.current) {
         const folders = folderContainerRef.current.querySelectorAll('.folder');
         gsap.fromTo(
@@ -45,13 +90,19 @@ const DamPage = () => {
             {
                 opacity: 1,
                 y: 0,
-                stagger: 0.1,
+                stagger: 0.075,
                 ease: 'power1.out',
                 duration: 0.5,
             }
         );
     }
-    
+}, [viewMode]);
+
+useEffect(() => {
+  const savedViewMode = localStorage.getItem('viewMode');
+  if (savedViewMode) {
+    setViewMode(savedViewMode);
+  }
 }, []);
 
   
@@ -60,7 +111,7 @@ const DamPage = () => {
     <section className="container p-4 py-lg-5 px-lg-5">
         <div className="row">
             <div className="col-12">
-              <Breadcrumbs item="Digital Asset Manager" subItem="Collections" />
+              <Breadcrumbs first="Digital Asset Manager" second="Collections" />
             </div>
             <div className="col-12">
               <div className="border-bottom d-flex justify-content-between align-items-center page-info">
@@ -69,10 +120,7 @@ const DamPage = () => {
                     <button className="border-0 bg-transparent" onClick={handleShow} ref={searchRef}>
                       <SearchIcon className="icon" />
                     </button>
-                    <button className="btn btn-primary ms-4 rounded" onClick={handleShow} ref={searchRef}>
-                      <span>Upload Files</span>
-                      <UploadIcon className="ms-2 icon" />
-                    </button>
+                    <FileUploadButton />
                   </div>
 
                   <SearchModal show={showModal} handleClose={handleClose} />
@@ -80,7 +128,7 @@ const DamPage = () => {
             </div>
         </div>
     </section>
-    <section className="container px-4 px-lg-5">
+    <section className="container px-4 px-lg-5 mb-6">
         <div className="row">
             <div className="col-12">
               <div className="d-flex justify-content-between align-items-center pb-3 border-bottom">
@@ -103,11 +151,15 @@ const DamPage = () => {
             </div>
 
             <div className="col-12">
-              <div className={`folder-container tiles d-flex flex-wrap mt-4 ${viewMode}`} ref={folderContainerRef}>
+            {viewMode === 'tiles' ? (
+              <div className={`folder-container d-flex flex-wrap mt-4`} ref={folderContainerRef}>
                 {data.map((folder, index) => (
                   <Folder key={index} folder={folder} viewMode={viewMode} />
                 ))}
               </div>
+              ) : (
+                <CollectionList collections={data} />
+              )}
             </div>
         </div>
     </section>

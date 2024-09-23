@@ -69,7 +69,7 @@ function OverviewPage () {
       <div className="container">
           <div className="row">
               <div className="col-12">
-                <Breadcrumbs item="Dashboard" subItem="Overview" />
+                <Breadcrumbs first="Dashboard" second="Overview" />
               </div>
               <div className="col-12 d-flex justify-content-between align-items-center page-info">
                 <h1 className="fw-bold-600 my-4">

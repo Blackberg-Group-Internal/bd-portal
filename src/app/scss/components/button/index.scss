@@ -35,4 +35,14 @@
     &--login {
         border-radius: 50vw;
     }
+
+    &--white {
+        border: 1px solid $gray-300;
+        background: #fff;
+
+        &:hover {
+            border: 1px solid $gray-300;
+            background: $gray-100; 
+        }
+    }
 }

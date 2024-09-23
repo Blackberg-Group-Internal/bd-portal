@@ -10,6 +10,9 @@
     font-family: $font-family-serif;
 }
 
+.fw-400 {
+    font-weight: 400;
+}
 
 .fw-bold-600 {
     font-weight: 600;
@@ -21,4 +24,8 @@
 
 .fw-bold-900 {
     font-weight: 900;
+}
+
+.pointer {
+    cursor: pointer;
 }
