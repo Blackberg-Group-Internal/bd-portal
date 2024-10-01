@@ -2,3 +2,20 @@
     border: 1px solid #EAECF0;
     box-shadow: 0px 1px 2px 0px rgba(16, 24, 40, 0.05);
 }
+
+.card-opportunity {
+    .card-opportunity-item {
+        .title {
+            max-width: 80%;
+            text-overflow: ellipsis;
+            overflow: hidden;
+            font-size: 12px;
+            line-height: 1;
+        }
+
+        .date {
+            max-width: 20%;
+            line-height: 1;
+        }
+    }
+}

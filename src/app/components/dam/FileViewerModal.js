@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useRef, useEffect } from 'react';
-import FileViewer from 'react-file-viewer'; 
+//import FileViewer from 'react-file-viewer'; 
 import DownloadIcon from '../../../../public/images/icons/download.svg';
 import ShareIcon from '../../../../public/images/icons/share.svg';
 import InfoIcon from '../../../../public/images/icons/info.svg';
@@ -74,11 +74,12 @@ const FileViewerModal = ({ show, handleClose, fileData }) => {
         case 'ppt':
         case 'pptx':
         return (
-             <FileViewer
-              fileType={file.fileType || fileExtension}
-              filePath={file.url}
-              errorComponent={<img src="/default-file-icon.png" alt="unsupported" />}
-          />
+            //  <FileViewer
+            //   fileType={file.fileType || fileExtension}
+            //   filePath={file.url}
+            //   errorComponent={<img src="/default-file-icon.png" alt="unsupported" />}
+          // />
+          <span>x</span>
         );
 
         case 'xls':
