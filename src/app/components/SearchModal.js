@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useContext } from 'react';
 import { Modal, Form } from 'react-bootstrap';
 import { searchEmployeesHygraph } from '../lib/hygraph/employees';
 import gsap from 'gsap';
@@ -9,8 +9,11 @@ import ArrowDownIcon from '../../../public/images/icons/arrow-down.svg';
 import ArrowLeftIcon from '../../../public/images/icons/arrow-left.svg';
 import CornerDownLeftIcon from '../../../public/images/icons/corner-down-left.svg';
 import ShortcutIcon from '../../../public/images/icons/command-shortcut.svg';
+import FilesIcon from '../../../public/images/icons/files.svg';
+import { FileViewerContext } from '@/app/layout';
 
 const SearchModal = ({ show, handleClose }) => {
+  
 
   const usersRef = useRef(null);
   const resumesRef = useRef(null);
@@ -20,8 +23,10 @@ const SearchModal = ({ show, handleClose }) => {
   const [results, setResults] = useState({
     users: [],
     resumes: [],
-    proposals: []
+    proposals: [],
+    tags: []
   });
+  const { openModal } = useContext(FileViewerContext);
 
   const [debouncedSearchInput, setDebouncedSearchInput] = useState('');
 
@@ -43,15 +48,101 @@ const SearchModal = ({ show, handleClose }) => {
         const employees = await searchEmployeesHygraph({ searchString: debouncedSearchInput });
         
         setResults({
-          users: employees || [], 
+          users: employees || [],
           resumes: [],
-          proposals: [], 
+          proposals: [],
         });
       })();
     } else {
       setResults({ users: [], resumes: [], proposals: [] });
     }
   }, [debouncedSearchInput]);
+
+  useEffect(() => {
+    if (debouncedSearchInput.length > 1) {
+
+      (async () => {
+        try {
+
+          const folderId = "01MODA5PFXWOR2ZFXCYBBLWBQ74IADDFIN"; 
+          const response = await fetch('/api/graph/search', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ query: debouncedSearchInput, folder: folderId }), 
+          });
+          
+          const sharepointResults = await response.json();
+          console.log('Sharepoint Results', sharepointResults);
+          
+          setResults((prevResults) => ({
+            ...prevResults,
+            resumes: sharepointResults.data || [],  
+          }));
+        } catch (error) {
+          console.error('Error fetching resumes from SharePoint:', error);
+        }
+      })();
+    } else {
+      setResults((prevResults) => ({ ...prevResults, resumes: [] }));
+    }
+  }, [debouncedSearchInput]);
+
+  useEffect(() => {
+    if (debouncedSearchInput.length > 1) {
+
+      (async () => {
+        try {
+
+          const folderId = "01MODA5PCNTHV5ZA2LJNDKFJQ7K2NB6A4W"; 
+          const response = await fetch('/api/graph/search', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ query: debouncedSearchInput, folder: folderId }), 
+          });
+          
+          const sharepointResults = await response.json();
+          console.log('Sharepoint Results', sharepointResults);
+          
+          setResults((prevResults) => ({
+            ...prevResults,
+            proposals: sharepointResults.data || [],  
+          }));
+        } catch (error) {
+          console.error('Error fetching proposals from SharePoint:', error);
+        }
+      })();
+    } else {
+      setResults((prevResults) => ({ ...prevResults, proposals: [] }));
+    }
+  }, [debouncedSearchInput]);
+  
+  useEffect(() => {
+    if (debouncedSearchInput.length > 1) {
+
+      (async () => {
+        try {
+          const response = await fetch('/api/graph/library/file/tag/search', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ query: debouncedSearchInput }), 
+          });
+          
+          const tagSearchResults = await response.json();
+          console.log('Tag Search Results:', tagSearchResults);
+          
+          setResults((prevResults) => ({
+            ...prevResults,
+            tags: tagSearchResults || [], 
+          }));
+        } catch (error) {
+          console.error('Error fetching tags from search:', error);
+        }
+      })();
+    } else {
+      setResults((prevResults) => ({ ...prevResults, tags: [] }));
+    }
+  }, [debouncedSearchInput]);
+  
 
 useEffect(() => {
     const previousUsers = previousResultsRef.current.users;
@@ -76,6 +167,10 @@ useEffect(() => {
     previousResultsRef.current = { users: currentUsers };
   }, [results.users]);
 
+  const showModal = (file) => {
+    openModal(file);
+  };
+
   return (
     <Modal show={show} onHide={handleClose} size="lg" centered className="search-modal text-figtree">
       <Modal.Body className="p-0">
@@ -95,7 +190,7 @@ useEffect(() => {
         </Form>
 
         <div className="search-results mt-3">
-          {/* Users Section */}
+
           <div className="search-section">
             <div className="p-3 d-flex flex-column">
               <span className="section-title">Users</span>
@@ -115,33 +210,34 @@ useEffect(() => {
             </div>
           </div>
 
-          {/* Resumes Section */}
           <div className="search-section">
             <div className="p-3 d-flex flex-column">
                 <span className="section-title">Resumes</span>
+                {results.resumes && (
                 <div ref={resumesRef}>
                 {results.resumes.length > 0 ? (
                 results.resumes.map((resume, index) => (
-                    <div key={index} className="search-item d-flex align-items-center">
-                    <img src="images/resume-icon.svg" alt="resume" width="20" height="20" className="me-2" />
-                    <span>{resume}</span>
+                    <div key={index} className="search-item d-flex align-items-center pt-2" onClick={() => showModal(resume)}>
+                    <FilesIcon className="me-1"/>
+                    <span>{resume.name}</span>
                     </div>
                 ))
                 ) : (
                 <span className="no-results">No resumes found</span>
                 )}
                 </div>
+                )}
             </div>
           </div>
 
-          {/* Proposals Section */}
           <div className="search-section">
             <div className="p-3 d-flex flex-column">
                 <span className="section-title">Proposals</span>
+                {results.proposals && (
                 <div ref={proposalsRef}>
                 {results.proposals.length > 0 ? (
                 results.proposals.map((proposal, index) => (
-                    <div key={index} className="search-item d-flex flex-column">
+                    <div key={index} className="search-item d-flex flex-column" onClick={() => showModal(proposal)}>
                     <span className="proposal-title">{proposal.name}</span>
                     <small className="proposal-type text-muted">{proposal.type}</small>
                     </div>
@@ -150,6 +246,7 @@ useEffect(() => {
                 <span className="no-results">No proposals found</span>
                 )}
                 </div>
+                 )}
             </div>
           </div>
         </div>

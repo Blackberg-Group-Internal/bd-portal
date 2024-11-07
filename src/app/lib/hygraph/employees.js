@@ -1,6 +1,6 @@
 export async function fetchEmployeeHygraph(firstName, lastName) {
     try {
-      const response = await fetch('/api/hygraph/employees', {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/hygraph/employees`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

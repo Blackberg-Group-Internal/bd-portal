@@ -1,16 +1,34 @@
-.login-container {
-    position: absolute;
-    top: 0;
-    left: 0;
-    z-index: 99999;
-    background: #fff;
-    width: 100%;
-    height: 100vh;
+.login {
 
-    .login-img {
-        background: url("/images/login/login-bg.jpg");
-        background-repeat: no-repeat;
-        background-size: cover;
+    padding-left: 0;
+
+    > div:first-of-type {
+        position:absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        z-index: 99999;
+        height: 100%;
+    }
+
+    .login-container {
+        position: absolute;
+        top: 0;
+        left: 0;
+        z-index: 99999;
+        background: #fff;
+        width: 100%;
+        height: 100vh;
+    
+        .login-img {
+            background: url("/images/login/login-bg.jpg");
+            background-repeat: no-repeat;
+            background-size: cover;
+        }
+    }
+
+    main {
+        height: 100%;
     }
 }
 

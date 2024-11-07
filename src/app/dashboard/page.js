@@ -29,7 +29,7 @@ function DashboardPage () {
                 </div>
               </div>
               <div className="col-12 d-flex justify-content-between align-items-center page-info">
-                  <h1 className="fw-bold-600 my-4">Welcome back, {firstName}</h1>
+                  <h1 className="fw-bold-500 my-4">Welcome back, {firstName}</h1>
                   <div className="search">
                     <button className="border-0 bg-trandsparent" onClick={handleShow}>
                       <SearchIcon className="icon" />
@@ -40,7 +40,6 @@ function DashboardPage () {
 
           <SearchModal show={showModal} handleClose={handleClose} />
 
-          {/* Card placeholders */}
           <div className="row mt-4 mt-lg-7">
             <div className="col-12 col-md-6 col-lg-4">
             <div className="card bg-white p-6 rounded">

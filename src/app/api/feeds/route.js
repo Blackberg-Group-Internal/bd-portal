@@ -3,34 +3,48 @@ import xml2js from 'xml2js';
 
 export async function GET(req) {
   try {
-    // Get 'count' query parameter
     const { searchParams } = new URL(req.url);
     const countParam = searchParams.get('count');
     const count = countParam ? parseInt(countParam, 10) : null;
 
-    // Fetch the RSS feed
-    const rssFeedUrl = 'https://www.rfpmart.com/web-design-and-development-rfp-bids.xml';
-    const { data: rssData } = await axios.get(rssFeedUrl);
+    const rssFeedUrls = [
+      'https://www.rfpmart.com/web-design-and-development-rfp-bids.xml',
+      'https://www.rfpmart.com/social-media-internet-marketing-and-seo-rfp-bids.xml',
+      'https://www.rfpmart.com/marketing-and-branding-rfp-bids.xml',
+      'https://www.rfpmart.com/software-system-and-application-rfp-bids.xml',
+    ];
 
-    // Parse the RSS feed
+    // const rssFeedUrls = [
+    //   'https://www.rfpmart.com/marketing-and-branding-rfp-bids.xml',
+    // ];
+
     const parser = new xml2js.Parser();
-    const result = await parser.parseStringPromise(rssData);
+    let allItems = [];
 
-    // Extract items from the RSS feed
-    let items = result.rss.channel[0].item;
+    for (const url of rssFeedUrls) {
+      try {
+        const { data: rssData } = await axios.get(url);
 
-    // Limit items if 'count' is provided
-    if (count && !isNaN(count)) {
-      items = items.slice(0, count);
+        const sanitizedData = rssData.replace(/&(?!(?:amp|lt|gt|quot|apos);)/g, '&amp;');
+        const result = await parser.parseStringPromise(sanitizedData);
+        const items = result.rss.channel[0].item;
+
+        allItems = [...allItems, ...items];
+      } catch (err) {
+        console.error(`Error processing feed from ${url}:`, err.message);
+      }
     }
 
-    // Return the items as a response
-    return new Response(JSON.stringify(items), {
+    if (count && !isNaN(count)) {
+      allItems = allItems.slice(0, count);
+    }
+
+    return new Response(JSON.stringify(allItems), {
       status: 200,
       headers: { 'Content-Type': 'application/json' },
     });
   } catch (error) {
-    console.error('Error processing RSS feed:', error);
-    return new Response('Error processing RSS feed', { status: 500 });
+    console.error('Error processing RSS feeds:', error);
+    return new Response('Error processing RSS feeds', { status: 500 });
   }
 }

@@ -46,3 +46,15 @@
         }
     }
 }
+
+.btn-chat {
+
+    width: 50px;
+    height: 50px;
+    
+    svg path {
+        filter: invert(1) saturate(0) brightness(2);
+    }
+    
+}
+

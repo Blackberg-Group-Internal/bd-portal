@@ -7,6 +7,7 @@ import SearchModal from '@/app/components/SearchModal';
 import gsap from 'gsap';
 import SearchIcon from '../../public/images/icons/search.svg';
 import Breadcrumbs from './components/Breadcrumbs';
+import axios from 'axios';
 
 function OverviewPage () {
   const { data } = useSession();
@@ -18,7 +19,45 @@ function OverviewPage () {
   const handleShow = () => setShowModal(true);
   const handleClose = () => setShowModal(false);
 
+
   useEffect(() => {
+    console.log('User Data Before:', data);
+
+    const fetchUserData = async () => {
+      const accessToken = data.accessToken;
+      try {
+        const response = await fetch(`/api/graph/user?accessToken=${accessToken}`);
+        const data = await response.json();
+        console.log('User Data After:', data);
+        fetchGroupMemberships(data.userProfile.id);
+      } catch (error) {
+        console.error('Error fetching user data:', error);
+      }
+    };
+    
+    fetchUserData();
+
+    const fetchGroupMemberships = async (id) => {
+      console.log('User: ', id);
+      if (id) { 
+
+        try {
+          const response = await axios.get(`/api/graph/groups?userId=${id}`);
+          console.log('Group memberships:', response.data);
+        } catch (error) {
+          console.error('Error fetching group memberships:', error);
+        }
+      } else {
+        console.error('User ID is not available');
+      }
+    };
+  
+  
+  }, [data]);
+
+  useEffect(() => {
+
+
     if (firstName && nameRef.current) {
 
       const tl = gsap.timeline();
@@ -72,7 +111,7 @@ function OverviewPage () {
                 <Breadcrumbs first="Dashboard" second="Overview" />
               </div>
               <div className="col-12 d-flex justify-content-between align-items-center page-info">
-                <h1 className="fw-bold-600 my-4">
+                <h1 className="fw-bold-500 my-4">
                     Welcome back,{' '}
                     <span ref={nameRef}>
                       {firstName && [...firstName].map((char, index) => (

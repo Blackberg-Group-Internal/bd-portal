@@ -34,4 +34,10 @@
             display: none;
         }
     }
+
+    &.count-0 {
+        .folder_svg__folder-file {
+            display: none;
+        }
+    }
 }

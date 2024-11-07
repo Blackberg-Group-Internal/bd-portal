@@ -5,24 +5,49 @@ import ShareIcon from '../../../../public/images/icons/share.svg';
 import FavoritesIcon from '../../../../public/images/icons/favorites-small.svg';
 import DownloadIcon from '../../../../public/images/icons/download.svg';
 import Link from 'next/link';
+import { useFolder } from '@/app/context/FolderContext'; 
+import { useRouter, usePathname } from 'next/navigation';
 
 const Folder = ({ folder, viewMode }) => {
-
+  const { updateFolderId } = useFolder(); 
   const [showActions, setShowActions] = useState(false);
+  const router = useRouter();
 
   const toggleActions = () => {
     setShowActions((prevState) => !prevState);
   };
+
+  const handleFolderClick = (folder) => {
+    updateFolderId(folder.id); 
+    setTimeout(() => {
+      const url = createDynamicUrl(folder);
+      router.push(url);
+    }, 100); 
+  };
+
+  const createDynamicUrl = (folder) => {
+    let urlPath = folder.name.toLowerCase().replace(/\s+/g, '-');
+    let parent = folder.parentReference;
+
+    while (parent && parent.id !== "01MODA5PF6Y2GOVW7725BZO354PWSELRRZ") {
+      const parentName = parent.name.toLowerCase().replace(/\s+/g, '-');
+      urlPath = `${parentName}/${urlPath}`;
+      parent = parent.parentReference;
+    }
+
+    return `/dam/collections/${urlPath}`;
+  };
+
+
   return (
     <div
-      className={`folder text-figtree text-center p-3 mb-4 col-6 col-sm-4 col-md-3 col-xl-2 d-flex flex-column  align-items-center position-relative ${viewMode} ${folder.isEmpty ? 'folder-empty' : ''}`} 
+      className={`folder tile count-${folder.folder.childCount} text-figtree text-center p-3 mb-4 col-6 col-sm-4 col-md-3 col-xl-2 d-flex flex-column  align-items-center position-relative ${viewMode} ${folder.isEmpty ? 'folder-empty' : ''}`} 
       onMouseLeave={() => setShowActions(false)}
     >
-      <Link 
-      href={`/dam/collections/${folder.name.toLowerCase().replace(/\s+/g, '-')}`} className="folder-icon text-black text-decoration-none">
-        <FolderIcon className="icon--folder" width="48" height="48" />
+      <div onClick={() => handleFolderClick(folder)} className="folder-icon text-black text-decoration-none">
+        <FolderIcon className={`icon--folder`} width="48" height="48" />
         <div className="folder-name mt-3">{folder.name}</div>
-      </Link>
+      </div>
 
       <button 
         className="btn-action border-0 bg-transparent position-absolute top-0 end-0 mt-2" 

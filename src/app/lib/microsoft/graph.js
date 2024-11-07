@@ -23,6 +23,18 @@ export async function getUserProfile(accessToken) {
     }
 }
 
+export async function getRecentFiles(accessToken) {
+    try {
+        const client = await getClient(accessToken);
+        const recentFiles = await client.api('/me/drive/recent').get();
+        console.log('Recent Files: ', recentFiles);
+        return recentFiles.value; 
+    } catch (error) {
+        console.error("Error fetching recent files:", error);
+        throw new Error('Failed to fetch recent files.');
+    }
+}
+
 export async function getUserPhoto(accessToken) {
     try {
         const client = await getClient(accessToken);
@@ -39,3 +51,22 @@ export async function getUserPhoto(accessToken) {
     }
 }
 
+export async function getFileDownloadUrl(accessToken, siteId, driveId, itemId) {
+    try {
+        const client = await getClient(accessToken);
+
+        const fileMetadata = await client
+            .api(`/sites/${siteId}/drives/${driveId}/items/${itemId}`)
+            .select('@microsoft.graph.downloadUrl')
+            .get();
+
+        if (!fileMetadata['@microsoft.graph.downloadUrl']) {
+            throw new Error('No download URL found for this file.');
+        }
+
+        return fileMetadata['@microsoft.graph.downloadUrl'];
+    } catch (error) {
+        console.error("Error fetching download URL for file:", error);
+        throw new Error('Failed to fetch download URL for the file.');
+    }
+}

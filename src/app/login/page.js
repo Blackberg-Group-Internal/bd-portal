@@ -13,10 +13,10 @@ const LoginPage = () => {
             <div className="col-12 col-md-6 text-center d-flex flex-column align-items-center justify-content-center position-relative">
               <div class>
               <img src="images/logos/bg-logo-full.svg" alt="" width="124" height="50" className="mb-4" />
-              <h1 className="fs-4 mb-5">Business Development Portal Test</h1>
+              <h1 className="fs-4 mb-5">Business Development Portal</h1>
                 <button className="btn btn-primary w-100" onClick={() => {
                         signIn( 'azure-ad',
-                        { callbackUrl: '/' },
+                        { callbackUrl: '/dam' },
                         { prompt: 'login' } )}}>
                     Sign in
                   </button>

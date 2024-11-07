@@ -8,12 +8,18 @@ import FavoritesIcon from '../../../../public/images/icons/favorites-small.svg';
 import DownloadIcon from '../../../../public/images/icons/download.svg';
 import gsap from 'gsap';
 import Link from 'next/link';
+import { useFolder } from '@/app/context/FolderContext';
+import { useRouter, usePathname } from 'next/navigation';
+import { format } from 'date-fns'; 
 
 const CollectionList = ({ collections }) => {
+  const router = useRouter();
+  const pathname = usePathname();
   const [selectedItems, setSelectedItems] = useState([]);
   const [selectAll, setSelectAll] = useState(false);
   const [activeActionPanel, setActiveActionPanel] = useState(null);
   const listViewRef = useRef(null); 
+  const { updateFolderId, updateFolderMapping } = useFolder(); 
 
   const handleItemSelect = (id) => {
     setSelectedItems((prevSelectedItems) =>
@@ -21,6 +27,21 @@ const CollectionList = ({ collections }) => {
         ? prevSelectedItems.filter((itemId) => itemId !== id)
         : [...prevSelectedItems, id]
     );
+  };
+
+  const formatModifiedDate = (dateString) => {
+    const date = new Date(dateString);
+    return format(date, 'MMM d, yyyy');
+  };
+
+  const handleFolderClick = (folder) => {
+
+    updateFolderId(folder.id); 
+    updateFolderMapping(folder, folder.id);
+    setTimeout(() => {
+      const url = createDynamicUrl(folder);
+      router.push(url);
+    }, 100); 
   };
 
   const handleSelectAll = () => {
@@ -36,6 +57,20 @@ const CollectionList = ({ collections }) => {
   const toggleActions = (id) => {
     setActiveActionPanel((prevActivePanel) => (prevActivePanel === id ? null : id));
   };
+
+  const createDynamicUrl = (folder) => {
+    let urlPath = folder.name.toLowerCase().replace(/\s+/g, '-');
+    let parent = folder.parentReference;
+
+    while (parent && parent.id !== "01MODA5PF6Y2GOVW7725BZO354PWSELRRZ") {
+      const parentName = parent.name.toLowerCase().replace(/\s+/g, '-');
+      urlPath = `${parentName}/${urlPath}`;
+      parent = parent.parentReference; 
+    }
+
+    return `/dam/collections/${urlPath}`;
+  };
+
 
   useEffect(() => {
     if (listViewRef.current) {
@@ -77,7 +112,7 @@ const CollectionList = ({ collections }) => {
 
       {collections.map((item) => (
         <div
-        className="row align-items-center px-3 py-3 border bg-white position-relative" key={item.id}>
+        className={`row align-items-center px-3 py-3 border bg-white position-relative count-${item.folder.childCount}`} key={item.id}>
           <div className="col-auto pe-0 d-flex align-items-center d-none d-md-flex">
             <input
               type="checkbox"
@@ -86,13 +121,12 @@ const CollectionList = ({ collections }) => {
               className="rounded"
             />
           </div>
-          <Link 
-            href={`/dam/collections/${item.name.toLowerCase().replace(/\s+/g, '-')}`} className="col-10 col-md-7 col-lg-5 d-flex align-items-center text-black text-decoration-none">
+          <div onClick={() => handleFolderClick(item)} className="col-10 col-md-7 col-lg-5 d-flex align-items-center text-black text-decoration-none">
             <FolderIcon className="icon--folder me-1 pe-1" width="40" height="48" />
             <span className="text-nowrap ">{item.name}</span>
-          </Link>
-          <div className="col-4 d-none d-md-flex">{item.lastUpdated}</div>
-          <div className="col-2 d-none d-lg-flex">{item.modifiedBy}</div>
+          </div>
+          <div className="col-4 d-none d-md-flex">{formatModifiedDate(item.lastModifiedDateTime)}</div>
+          <div className="col-2 d-none d-lg-flex">{item.lastModifiedBy.user.displayName}</div>
           
           <div className="col-auto ms-auto position-absolute end-0 me-2">
             <button

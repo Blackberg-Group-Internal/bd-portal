@@ -28,6 +28,7 @@ const Header = () => {
     const [activeSubLink, setActiveSubLink] = useState('/');
     const pathname = usePathname();
 
+    console.log('Session: ', session);
     useEffect(() => {
         if (status === "authenticated" && session?.accessToken) {
             const fetchData = async () => {
@@ -93,7 +94,7 @@ const Header = () => {
         </div>
 
         <ul className="nav nav-pills flex-column mb-5">
-            <li className="nav-item">
+            {/* <li className="nav-item">
                 <Link href="/" className={`nav-link ${activeLink === '/' || activeLink === '/activity' || activeLink === '/submissions' ? 'active' : ''}`} data-bs-toggle="tooltip" data-bs-placement="right" title="Dashboard">
                     <DashboardIcon className="icon" />
                 </Link> 
@@ -102,17 +103,17 @@ const Header = () => {
                 <Link href="/pipeline" className={`nav-link ${activeLink.startsWith('/pipeline') ? 'active' : ''}`} data-bs-toggle="tooltip" data-bs-placement="right" title="Pipeline">
                     <PipelineIcon className="icon" />
                 </Link> 
-            </li>
+            </li> */}
             <li>
                 <Link href="/dam" className={`nav-link ${activeLink.startsWith('/dam') ? 'active' : ''}`} data-bs-toggle="tooltip" data-bs-placement="right" title="Digital Asset Manager">
                     <DamIcon className="icon" />
                 </Link> 
             </li>
-            <li className={`nav-item ${activeLink.startsWith('/org') ? 'active' : ''}`}>
+            {/* <li className={`nav-item ${activeLink.startsWith('/org') ? 'active' : ''}`}>
                 <Link href="/org" className="nav-link" data-bs-toggle="tooltip" data-bs-placement="right" title="Organization">
                     <OrgIcon className="icon" />
                 </Link> 
-            </li>
+            </li> */}
         </ul>
         <div className="highlight"></div>
         <UserMenu photo={userPhoto} />
@@ -130,9 +131,9 @@ const Header = () => {
             {activeLink.startsWith('/org') && (
             <OrgSubMenu />
             )}
-            {/* {activeLink.startsWith('/dev') && (
+            {activeLink.startsWith('/dev') && (
             <DevSubMenu />
-            )} */}
+            )}
         <UserLogout profile={profile} />
         </div>
     </header>

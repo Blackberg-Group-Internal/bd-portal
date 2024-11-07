@@ -14,7 +14,7 @@ const ActivityPage = () => {
                 <Breadcrumbs first="Dashboard" second="Recent Activity" />
               </div>
               <div className="col-12 d-flex justify-content-between align-items-center page-info">
-                <h1 className="fw-bold-600 my-4">Recent Activity</h1>
+                <h1 className="fw-bold-500 my-4">Recent Activity</h1>
               </div>
           </div>
         </div>

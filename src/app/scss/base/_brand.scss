@@ -4,18 +4,6 @@ body {
     color: #0C111D;
     font-family: $font-family-sans-serif;
 
-    &.login {
-        padding-left: 0;
-
-        > div:first-of-type {
-            position:absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            z-index: 99999;
-        }
-    }
-
     @include media-breakpoint-up(lg) {
         padding-left: 362px;
       }

@@ -1,0 +1,26 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Favorite {
+  id        String   @id @default(uuid())
+  userId    String
+  fileId    String
+  createdAt DateTime @default(now())
+
+  @@unique([userId, fileId]) // A user can only favorite a specific file once
+}
+
+model Tag {
+  id        String   @id @default(uuid())
+  fileId    String
+  tag       String
+  createdAt DateTime @default(now())
+
+  @@unique([fileId, tag]) // Ensures a tag is unique for each file
+}

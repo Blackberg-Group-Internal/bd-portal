@@ -36,25 +36,21 @@ const DevSubMenu = () => {
     <div ref={submenuRef}>
         <span className="submenu-title mb-3 d-none d-lg-flex">SamSmart</span>
         <div className="d-flex flex-column submenu-list">
-        <Link href="/dam" className={`d-flex ${pathname === '/dam' ? 'active' : ''}`}>
+        <Link href="/dev" className={`d-flex ${pathname === '/dev' ? 'active' : ''}`}>
             <QualifiedOpportunities />
-            <span className="d-none d-lg-flex ms-2 ps-1">Top Opportunities</span>
+            <span className="d-none d-lg-flex ms-2 ps-1">Dashboard</span>
         </Link>
-        <Link href="/dam/files" className={`d-flex ${pathname === '/dam/files' ? 'active' : ''}`}>
+        <Link href="/dev/analyzer" className={`d-flex ${pathname === '/dev/analyzer' ? 'active' : ''}`}>
             <AnalyzeIcon />
             <span className="d-none d-lg-flex ms-2 ps-1">Analyzer</span>
         </Link>
-        <Link href="/dam" className={`d-flex ${pathname === '/dam' ? 'active' : ''}`}>
+        <Link href="/dev" className={`d-flex ${pathname === '/dev/opportunities' ? 'active' : ''}`}>
             <OpportunitiesIcon />
             <span className="d-none d-lg-flex ms-2 ps-1">Opportunities</span>
         </Link>
-        <Link href="/dam/files" className={`d-flex ${pathname === '/dam/files' ? 'active' : ''}`}>
-            <SummaryIcon />
-            <span className="d-none d-lg-flex ms-2 ps-1">Summarizer</span>
-        </Link>
-        <Link href="/dam/favorites" className={`d-flex ${pathname === '/dam/favorites' ? 'active' : ''}`}>
+        <Link href="/dev/tools" className={`d-flex ${pathname === '/dev/tools' ? 'active' : ''}`}>
             <NaicsIcon />
-            <span className="d-none d-lg-flex ms-2 ps-1">NAICS</span>
+            <span className="d-none d-lg-flex ms-2 ps-1">Tools</span>
         </Link>
         </div>
     </div>

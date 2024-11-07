@@ -1,3 +1,4 @@
+import { fetchEmployeeHygraph } from '@/app/lib/hygraph/employees';
 import NextAuth from 'next-auth';
 import AzureADProvider from 'next-auth/providers/azure-ad';
 
@@ -38,6 +39,20 @@ export const authOptions = {
       session.user = token.user;
       session.accessToken = token.accessToken;
       session.error = token.error;
+
+      try {
+      const firstName = session.user.name.split(' ')[0];
+      const lastName = session.user.name.split(' ')[1];
+
+      const hygraphUser = await fetchEmployeeHygraph(firstName, lastName);
+
+        if (hygraphUser && hygraphUser[0]?.image?.url) {
+          session.user.hygraphImage = hygraphUser[0].image.url; 
+        }
+      } catch (error) {
+        console.error("Error fetching Hygraph user data:", error);
+      }
+
       return session;
     },
   },

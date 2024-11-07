@@ -9,6 +9,9 @@ import { usePathname } from "next/navigation";
 import ProtectedRoute from "@/app/components/layout/ProtectedRoute";
 import FileViewerModal from "@/app/components/dam/FileViewerModal";
 import { createContext, useState } from "react";
+import ChatBot from "./components/Chat";
+import { FolderProvider } from "./context/FolderContext";
+import { ToastProvider } from "./context/ToastContext";
 
 export const FileViewerContext = createContext();
 
@@ -35,9 +38,11 @@ export default function RootLayout({ children }) {
       <head></head>
       <body className={bodyClass}>
         <SessionProvider>
+        <ToastProvider>
+          <FolderProvider>
           <FileViewerContext.Provider value={{ openModal, closeModal }}>
             <Header />
-            <SmoothScrolling>
+          
               <TransitionComponent>
                 <ProtectedRoute>
                   <main aria-label="Main content" className="position-relative">
@@ -45,11 +50,18 @@ export default function RootLayout({ children }) {
                   </main>
                 </ProtectedRoute>
               </TransitionComponent>
-            </SmoothScrolling>
+   
             {show && currentFile && (
               <FileViewerModal show={show} handleClose={closeModal} fileData={currentFile} />
             )}
           </FileViewerContext.Provider>
+          {pathname.includes("/dev") && (
+              <div className="position-fixed end-0 bottom-0 me-6">
+                <ChatBot />
+              </div>
+            )}
+            </FolderProvider>
+            </ToastProvider>
         </SessionProvider>
       </body>
     </html>
