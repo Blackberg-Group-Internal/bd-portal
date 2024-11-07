@@ -1,4 +1,4 @@
-import { getFileDownloadUrl } from '@/app/lib/microsoft/graphHelper';
+import { getFileDownloadUrl } from '@/app/lib/microsoft/graph';
 
 export async function GET(request) {
   const { searchParams } = new URL(request.url);
