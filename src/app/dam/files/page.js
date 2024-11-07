@@ -14,51 +14,73 @@ import Loader from '@/app/components/Loader';
 import AddFolderButton from '@/app/components/dam/AddFolderButton';
 import FileTiles from '@/app/components/dam/FileTiles';
 import axios from 'axios';
-import { getRecentFiles } from '@/app/lib/microsoft/graph';
 import { useSession } from 'next-auth/react';
-import { getDocumentLibraryAllFiles } from '@/app/lib/microsoft/graphHelper';
 
 const FileListPage = () => {
   const [viewMode, setViewMode] = useState('tiles');
   const folderContainerRef = useRef(null);
-  const searchRef = useRef(null);
   const [showModal, setShowModal] = useState(false);
   const handleClose = () => setShowModal(false);
   const handleShow = () => setShowModal(true);
   const [loading, setLoading] = useState(false);
-  const [filesData, setFilesData] = useState(null);
+  const [filesData, setFilesData] = useState([]);
+  const { data: session, status } = useSession();
 
   const toggleView = (mode) => {
     setViewMode(mode);
     localStorage.setItem('viewMode', mode);
   };
 
-
-  const { data: session, status } = useSession();
-
   useEffect(() => {
+    // Load files from localStorage for initial render
+    const storedFilesData = JSON.parse(localStorage.getItem('allFiles'));
 
+    if (storedFilesData) {
+      setFilesData(storedFilesData);
+    }
+
+    // Fetch files from the API in the background
     const fetchFiles = async () => {
-
-
-      setLoading(true);
+     // setLoading(true);
       try {
         const response = await axios.get('/api/graph/library/files');
         if (response.status === 200) {
-          const data = response.data;
-          console.log('All Files Data: ', data);
-          setFilesData(data);
-        } else {
+          const newFilesData = response.data;
+          console.log('All Files Data: ', newFilesData);
+
+          // Compare new data with the existing files and merge changes
+          const updatedFilesData = mergeFilesData(filesData, newFilesData);
+          setFilesData(updatedFilesData);
+
+          // Store updated data in localStorage
+          localStorage.setItem('allFiles', JSON.stringify(updatedFilesData));
         }
       } catch (error) {
         console.error('Error fetching files:', error);
       } finally {
-        setLoading(false);
+      //  setLoading(false);
       }
     };
 
     fetchFiles();
   }, []);
+
+  // Merge new files with the current state, ensuring no full re-render
+  const mergeFilesData = (currentFiles, newFiles) => {
+    const currentFilesMap = new Map(currentFiles.map((file) => [file.id, file]));
+
+    newFiles.forEach((newFile) => {
+      if (currentFilesMap.has(newFile.id)) {
+        // Update existing file data if necessary
+        currentFilesMap.set(newFile.id, { ...currentFilesMap.get(newFile.id), ...newFile });
+      } else {
+        // Add new file
+        currentFilesMap.set(newFile.id, newFile);
+      }
+    });
+
+    return Array.from(currentFilesMap.values());
+  };
 
   useEffect(() => {
     if (folderContainerRef.current) {
@@ -85,8 +107,8 @@ const FileListPage = () => {
   }, []);
 
   return (
-<>
-<section className="container p-4 py-lg-5 px-lg-5">
+    <>
+      <section className="container p-4 py-lg-5 px-lg-5">
         <div className="row">
           <div className="col-12">
             <Breadcrumbs first="Digital Asset Manager" second="Files" />
@@ -110,11 +132,21 @@ const FileListPage = () => {
             <div className="d-flex justify-content-between align-items-center pb-3 border-bottom">
               <h2 className="h5 fw-bold-600">Files</h2>
               <div className="view-toggle d-flex">
-                <button className={`btn btn--layout btn-text bg-white d-flex align-items-center ${viewMode === 'list' ? 'active' : ''}`} onClick={() => toggleView('list')}>
+                <button
+                  className={`btn btn--layout btn-text bg-white d-flex align-items-center ${
+                    viewMode === 'list' ? 'active' : ''
+                  }`}
+                  onClick={() => toggleView('list')}
+                >
                   <ListIcon className="me-2 icon" />
                   <span>List</span>
                 </button>
-                <button className={`btn btn--layout btn-text bg-white d-flex align-items-center ${viewMode === 'tiles' ? 'active' : ''}`} onClick={() => toggleView('tiles')}>
+                <button
+                  className={`btn btn--layout btn-text bg-white d-flex align-items-center ${
+                    viewMode === 'tiles' ? 'active' : ''
+                  }`}
+                  onClick={() => toggleView('tiles')}
+                >
                   <TilesIcon className="me-2 icon" />
                   <span>Tiles</span>
                 </button>

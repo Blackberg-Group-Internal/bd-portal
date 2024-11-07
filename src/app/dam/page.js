@@ -13,7 +13,7 @@ import SearchIcon from '../../../public/images/icons/search.svg';
 import ListIcon from '../../../public/images/icons/list.svg';
 import TilesIcon from '../../../public/images/icons/tiles.svg';
 import AddFolderButton from '../components/dam/AddFolderButton';
-
+import { useSession } from 'next-auth/react';
 
 const DamPage = () => {
   const [viewMode, setViewMode] = useState('tiles');
@@ -21,6 +21,7 @@ const DamPage = () => {
   const [loading, setLoading] = useState(true);
   const folderContainerRef = useRef(null);
   const [showModal, setShowModal] = useState(false);
+  const { data: session, status } = useSession();
 
   const handleShow = () => setShowModal(true);
   const handleClose = () => setShowModal(false);
@@ -76,6 +77,86 @@ const DamPage = () => {
       { opacity: 1, y: 0, stagger: 0.075, ease: 'power1.out', duration: 0.2 }
     );
   };
+
+  useEffect(() => {
+
+    const getAllDamFiles = async () => {
+
+
+     // setLoading(true);
+      try {
+        const response = await axios.get('/api/graph/library/files');
+        if (response.status === 200) {
+          const data = response.data;
+          console.log('All Files Data: ', data);
+          localStorage.setItem("allFiles", JSON.stringify(data));
+
+          //setFilesData(data);
+        } else {
+        }
+      } catch (error) {
+        console.error('Error fetching files:', error);
+      } finally {
+        //setLoading(false);
+      }
+    };
+
+    getAllDamFiles();
+  }, []);
+
+  useEffect(() => {
+    const handleGetFavorites = async () => {
+      try {
+        if (!session || !session.user?.id) {
+          return;
+        }
+
+       // setLoading(true);
+        const userId = session.user.id; 
+
+        const response = await axios.get(`/api/graph/library/file/favorite?userId=${userId}`);
+        
+        if (response.status === 200) {
+          const favoriteFiles = response.data;
+
+          if (!favoriteFiles || favoriteFiles.length === 0) {
+            console.log('No favorites found');
+           // setFilesData([]);
+           // setLoading(false);
+            return;
+          }
+
+          const fileDataPromises = favoriteFiles.map(async (favorite) => {
+            try {
+              const graphResponse = await axios.get(`/api/graph/library/file?fileId=${favorite.fileId}`);
+              return graphResponse.data;
+            } catch (error) {
+              console.error(`Error fetching file data for file ID ${favorite.fileId}:`, error);
+              return null; 
+            }
+          });
+
+          const filesData = await Promise.all(fileDataPromises);
+
+          const validFilesData = filesData.filter(file => file !== null);
+
+          console.log('Favorites files data:', validFilesData);
+         // setFilesData(validFilesData);
+         localStorage.setItem('userFavorites', JSON.stringify(validFilesData));
+        } else {
+          throw new Error('Failed to fetch favorites');
+        }
+      } catch (error) {
+        console.error('Error fetching favorites:', error);
+      } finally {
+       // setLoading(false);
+      }
+    };
+
+    //if (!filesData) {
+      handleGetFavorites();
+   // }
+  }, []);
 
   return (
     <>

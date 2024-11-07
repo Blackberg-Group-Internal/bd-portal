@@ -14,7 +14,7 @@ import axios from 'axios';
 import { Document, Page } from 'react-pdf';
 import { fieldNameFromStoreName } from '@apollo/client/cache';
 import { format } from 'date-fns'; 
-
+import Loader from '@/app/components/Loader';
 
 
 const FileViewerModal = ({ show, handleClose, fileData }) => {
@@ -191,6 +191,7 @@ const FileViewerModal = ({ show, handleClose, fileData }) => {
       case 'png':
       case 'gif':
       case 'webp':
+      case 'svg':
 
         return (
           <div class="d-flex align-items-center justify-content-center col-12 col-lg-8 mx-auto">
@@ -218,10 +219,10 @@ const FileViewerModal = ({ show, handleClose, fileData }) => {
             >
             </object>
           ) : (
-            <p>Loading file...</p>
+            <Loader />
           );
 
-      case 'txtx':
+      case 'txt':
         return (
           <iframe
             src={file.url}
@@ -229,7 +230,7 @@ const FileViewerModal = ({ show, handleClose, fileData }) => {
             frameBorder="0"
           />
         );
-  
+        
       default:
         return (
           <div className="d-flex flex-column align-items-center justify-content-center py-6 my-6 h-100">

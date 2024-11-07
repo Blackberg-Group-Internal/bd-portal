@@ -9,43 +9,47 @@ import ListIcon from '../../../../public/images/icons/list.svg';
 import CollectionEmptyIcon from '../../../../public/images/icons/collection-empty.svg';
 import TilesIcon from '../../../../public/images/icons/tiles.svg';
 import SearchModal from '@/app/components/SearchModal';
-import FileUploadButton from '@/app/components/dam/FileUploadButton';
-import FileList from '@/app/components/dam/FileList';
 import gsap from 'gsap';
 import Loader from '@/app/components/Loader';
-import AddFolderButton from '@/app/components/dam/AddFolderButton';
+import FileList from '@/app/components/dam/FileList';
 import FileTiles from '@/app/components/dam/FileTiles';
 
 const FavoritesPage = () => {
   const searchRef = useRef(null);
   const [showModal, setShowModal] = useState(false);
-  const handleClose = () => setShowModal(false);
   const [loading, setLoading] = useState(false);
   const { data: session, status } = useSession();
   const [viewMode, setViewMode] = useState('tiles');
   const folderContainerRef = useRef(null);
   const [filesData, setFilesData] = useState(null);
+  const handleClose = () => setShowModal(false);
   const handleShow = () => setShowModal(true);
 
   useEffect(() => {
+    const savedFavoritesData = JSON.parse(localStorage.getItem('userFavorites'));
+
+    if (savedFavoritesData) {
+      setFilesData(savedFavoritesData);
+    }
+
     const handleGetFavorites = async () => {
       try {
         if (!session || !session.user?.id) {
           return;
         }
 
-        setLoading(true);
-        const userId = session.user.id; 
+       // setLoading(true);
+        const userId = session.user.id;
 
         const response = await axios.get(`/api/graph/library/file/favorite?userId=${userId}`);
-        
+
         if (response.status === 200) {
           const favoriteFiles = response.data;
 
           if (!favoriteFiles || favoriteFiles.length === 0) {
             console.log('No favorites found');
-            setFilesData([]);
-            setLoading(false);
+           // setFilesData([]);
+          //  setLoading(false);
             return;
           }
 
@@ -55,29 +59,32 @@ const FavoritesPage = () => {
               return graphResponse.data;
             } catch (error) {
               console.error(`Error fetching file data for file ID ${favorite.fileId}:`, error);
-              return null; 
+              return null;
             }
           });
 
           const filesData = await Promise.all(fileDataPromises);
-
           const validFilesData = filesData.filter(file => file !== null);
 
+          // Only update if data has changed
+          const previousData = JSON.parse(localStorage.getItem('userFavorites'));
+          if (JSON.stringify(previousData) !== JSON.stringify(validFilesData)) {
+            setFilesData(validFilesData);
+            localStorage.setItem('userFavorites', JSON.stringify(validFilesData));
+          }
+
           console.log('Favorites files data:', validFilesData);
-          setFilesData(validFilesData);
         } else {
           throw new Error('Failed to fetch favorites');
         }
       } catch (error) {
         console.error('Error fetching favorites:', error);
       } finally {
-        setLoading(false);
+       // setLoading(false);
       }
     };
 
-    if (!filesData) {
-      handleGetFavorites();
-    }
+    handleGetFavorites();
   }, [session, status]);
 
   const toggleView = (mode) => {
