@@ -121,7 +121,7 @@ const CollectionList = ({ collections }) => {
               className="rounded"
             />
           </div>
-          <div onClick={() => handleFolderClick(item)} className="col-10 col-md-7 col-lg-5 d-flex align-items-center text-black text-decoration-none">
+          <div onClick={() => handleFolderClick(item)} className="col-10 col-md-7 col-lg-5 d-flex align-items-center text-black text-decoration-none pointer">
             <FolderIcon className="icon--folder me-1 pe-1" width="40" height="48" />
             <span className="text-nowrap ">{item.name}</span>
           </div>
