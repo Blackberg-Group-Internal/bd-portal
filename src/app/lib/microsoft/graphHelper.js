@@ -345,3 +345,40 @@ export const getDocumentLibraryAllFiles = async (folderPath = 'root') => {
     throw new Error('Failed to retrieve document library contents');
   }
 };
+
+export async function getUserGroups(userId) {
+  try {
+    const accessToken = await getAccessToken();
+
+    const response = await axios.get(
+      `https://graph.microsoft.com/v1.0/users/${userId}/memberOf`,
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      }
+    );
+
+    return response.data.value;
+  } catch (error) {
+    console.error('Error fetching user groups:', error);
+    throw new Error('Failed to get user groups');
+  }
+}
+
+export async function getGroupOwners(groupId) {
+  const accessToken = await getAccessToken();
+  const groupOwnersUrl = `https://graph.microsoft.com/v1.0/groups/${groupId}/owners`;
+
+  try {
+    const response = await axios.get(groupOwnersUrl, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
+    return response.data.value; // Array of owners
+  } catch (error) {
+    console.error('Error fetching group owners:', error);
+    throw new Error('Failed to fetch group owners');
+  }
+}

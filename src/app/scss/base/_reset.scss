@@ -42,6 +42,10 @@
     }
   }
 
+  main {
+    min-height: 100vh;
+  }
+
   .toast-container {
     z-index: 999999;
   }

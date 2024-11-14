@@ -105,8 +105,8 @@ const CollectionList = ({ collections }) => {
             className="rounded"
           />
         </div>
-        <div className="col-10 col-md-7 col-lg-5 small">Name</div>
-        <div className="col-2 d-none d-md-flex small">Last updated</div>
+        <div className="col-9 col-md-7 col-lg-5 small">Name</div>
+        <div className="col-3 col-lg-2 d-none d-md-flex small">Last updated</div>
         <div className="col-4 d-none d-lg-flex small">Modified by</div>
       </div>
 
@@ -125,7 +125,7 @@ const CollectionList = ({ collections }) => {
             <FolderIcon className="icon--folder me-1 pe-1" width="40" height="48" />
             <span className="text-nowrap ">{item.name}</span>
           </div>
-          <div className="col-2 d-none d-md-flex">{formatModifiedDate(item.lastModifiedDateTime)}</div>
+          <div className="col-3 col-lg-2 d-none d-md-flex">{formatModifiedDate(item.lastModifiedDateTime)}</div>
           <div className="col-4 d-none d-lg-flex">{item.lastModifiedBy.user.displayName}</div>
           
           <div className="col-auto ms-auto position-absolute end-0 me-2">

@@ -217,8 +217,8 @@ const FileList = ({ files, preview }) => {
             className="rounded"
           />
         </div>
-        <div className="col-10 col-md-7 col-lg-5 small">Name</div>
-        <div className="col-2 d-none d-md-flex small">Last Updated</div>
+        <div className="col-9 col-md-7 col-lg-5 small">Name</div>
+        <div className="col-3 col-lg-2 d-none d-md-flex small">Last Updated</div>
         <div className="col-4 d-none d-lg-flex small">Modified By</div>
       </div>
 
@@ -237,14 +237,14 @@ const FileList = ({ files, preview }) => {
             />
           </div>
           <div
-            className={`col-10 col-md-7 col-lg-5 d-flex align-items-center pointer count-${item.folder?.childCount}`}
+            className={`col-9 col-md-7 col-lg-5 d-flex align-items-center pointer count-${item.folder?.childCount}`}
           >
             <div onClick={() => handleFolderClick(item)}  className="folder-icon text-black text-decoration-none d-flex">
           <FolderIcon className={`icon--folder`} width="48" height="48" />
           <div className="folder-name mt-3 ms-2">{item.name}</div>
         </div>
           </div>
-          <div className="col-2 d-none d-md-flex">{formatModifiedDate(item.lastModifiedDateTime)}</div>
+          <div className="col-3 col-lg-2 d-none d-md-flex">{formatModifiedDate(item.lastModifiedDateTime)}</div>
           <div className="col-4 d-none d-lg-flex">{item.lastModifiedBy.user.displayName}</div>
 
           <div className="col-auto ms-auto position-absolute end-0 me-2">
@@ -287,13 +287,13 @@ const FileList = ({ files, preview }) => {
             />
           </div>
           <div
-            className="col-10 col-md-7 col-lg-5 d-flex align-items-center pointer"
+            className="col-9 col-md-7 col-lg-5 d-flex align-items-center pointer"
             onClick={() => showModal(item)}
           >
             {renderFilePreview(item)}
             <span className="text-nowrap ms-2 d-flex w-75 overflow-hidden">{item.name}</span>
           </div>
-          <div className="col-2 d-none d-md-flex">{formatModifiedDate(item.lastModifiedDateTime)}</div>
+          <div className="col-3 col-lg-2 d-none d-md-flex">{formatModifiedDate(item.lastModifiedDateTime)}</div>
           <div className="col-4 d-none d-lg-flex">{item.lastModifiedBy.user.displayName}</div>
 
           <div className="col-auto ms-auto position-absolute end-0 me-2">
