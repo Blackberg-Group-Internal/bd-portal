@@ -22,6 +22,7 @@ import { useRouter, usePathname } from 'next/navigation';
 import axios from 'axios';
 import { useSession } from 'next-auth/react';
 import { useToast } from '@/app/context/ToastContext';
+import Image from 'next/image';
 
 const FileList = ({ files, preview }) => {
   const [selectedItems, setSelectedItems] = useState([]);
@@ -109,6 +110,7 @@ const FileList = ({ files, preview }) => {
                   src={file.webUrl}
                   alt={file.name}
                   className="img-fluid"
+                    loading="lazy"
                 />
                 </div>
             );

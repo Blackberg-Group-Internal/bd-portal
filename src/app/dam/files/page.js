@@ -32,14 +32,12 @@ const FileListPage = () => {
   };
 
   useEffect(() => {
-    // Load files from localStorage for initial render
     const storedFilesData = JSON.parse(localStorage.getItem('allFiles'));
 
     if (storedFilesData) {
       setFilesData(storedFilesData);
     }
 
-    // Fetch files from the API in the background
     const fetchFiles = async () => {
      // setLoading(true);
       try {
@@ -48,11 +46,9 @@ const FileListPage = () => {
           const newFilesData = response.data;
           console.log('All Files Data: ', newFilesData);
 
-          // Compare new data with the existing files and merge changes
           const updatedFilesData = mergeFilesData(filesData, newFilesData);
           setFilesData(updatedFilesData);
 
-          // Store updated data in localStorage
           localStorage.setItem('allFiles', JSON.stringify(updatedFilesData));
         }
       } catch (error) {
@@ -65,16 +61,13 @@ const FileListPage = () => {
     fetchFiles();
   }, []);
 
-  // Merge new files with the current state, ensuring no full re-render
   const mergeFilesData = (currentFiles, newFiles) => {
     const currentFilesMap = new Map(currentFiles.map((file) => [file.id, file]));
 
     newFiles.forEach((newFile) => {
       if (currentFilesMap.has(newFile.id)) {
-        // Update existing file data if necessary
         currentFilesMap.set(newFile.id, { ...currentFilesMap.get(newFile.id), ...newFile });
       } else {
-        // Add new file
         currentFilesMap.set(newFile.id, newFile);
       }
     });

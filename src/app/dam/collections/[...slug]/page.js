@@ -72,15 +72,12 @@ const CollectionDetailPage = ({ params }) => {
           console.log('Folder contents', data.value);
 
           setCollectionData((prevData) => {
-            // Create a map of existing items for quick lookup by ID
             const existingItemsMap = new Map(prevData.map(item => [item.id, item]));
 
-            // Merge the new data, preserving the order from the API response
             const updatedData = data.value.map(item => {
-              return existingItemsMap.get(item.id) || item; // Keep existing items or add new ones
+              return existingItemsMap.get(item.id) || item;
             });
 
-            // Animate the new items that were not in the previous data
             const newItems = updatedData.filter(item => !existingItemsMap.has(item.id));
             if (newItems.length > 0) {
               animateNewItems(newItems);
@@ -104,7 +101,7 @@ const CollectionDetailPage = ({ params }) => {
       newItems.forEach((newItem) => {
         const newFolderElement = document.createElement('div');
         newFolderElement.className = 'folder';
-        newFolderElement.innerHTML = `<strong>${newItem.name}</strong>`; // Placeholder content
+        newFolderElement.innerHTML = `<strong>${newItem.name}</strong>`; 
 
         folderContainerRef.current.appendChild(newFolderElement);
 

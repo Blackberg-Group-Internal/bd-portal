@@ -376,7 +376,7 @@ export async function getGroupOwners(groupId) {
         Authorization: `Bearer ${accessToken}`,
       },
     });
-    return response.data.value; // Array of owners
+    return response.data.value;
   } catch (error) {
     console.error('Error fetching group owners:', error);
     throw new Error('Failed to fetch group owners');

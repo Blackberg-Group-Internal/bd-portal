@@ -40,6 +40,7 @@ export const authOptions = {
       session.accessToken = token.accessToken;
       session.error = token.error;
 
+
       try {
       const firstName = session.user.name.split(' ')[0];
       const lastName = session.user.name.split(' ')[1];

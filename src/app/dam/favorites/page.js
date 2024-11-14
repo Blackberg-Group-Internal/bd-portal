@@ -66,7 +66,6 @@ const FavoritesPage = () => {
           const filesData = await Promise.all(fileDataPromises);
           const validFilesData = filesData.filter(file => file !== null);
 
-          // Only update if data has changed
           const previousData = JSON.parse(localStorage.getItem('userFavorites'));
           if (JSON.stringify(previousData) !== JSON.stringify(validFilesData)) {
             setFilesData(validFilesData);
