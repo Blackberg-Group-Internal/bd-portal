@@ -1,7 +1,6 @@
 'use client';
 
 import React, { useState, useEffect, useRef } from 'react';
-import { useRouter } from 'next/router';
 import Breadcrumbs from '@/app/components/Breadcrumbs';
 import SearchIcon from '../../../../../public/images/icons/search.svg';
 import ListIcon from '../../../../../public/images/icons/list.svg';
@@ -24,12 +23,11 @@ const CollectionDetailPage = ({ params }) => {
 
   const [viewMode, setViewMode] = useState('tiles');
   const folderContainerRef = useRef(null);
-  const searchRef = useRef(null);
   const [previousSlug, setPreviousSlug] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const handleClose = () => setShowModal(false);
-  const [loading, setLoading] = useState(false); 
-  const [collectionData, setCollectionData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [collectionData, setCollectionData] = useState([]);
   const handleShow = () => setShowModal(true);
 
   const toggleView = (mode) => {
@@ -56,7 +54,6 @@ const CollectionDetailPage = ({ params }) => {
 
   useEffect(() => {
     if (folderId && folderId !== previousFolderId && !isVanityOrId(folderId)) {
-      setLoading(true);
       fetchFolderContents(folderId);
     }
   }, [folderId]);
@@ -71,22 +68,57 @@ const CollectionDetailPage = ({ params }) => {
       const data = await response.json();
 
       if (response.ok) {
-        setLoading(false);
         if (data?.value && data.value.length > 0) {
-          console.log('Folder contents', data.value)
-          setCollectionData(data.value);
-        } else {
-          setCollectionData([]);
+          console.log('Folder contents', data.value);
+
+          setCollectionData((prevData) => {
+            // Create a map of existing items for quick lookup by ID
+            const existingItemsMap = new Map(prevData.map(item => [item.id, item]));
+
+            // Merge the new data, preserving the order from the API response
+            const updatedData = data.value.map(item => {
+              return existingItemsMap.get(item.id) || item; // Keep existing items or add new ones
+            });
+
+            // Animate the new items that were not in the previous data
+            const newItems = updatedData.filter(item => !existingItemsMap.has(item.id));
+            if (newItems.length > 0) {
+              animateNewItems(newItems);
+            }
+
+            return updatedData;
+          });
         }
       } else {
         console.error('Error fetching folder contents:', data.error);
-        setLoading(false);
-        setCollectionData([]);
       }
     } catch (error) {
       console.error('Error fetching folder contents:', error);
+    } finally {
       setLoading(false);
-      setCollectionData([]);
+    }
+  };
+
+  const animateNewItems = (newItems) => {
+    if (folderContainerRef.current) {
+      newItems.forEach((newItem) => {
+        const newFolderElement = document.createElement('div');
+        newFolderElement.className = 'folder';
+        newFolderElement.innerHTML = `<strong>${newItem.name}</strong>`; // Placeholder content
+
+        folderContainerRef.current.appendChild(newFolderElement);
+
+        gsap.fromTo(
+          newFolderElement,
+          { opacity: 0, y: 20 },
+          {
+            opacity: 1,
+            y: 0,
+            ease: 'power1.out',
+            duration: 0.5,
+          }
+        );
+      });
     }
   };
 
@@ -105,7 +137,7 @@ const CollectionDetailPage = ({ params }) => {
         }
       );
     }
-  }, [viewMode, collectionData]);
+  }, [viewMode]);
 
   useEffect(() => {
     const savedViewMode = localStorage.getItem('viewMode');
@@ -113,6 +145,10 @@ const CollectionDetailPage = ({ params }) => {
       setViewMode(savedViewMode);
     }
   }, []);
+
+  const handleFolderAdded = () => {
+    fetchFolderContents(folderId);
+  };
 
   return (
     <>
@@ -128,8 +164,8 @@ const CollectionDetailPage = ({ params }) => {
                 <button className="border-0 bg-transparent" onClick={handleShow}>
                   <SearchIcon className="icon" />
                 </button>
-                <AddFolderButton />
-                <FileUploadButton />
+                <AddFolderButton onFolderAdded={handleFolderAdded} />
+                <FileUploadButton onFilesUploaded={handleFolderAdded}  />
               </div>
               <SearchModal show={showModal} handleClose={handleClose} />
             </div>
@@ -154,12 +190,14 @@ const CollectionDetailPage = ({ params }) => {
               </div>
             </div>
           </div>
-          {loading ? (
-            <Loader />
-          ) : collectionData && collectionData.length > 0 ? (
+            {loading ? (
+              <Loader />
+            ) : collectionData && collectionData.length > 0 ? (
             <div className="col-12">
               {viewMode === 'tiles' ? (
-                <FileTiles files={collectionData} preview={true} />
+                <div className="folder-container d-flex flex-wrap mt-4" ref={folderContainerRef}>
+                  <FileTiles files={collectionData} preview={true} />
+                </div>
               ) : (
                 <FileList files={collectionData} preview={true} />
               )}

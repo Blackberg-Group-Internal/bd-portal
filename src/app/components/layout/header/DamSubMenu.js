@@ -34,7 +34,7 @@ const DamSubMenu = () => {
     <div ref={submenuRef}>
         <span className="submenu-title mb-3 d-none d-lg-flex">Digital Asset Manager</span>
         <div className="d-flex flex-column submenu-list">
-        <Link href="/dam" className={`d-flex ${pathname === '/dam' ? 'active' : ''}`}>
+        <Link href="/dam" className={`d-flex ${pathname === '/dam' || pathname.includes('/dam/collections') ? 'active' : ''}`}>
             <CollectionsIcon />
             <span className="d-none d-lg-flex ms-2 ps-1">Collections</span>
         </Link>

@@ -1,10 +1,9 @@
 import React, { useState } from 'react';
 import AddFolderModal from '../../components/dam/AddFolder'; 
-import FilesIcon from '../../../../public/images/icons/files.svg';
 import CollectionsIcon from '../../../../public/images/icons/collections.svg';
-import { FolderProvider, useFolder } from '@/app/context/FolderContext';
+import { useFolder } from '@/app/context/FolderContext';
 
-const AddFolderButton = () => {
+const AddFolderButton = ({ onFolderAdded }) => {
   const [showModal, setShowModal] = useState(false);
   const { folderId } = useFolder();
   const handleShow = () => setShowModal(true);
@@ -14,9 +13,14 @@ const AddFolderButton = () => {
     <>
       <button className="btn btn--white text-dark ms-4 rounded" onClick={handleShow}>
         <span>Add Folder</span>
-        <CollectionsIcon className="ms-2 icon icon" />
+        <CollectionsIcon className="ms-2 icon" />
       </button>
-      <AddFolderModal show={showModal} handleClose={handleClose} parentFolderId={folderId}  />
+      <AddFolderModal
+        show={showModal}
+        handleClose={handleClose}
+        parentFolderId={folderId}
+        onFolderAdded={onFolderAdded}
+      />
     </>
   );
 };

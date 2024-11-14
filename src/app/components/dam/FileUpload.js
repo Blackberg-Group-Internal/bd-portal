@@ -6,7 +6,7 @@ import axios from 'axios';
 import { useToast } from '@/app/context/ToastContext';
 import { usePathname } from "next/navigation";
 
-const FileUpload = ({ show, handleClose }) => {
+const FileUpload = ({ show, handleClose, onFilesUploaded }) => {
   const [files, setFiles] = useState([]);
   const [uploading, setUploading] = useState(false);
   const [progress, setProgress] = useState({});
@@ -85,12 +85,15 @@ const FileUpload = ({ show, handleClose }) => {
         global: 100, 
       }));
       setUploading(false);
-      setTimeout(()=> {
+      if (onFilesUploaded) {
+        onFilesUploaded();
+      }
+      //setTimeout(()=> {
         handleClose();
-      }, 1500);
-      setTimeout(()=> {
+      //}, 1500);
+      //setTimeout(()=> {
       addToast('Your file(s) were uploaded.', 'success');
-    }, 2000);
+    //}, 2000);
 
       console.log('Upload success', data);
     } catch (error) {

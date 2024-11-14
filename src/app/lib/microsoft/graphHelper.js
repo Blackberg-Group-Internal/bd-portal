@@ -111,32 +111,66 @@ export const getDocumentLibraryContents = async (libraryId) => {
     }
   }
 
-
+  
   export async function uploadFileToSharePoint(folderPath, files, filesBuffer) {
     const siteId = "871f4fc4-277d-44b7-8776-759d5c51c429";
     const driveId = "b!xE8fh30nt0SHdnWdXFHEKTzU3LKnVJJAsgMV8Ij6KKRtXG_wHCViQoQJbMU201re";
-    console.log('Helper Folder Path: ' + folderPath);
     try {
       const accessToken = await getAccessToken();
-      const uploadPromises = files.map((file, index) => {
-        const fileContent = filesBuffer[index]; 
   
-
-        const uploadUrl = `https://graph.microsoft.com/v1.0/sites/${siteId}/drives/${driveId}/items/${folderPath}:/${file.name}:/content
-`
-        console.log('Upload URL: ' + uploadUrl);
+      const uploadPromises = files.map(async (file, index) => {
+        const fileContent = filesBuffer[index];
   
-        return axios.put(uploadUrl, fileContent, {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-            'Content-Type': file.type,
-            'Content-Length': file.size,
-          },
-        });
+        // If the file is less than 4MB, we use a simple upload (PUT request)
+        if (file.size <= 4 * 1024 * 1024) {
+          const uploadUrl = `https://graph.microsoft.com/v1.0/sites/${siteId}/drives/${driveId}/items/${folderPath}:/${file.name}:/content`;
+          return axios.put(uploadUrl, fileContent, {
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+              'Content-Type': file.type,
+              'Content-Length': file.size,
+            },
+          });
+        } else {
+          // For larger files, create an upload session
+          const createUploadSessionUrl = `https://graph.microsoft.com/v1.0/sites/${siteId}/drives/${driveId}/items/${folderPath}:/${file.name}:/createUploadSession`;
+          
+          const uploadSessionResponse = await axios.post(createUploadSessionUrl, {}, {
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+              'Content-Type': 'application/json',
+            },
+          });
+  
+          const uploadUrl = uploadSessionResponse.data.uploadUrl;
+  
+          // Upload the file in chunks
+          const chunkSize = 5 * 1024 * 1024; // 5MB chunks
+          let start = 0;
+          let end = Math.min(chunkSize, file.size) - 1;
+  
+          while (start < file.size) {
+            const chunk = fileContent.slice(start, end + 1);
+            const contentLength = end - start + 1;
+  
+            await axios.put(uploadUrl, chunk, {
+              headers: {
+                Authorization: `Bearer ${accessToken}`,
+                'Content-Length': contentLength,
+                'Content-Range': `bytes ${start}-${end}/${file.size}`,
+              },
+            });
+  
+            start = end + 1;
+            end = Math.min(start + chunkSize - 1, file.size - 1);
+          }
+  
+          return { success: true, fileName: file.name };
+        }
       });
   
       const responses = await Promise.all(uploadPromises);
-      return responses.map((res) => res.data);
+      return responses.map((res) => res.data || res);
     } catch (error) {
       console.error('Error uploading files to SharePoint:', error);
       throw new Error('Failed to upload files to SharePoint');

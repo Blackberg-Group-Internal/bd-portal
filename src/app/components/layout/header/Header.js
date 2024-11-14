@@ -120,7 +120,8 @@ const Header = () => {
        </div>
        <div className="submenu px-lg-3 py-5 position-absolute top-0 d-flex flex-column text-figtree">
             {(activeLink === '/' || activeLink === '/activity' || activeLink === '/submissions') && (
-            <DashboardSubMenu />
+            // <DashboardSubMenu />
+            <></>
             )}
             {activeLink.startsWith('/pipeline') && (
             <PipelineSubMenu />

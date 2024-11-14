@@ -35,7 +35,10 @@ export default function RootLayout({ children }) {
 
   return (
     <html lang="en">
-      <head></head>
+      <head>
+        <title>Business Development Portal | Blackberg Group</title>
+        <link rel="icon" href="/favicon.ico" sizes="any" />
+      </head>
       <body className={bodyClass}>
         <SessionProvider>
         <ToastProvider>

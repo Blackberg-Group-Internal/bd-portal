@@ -14,10 +14,11 @@ import ListIcon from '../../../public/images/icons/list.svg';
 import TilesIcon from '../../../public/images/icons/tiles.svg';
 import AddFolderButton from '../components/dam/AddFolderButton';
 import { useSession } from 'next-auth/react';
+import CollectionTiles from '../components/dam/CollectionTiles';
 
 const DamPage = () => {
   const [viewMode, setViewMode] = useState('tiles');
-  const [collectionData, setCollectionData] = useState(null);
+  const [collectionData, setCollectionData] = useState([]);
   const [loading, setLoading] = useState(true);
   const folderContainerRef = useRef(null);
   const [showModal, setShowModal] = useState(false);
@@ -29,16 +30,28 @@ const DamPage = () => {
   const fetchLibraryContents = async (libraryId) => {
     try {
       const response = await axios.get(`/api/graph/library?libraryId=${libraryId}`);
-      setCollectionData(response.data.value);
-      console.log('Library contents', response.data.value)
+      const data = response.data.value;
+
+      setCollectionData((prevData) => {
+        const updatedData = [...data];
+
+        if (prevData) {
+          const existingIds = new Set(prevData.map(item => item.id));
+          prevData.forEach(item => {
+            if (!existingIds.has(item.id)) {
+              updatedData.push(item);
+            }
+          });
+        }
+
+        return updatedData;
+      });
+
+      localStorage.setItem('collectionData', JSON.stringify(data));
       setLoading(false);
+
       if (folderContainerRef.current) {
-        const folders = folderContainerRef.current.querySelectorAll('.folder');
-        gsap.fromTo(
-          folders,
-          { opacity: 0, y: 20 },
-          { opacity: 1, y: 0, stagger: 0.075, ease: 'power1.out', duration: 0.5 }
-        );
+      //  animateFolders();
       }
     } catch (error) {
       console.error('Error fetching library contents:', error);
@@ -47,9 +60,15 @@ const DamPage = () => {
   };
 
   useEffect(() => {
-    fetchLibraryContents('b!IjBwAehgSE2n7qOI215nrR4bdH26ND9OupDVEUroagUhuALlBeVMQpUSNfSQ_FtP');
+    const storedCollectionData = JSON.parse(localStorage.getItem('collectionData'));
+    if (storedCollectionData) {
+      setCollectionData(storedCollectionData);
+      setLoading(false);
+      fetchLibraryContents('b!IjBwAehgSE2n7qOI215nrR4bdH26ND9OupDVEUroagUhuALlBeVMQpUSNfSQ_FtP');
+    } else {
+      fetchLibraryContents('b!IjBwAehgSE2n7qOI215nrR4bdH26ND9OupDVEUroagUhuALlBeVMQpUSNfSQ_FtP');
+    }
   }, []);
-
 
   const toggleView = (mode) => {
     setViewMode(mode);
@@ -63,100 +82,96 @@ const DamPage = () => {
     }
   }, []);
 
-  useEffect(() => {
-    if (viewMode === 'tiles' && folderContainerRef.current) {
-      animateFolders();
-    }
-  }, [viewMode]);
+  // const animateFolders = () => {
+  //   if (folderContainerRef.current) {
+  //     const folders = folderContainerRef.current.querySelectorAll('.folder');
+  //     gsap.fromTo(
+  //       folders,
+  //       { opacity: 0, y: 20 },
+  //       { opacity: 1, y: 0, stagger: 0.075, ease: 'power1.out', duration: 0.5 }
+  //     );
+  //   }
+  // };
 
-  const animateFolders = () => {
-    const folders = folderContainerRef.current.querySelectorAll('.folder');
-    gsap.fromTo(
-      folders,
-      { opacity: 0, y: 20 },
-      { opacity: 1, y: 0, stagger: 0.075, ease: 'power1.out', duration: 0.2 }
-    );
+  // useEffect(() => {
+  //   if (folderContainerRef.current) {
+  //     animateFolders();
+  //   }
+  // }, [collectionData]);
+
+  // useEffect(() => {
+  //   const getAllDamFiles = async () => {
+  //     try {
+  //       const response = await axios.get('/api/graph/library/files');
+  //       if (response.status === 200) {
+  //         const data = response.data;
+  //         console.log('All Files Data: ', data);
+  //         localStorage.setItem('allFiles', JSON.stringify(data));
+  //       }
+  //     } catch (error) {
+  //       console.error('Error fetching files:', error);
+  //     }
+  //   };
+
+  //   //getAllDamFiles();
+  // }, []);
+
+  // useEffect(() => {
+  //   const handleGetFavorites = async () => {
+  //     try {
+  //       if (!session || !session.user?.id) {
+  //         return;
+  //       }
+
+  //       const userId = session.user.id;
+
+  //       const response = await axios.get(`/api/graph/library/file/favorite?userId=${userId}`);
+
+  //       if (response.status === 200) {
+  //         const favoriteFiles = response.data;
+
+  //         if (!favoriteFiles || favoriteFiles.length === 0) {
+  //           console.log('No favorites found');
+  //           return;
+  //         }
+
+  //         const fileDataPromises = favoriteFiles.map(async (favorite) => {
+  //           try {
+  //             const graphResponse = await axios.get(`/api/graph/library/file?fileId=${favorite.fileId}`);
+  //             return graphResponse.data;
+  //           } catch (error) {
+  //             console.error(`Error fetching file data for file ID ${favorite.fileId}:`, error);
+  //             return null;
+  //           }
+  //         });
+
+  //         const filesData = await Promise.all(fileDataPromises);
+
+  //         const validFilesData = filesData.filter((file) => file !== null);
+
+  //         console.log('Favorites files data:', validFilesData);
+  //         localStorage.setItem('userFavorites', JSON.stringify(validFilesData));
+  //       } else {
+  //         throw new Error('Failed to fetch favorites');
+  //       }
+  //     } catch (error) {
+  //       console.error('Error fetching favorites:', error);
+  //     }
+  //   };
+
+  //   handleGetFavorites();
+  // }, []);
+
+  const refreshLibrary = () => {
+    fetchLibraryContents('b!IjBwAehgSE2n7qOI215nrR4bdH26ND9OupDVEUroagUhuALlBeVMQpUSNfSQ_FtP');
+    //setTimeout(() => {
+    //  animateFolders();
+    //}, 500);
   };
 
-  useEffect(() => {
-
-    const getAllDamFiles = async () => {
-
-
-     // setLoading(true);
-      try {
-        const response = await axios.get('/api/graph/library/files');
-        if (response.status === 200) {
-          const data = response.data;
-          console.log('All Files Data: ', data);
-          localStorage.setItem("allFiles", JSON.stringify(data));
-
-          //setFilesData(data);
-        } else {
-        }
-      } catch (error) {
-        console.error('Error fetching files:', error);
-      } finally {
-        //setLoading(false);
-      }
-    };
-
-    getAllDamFiles();
-  }, []);
-
-  useEffect(() => {
-    const handleGetFavorites = async () => {
-      try {
-        if (!session || !session.user?.id) {
-          return;
-        }
-
-       // setLoading(true);
-        const userId = session.user.id; 
-
-        const response = await axios.get(`/api/graph/library/file/favorite?userId=${userId}`);
-        
-        if (response.status === 200) {
-          const favoriteFiles = response.data;
-
-          if (!favoriteFiles || favoriteFiles.length === 0) {
-            console.log('No favorites found');
-           // setFilesData([]);
-           // setLoading(false);
-            return;
-          }
-
-          const fileDataPromises = favoriteFiles.map(async (favorite) => {
-            try {
-              const graphResponse = await axios.get(`/api/graph/library/file?fileId=${favorite.fileId}`);
-              return graphResponse.data;
-            } catch (error) {
-              console.error(`Error fetching file data for file ID ${favorite.fileId}:`, error);
-              return null; 
-            }
-          });
-
-          const filesData = await Promise.all(fileDataPromises);
-
-          const validFilesData = filesData.filter(file => file !== null);
-
-          console.log('Favorites files data:', validFilesData);
-         // setFilesData(validFilesData);
-         localStorage.setItem('userFavorites', JSON.stringify(validFilesData));
-        } else {
-          throw new Error('Failed to fetch favorites');
-        }
-      } catch (error) {
-        console.error('Error fetching favorites:', error);
-      } finally {
-       // setLoading(false);
-      }
-    };
-
-    //if (!filesData) {
-      handleGetFavorites();
-   // }
-  }, []);
+  // const handleFilesUploaded = () => {
+  //   fetchFolderContents(folderId);
+  // };
 
   return (
     <>
@@ -172,8 +187,8 @@ const DamPage = () => {
                 <button className="border-0 bg-transparent" onClick={handleShow}>
                   <SearchIcon className="icon" />
                 </button>
-                <AddFolderButton />
-                <FileUploadButton />
+                <AddFolderButton onFolderAdded={refreshLibrary} />
+                <FileUploadButton onFilesUploaded={refreshLibrary} />
               </div>
               <SearchModal show={showModal} handleClose={handleClose} />
             </div>
@@ -204,17 +219,13 @@ const DamPage = () => {
             </div>
 
             {collectionData && (
-            <div className="col-12">
-              {viewMode === 'tiles' ? (
-                <div className="folder-container d-flex flex-wrap mt-4" ref={folderContainerRef}>
-                  {collectionData.map((folder, index) => (
-                    <Folder key={index} folder={folder} viewMode={viewMode} />
-                  ))}
-                </div>
-              ) : (
-                <CollectionList collections={collectionData} />
-              )}
-            </div>
+              <div className="col-12">
+                {viewMode === 'tiles' ? (
+                  <CollectionTiles collections={collectionData} />
+                ) : (
+                  <CollectionList collections={collectionData} />
+                )}
+              </div>
             )}
           </div>
         </section>

@@ -7,7 +7,7 @@ import { useToast } from '@/app/context/ToastContext';
 import { useRouter, usePathname } from 'next/navigation';
 import { buildVanityName } from '@/app/context/FolderContext'; 
 
-const AddFolder = ({ show, handleClose, parentFolderId }) => {
+const AddFolder = ({ show, handleClose, parentFolderId, onFolderAdded }) => {
   const [folderName, setFolderName] = useState('');
   const [creating, setCreating] = useState(false);
   const { addToast } = useToast();
@@ -35,6 +35,9 @@ const AddFolder = ({ show, handleClose, parentFolderId }) => {
 
       if (response.status === 201) {
         addToast('Folder created successfully.', 'success');
+        if (onFolderAdded) {
+          onFolderAdded(response.data);
+        }
         handleClose();
       } else {
         throw new Error('Error creating folder');
