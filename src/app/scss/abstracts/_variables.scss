@@ -1,0 +1,434 @@
+// Import Bootstrap variables
+@import "~bootstrap/scss/functions";
+@import "~bootstrap/scss/variables";
+
+// Define custom spacing variables
+$spacer-5: 2rem; // 32px
+$spacer-6: 2.5rem; // 40px
+$spacer-7: 3rem; // 48px
+$spacer-8: 4rem; // 64px
+$spacer-9: 5rem; // 80px
+$spacer-10: 6rem; // 96px
+$spacer-11: 8rem; // 128px
+$spacer-12: 10em; // 160px
+
+// Merge your custom spacers with the default ones
+$spacers: map-merge(
+  (
+    0: 0,
+    1: $spacer * .25, // 4px
+    2: $spacer * .5, // 8px
+    3: $spacer, // 16px
+    4: $spacer * 1.5, // 24px
+  ),
+  (
+    5: $spacer-5, // 32px
+    6: $spacer-6, // 40px
+    7: $spacer-7, // 48px
+    8: $spacer-8, // 64px
+    9: $spacer-9, // 80px
+    10: $spacer-10, // 96px
+    11: $spacer-11, // 128px
+    12: $spacer-12, // 160px
+  )
+);
+
+
+@import "~bootstrap/scss/maps";
+@import "~bootstrap/scss/mixins";
+@import "~bootstrap/scss/utilities";
+
+
+// Color system
+$white:    #fff !default;
+$gray-100: #f8f9fa !default;
+$gray-200: #e9ecef !default;
+$gray-300: #dee2e6 !default;
+$gray-400: #ced4da !default;
+$gray-500: #adb5bd !default;
+$gray-600: #6c757d !default;
+$gray-700: #495057 !default;
+$gray-800: #343a40 !default;
+$gray-900: #212529 !default;
+$black:    #000 !default;
+
+// Blackberg Group Colors
+$jade-green:#006154; 
+$electric-green:#b5d334;
+$navy: #253551;
+$refreshing-blue: #50c2bd;
+
+$primary: $jade-green; 
+$secondary: $electric-green;
+$tertiary: $navy;
+$quaternary: $refreshing-blue;
+
+// Custom Theme
+$custom-theme-colors: (
+    "primary": $primary,
+    "secondary": $secondary,
+    "tertiary": $tertiary,
+    "quaternary": $quaternary
+);
+
+// Map Custom Theme to Utilities
+$theme-colors: map-merge($theme-colors, $custom-theme-colors);
+$theme-colors-rgb: map-loop($theme-colors, to-rgb, "$value");
+$utilities-colors: map-merge($utilities-colors, $theme-colors-rgb);
+$utilities-text-colors: map-loop($utilities-colors, rgba-css-var, "$key", "text");
+$utilities-bg-colors: map-loop($utilities-colors, rgba-css-var, "$key", "bg");
+
+$jade-green-50: #dff1f0 !default;
+$jade-green-100: #b1dcd8 !default;
+$jade-green-200: #7dc6be !default;
+$jade-green-300: #4cafa4 !default;
+$jade-green-400: #239e92 !default;
+$jade-green-500: #068d7f !default;
+$jade-green-600: #008071 !default;
+$jade-green-700: #007164 !default;
+$jade-green-800: $jade-green !default;
+$jade-green-900: #004539 !default;
+$jade-green-950: #032b24 !default;
+
+$electric-green-50: #f6fbe6 !default;
+$electric-green-100: #e9f1c1 !default;
+$electric-green-200: #d9e999 !default;
+$electric-green-300: #cae071 !default;
+$electric-green-400: #c1d853 !default;
+$electric-green-500: $electric-green !default;
+$electric-green-600: #93a827 !default;
+$electric-green-700: #82911f !default;
+$electric-green-800: #5b6112 !default;
+$electric-green-900: #262605 !default;
+$electric-green-950: #1a1903 !default;
+
+$navy-50: tint-color($navy, 90%) !default;
+$navy-100: tint-color($navy, 80%) !default;
+$navy-200: tint-color($navy, 60%) !default;
+$navy-300: tint-color($navy, 40%) !default;
+$navy-400: tint-color($navy, 20%) !default;
+$navy-500: shade-color($navy, 10%) !default;
+$navy-600: shade-color($navy, 20%) !default;
+$navy-700: #2b3e5e !default;
+$navy-800: $navy !default;
+$navy-900: #1d2538 !default;
+$navy-950: #111622 !default;
+
+$refreshing-blue-50: tint-color($refreshing-blue, 90%) !default;
+$refreshing-blue-100: tint-color($refreshing-blue, 80%) !default;
+$refreshing-blue-200: tint-color($refreshing-blue, 60%) !default;
+$refreshing-blue-300: $refreshing-blue !default;
+$refreshing-blue-400: tint-color($refreshing-blue, 20%) !default;
+$refreshing-blue-500: shade-color($refreshing-blue, 10%) !default;
+$refreshing-blue-600: shade-color($refreshing-blue, 20%) !default;
+$refreshing-blue-700: shade-color($refreshing-blue, 40%) !default;
+$refreshing-blue-800: shade-color($refreshing-blue, 60%) !default;
+$refreshing-blue-800: shade-color($refreshing-blue, 80%) !default;
+$refreshing-blue-950: shade-color($refreshing-blue, 90%) !default;
+
+$jade-greens: (
+  "jade-green-50": $jade-green-50,
+  "jade-green-100": $jade-green-100,
+  "jade-green-200": $jade-green-200,
+  "jade-green-300": $jade-green-300,
+  "jade-green-400": $jade-green-400,
+  "jade-green-500": $jade-green-500,
+  "jade-green-600": $jade-green-600,
+  "jade-green-700": $jade-green-700,
+  "jade-green-800": $jade-green-800,
+  "jade-green-900": $jade-green-900,
+  "jade-green-950": $jade-green-950  
+) !default;
+
+$electric-greens: (
+  "electric-green-50": $electric-green-50,
+  "electric-green-100": $electric-green-100,
+  "electric-green-200": $electric-green-200,
+  "electric-green-300": $electric-green-300,
+  "electric-green-400": $electric-green-400,
+  "electric-green-500": $electric-green-500,
+  "electric-green-600": $electric-green-600,
+  "electric-green-700": $electric-green-700,
+  "electric-green-800": $electric-green-800,
+  "electric-green-900": $electric-green-900,
+  "electric-green-950": $electric-green-950  
+) !default;
+
+$navys: (
+  "navy-50": $navy-50,
+  "navy-100": $navy-100,
+  "navy-200": $navy-200,
+  "navy-300": $navy-300,
+  "navy-400": $navy-400,
+  "navy-500": $navy-500,
+  "navy-600": $navy-600,
+  "navy-700": $navy-700,
+  "navy-800": $navy-800,
+  "navy-900": $navy-900,
+  "navy-950": $navy-950
+) !default;
+
+$navys: (
+  "refreshing-blue-50": $refreshing-blue-50,
+  "refreshing-blue-100": $refreshing-blue-100,
+  "refreshing-blue-200": $refreshing-blue-200,
+  "refreshing-blue-300": $refreshing-blue-300,
+  "refreshing-blue-400": $refreshing-blue-400,
+  "refreshing-blue-500": $refreshing-blue-500,
+  "refreshing-blue-600": $refreshing-blue-600,
+  "refreshing-blue-700": $refreshing-blue-700,
+  "refreshing-blue-800": $refreshing-blue-800,
+  "refreshing-blue-900": $refreshing-blue-900,
+  "refreshing-blue-950": $refreshing-blue-950
+) !default;
+
+
+// Options
+//
+// Quickly modify global styling by enabling or disabling optional features.
+
+$enable-shadows:              true;
+
+$enable-dark-mode:            false;
+
+// Prefix for :root CSS variables
+
+$variable-prefix:             bs- !default; // Deprecated in v5.2.0 for the shorter `$prefix`
+$prefix:                      $variable-prefix !default;
+
+
+// Spacing
+//
+// Control the default styling of most Bootstrap elements by modifying these
+// variables. Mostly focused on spacing.
+// You can add more entries to the $spacers map, should you need more variation.
+
+// scss-docs-start spacer-variables-maps
+
+// scss-docs-end spacer-variables-maps
+
+
+// Body
+//
+// Settings for the `<body>` element.
+
+$body-text-align:           null !default;
+$body-color:                $gray-900 !default;
+$body-bg:                   $white !default;
+
+$body-secondary-color:      rgba($body-color, .75) !default;
+$body-secondary-bg:         $gray-200 !default;
+
+$body-tertiary-color:       rgba($body-color, .5) !default;
+$body-tertiary-bg:          $gray-100 !default;
+
+$body-emphasis-color:       $black !default;
+
+
+// Links
+//
+// Style anchor elements.
+
+$link-color:                              $primary;
+$link-decoration:                         underline !default;
+$link-shade-percentage:                   20% !default;
+$link-hover-color:                        shift-color($link-color, $link-shade-percentage);
+$link-hover-decoration:                   null !default;
+
+
+$stretched-link-pseudo-element:           after !default;
+$stretched-link-z-index:                  1 !default;
+
+
+// Typography
+//
+// Font, line-height, and color for body text, headings, and more.
+
+// scss-docs-start font-variables
+// stylelint-disable value-keyword-case
+$font-family-sans-serif:      "Figtree", helvetica, arial, sans-serif;
+$font-family-serif:           "NotoSerif", georgia, times, serif;
+$font-family-monospace:       SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace !default;
+
+// stylelint-enable value-keyword-case
+$font-family-base:            $font-family-serif;
+$font-family-code:            var(--#{$prefix}font-monospace) !default;
+
+// $font-size-root affects the value of `rem`, which is used for as well font sizes, paddings, and margins
+// $font-size-base affects the font size of the body text
+$font-size-root:              null !default;
+$font-size-base:              1rem !default; // Assumes the browser default, typically `16px`
+$font-size-sm:                $font-size-base * .875 !default;
+$font-size-lg:                $font-size-base * 1.25 !default;
+
+$font-weight-lighter:         lighter !default;
+$font-weight-light:           300 !default;
+$font-weight-normal:          400 !default; // Regular
+$font-weight-medium:          500 !default;
+$font-weight-semibold:        600 !default; 
+$font-weight-bold:            700 !default; // Bold
+$font-weight-bolder:          800 !default; // Extra Bold
+
+$font-weight-base:            $font-weight-normal !default;
+
+$line-height-base:            1.5 !default;
+$line-height-sm:              1.25 !default;
+$line-height-lg:              2 !default;
+
+$h1-font-size:                $font-size-base * 2.5 !default;
+$h2-font-size:                $font-size-base * 2 !default;
+$h3-font-size:                $font-size-base * 1.75 !default;
+$h4-font-size:                $font-size-base * 1.5 !default;
+$h5-font-size:                $font-size-base * 1.25 !default; // 20px
+$h6-font-size:                $font-size-base !default;
+// scss-docs-end font-variables
+
+// scss-docs-start font-sizes
+$font-sizes: (
+  1: $h1-font-size,
+  2: $h2-font-size,
+  3: $h3-font-size,
+  4: $h4-font-size,
+  5: $h5-font-size,
+  6: $h6-font-size
+) !default;
+// scss-docs-end font-sizes
+
+// scss-docs-start headings-variables
+$headings-margin-bottom:      $spacer * .5 !default;
+$headings-font-family:        $font-family-sans-serif;
+$headings-font-style:         null !default;
+$headings-font-weight:        800;
+$headings-line-height:        1.2 !default;
+$headings-color:              inherit !default;
+// scss-docs-end headings-variables
+
+// scss-docs-start display-headings
+$display-font-sizes: (
+  1: 5rem,
+  2: 4.5rem,
+  3: 4rem,
+  4: 3.5rem,
+  5: 3rem, // 48px
+  6: 2.5rem
+) !default;
+
+$display-font-family: $font-family-sans-serif;
+$display-font-style:  null !default;
+$display-font-weight: 800;
+$display-line-height: $headings-line-height !default;
+// scss-docs-end display-headings
+
+// scss-docs-start type-variables
+$lead-font-size:              $font-size-base * 1.25 !default;
+$lead-font-weight:            300 !default;
+
+$small-font-size:             .875em !default;
+
+$sub-sup-font-size:           .75em !default;
+
+// fusv-disable
+$text-muted:                  var(--#{$prefix}secondary-color) !default; // Deprecated in 5.3.0
+// fusv-enable
+
+$initialism-font-size:        $small-font-size !default;
+
+$blockquote-margin-y:         $spacer !default;
+$blockquote-font-size:        $font-size-base * 1.25 !default;
+$blockquote-footer-color:     $gray-600 !default;
+$blockquote-footer-font-size: $small-font-size !default;
+
+$hr-margin-y:                 $spacer !default;
+$hr-color:                    inherit !default;
+
+// fusv-disable
+$hr-bg-color:                 null !default; // Deprecated in v5.2.0
+$hr-height:                   null !default; // Deprecated in v5.2.0
+// fusv-enable
+
+$hr-border-color:             null !default; // Allows for inherited colors
+$hr-border-width:             var(--#{$prefix}border-width) !default;
+$hr-opacity:                  .25 !default;
+
+// scss-docs-start vr-variables
+$vr-border-width:             var(--#{$prefix}border-width) !default;
+// scss-docs-end vr-variables
+
+$legend-margin-bottom:        .5rem !default;
+$legend-font-size:            1.5rem !default;
+$legend-font-weight:          null !default;
+
+$dt-font-weight:              $font-weight-bold !default;
+
+$list-inline-padding:         .5rem !default;
+
+$mark-padding:                .1875em !default;
+$mark-color:                  $body-color !default;
+$mark-bg:                     $yellow-100 !default;
+// scss-docs-end type-variables
+
+
+// Buttons + Forms
+//
+// Shared variables that are reassigned to `$input-` and `$btn-` specific variables.
+
+$input-btn-padding-y:         .625rem;
+$input-btn-padding-x:         1.125rem;
+
+// Buttons
+//
+// For each of Bootstrap's buttons, define text, background, and border color.
+
+$btn-padding-y:               $input-btn-padding-y;
+$btn-padding-x:               $input-btn-padding-x;
+$btn-font-family:             $font-family-sans-serif;
+$btn-border-width:            0px;
+
+$btn-box-shadow:              inset 0 0 0 rgba($white, .15), 0 0 0 rgba($black, .075);
+$btn-active-box-shadow:       inset 0 0 0;
+
+// Allows for customizing button radius independently from global border radius
+$btn-border-radius:           $border-radius-pill;
+$btn-border-radius-sm:        $border-radius-pill;
+$btn-border-radius-lg:        $border-radius-pill;
+
+$btn-font-weight:             $font-weight-bold;
+
+$btn-hover-bg-shade-amount:       20%;
+$btn-hover-bg-tint-amount:        20%;
+
+
+// Dropdowns
+//
+// Dropdown menu container and contents.
+// scss-docs-start dropdown-variables
+$dropdown-border-radius:            var(--#{$prefix}border-radius-lg);
+$dropdown-box-shadow:               var(--#{$prefix}box-shadow);
+
+$dropdown-link-hover-color:         $primary;
+$dropdown-link-hover-bg:            none;
+$dropdown-link-active-color:        $primary;
+$dropdown-link-active-bg:           none;
+
+
+$dropdown-item-padding-y:           $spacer * .5;
+// scss-docs-end dropdown-variables
+
+
+// Borders
+//
+// Settings for borders
+
+$border-color:                      #EAECF0; 
+
+// Progress Bars
+//
+// Settings for borders
+
+$progress-bar-bg:                $jade-green-800;
+
+// Background colos
+//
+// Settings for borders
+
+$bs-primary-rgb:                 $jade-green-800;

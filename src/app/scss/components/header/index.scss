@@ -1,0 +1,145 @@
+header {
+    background: $white;
+    z-index: 5;
+    position: fixed;
+    left: 0;
+    top: 0;
+    height: 100vh;
+    width: 80px;
+
+    .nav-pills {
+
+      .nav-item {
+        ul {
+          display: none;
+        }
+
+        &.active {
+          ul {
+            display: flex;
+          }
+        }
+      }
+        .nav-link {
+            width: 48px;
+            height: 48px;
+            margin: 0 auto;
+            display: flex; 
+            align-items: center;
+            justify-content: center;
+            padding: 0;
+            transition: all 0.3s ease;
+
+            &.active {
+                background: transparent;
+
+                svg * {
+                  stroke: $jade-green-800;
+                }
+            }
+        }
+    }
+
+    .highlight {
+      position: absolute;
+      top: 0;
+      width: 48px; 
+      height: 48px;
+      background-color: $jade-green-50;
+      border-radius: 8px;
+      z-index: -1;
+      opacity: 0;
+    }
+
+    .highlight-subitem {
+      position: absolute;
+      top: 0;
+      left: 16px;
+      width: 48px; 
+      height: 48px;
+      background-color: $gray-100;
+      border-radius: 8px;
+      z-index: -1;
+      opacity: 0;
+    }
+
+    @include media-breakpoint-up(md) {
+
+    }
+}
+
+.dropdown-user {
+  .avatar-placeholder {
+    width: 32px;
+    height: 32px;
+    background: $gray-300;
+    border-radius: 50%;
+  }
+}
+
+.submenu {
+  left: 100%;
+  background: #fff;
+  width: 50px;
+  height: 100%;
+  box-shadow: 0px 24px 48px -12px rgba(16, 24, 40, 0.18);
+  border-left: 1px solid #EAECF0;
+  z-index:1;
+
+  @include media-breakpoint-up(lg) {
+    width: 282px;
+  }
+
+  .submenu-title {
+    font-weight: 600;
+    font-size: 18px;
+  }
+}
+
+.submenu-list {
+  a {
+    padding: 8px 12px;
+    text-decoration: none;
+    font-weight: 600;
+    color: #0C111D;
+    border-radius: 6px;
+    opacity: 0;
+
+    &.active {
+      color: $jade-green-800;
+      background: $gray-100;
+
+      svg * {
+        stroke: $jade-green-800;
+      }
+    }
+
+    &:hover {
+      color: $jade-green-800;
+
+      svg * {
+        stroke: $jade-green-800;
+      }
+    }
+
+    img {
+      margin-right: 12px;
+    }
+  }
+}
+
+.menu-user {
+  .dropdown-toggle::after {
+    display: none;
+  }
+}
+
+.menu-user-text {
+  span {
+    font-size: 14px;
+
+    &.email {
+      font-size: 12px;
+    }
+  }
+}

@@ -1,0 +1,43 @@
+.folder {
+    border-radius: 8px;
+    // opacity: 0;
+
+    &:hover {
+        transition: alsl 0.3s ease;
+        background: $gray-100;
+    }
+
+    .btn-action {
+        pointer-events: none;
+        opacity: 0;
+
+        svg path {
+            transition: all 0.3s ease;
+            transform: scale(0);
+            transform-origin: center;
+        }
+    }
+
+    &:hover {
+        .btn-action {
+            pointer-events: all;
+            opacity: 1;
+
+            svg path {
+                transform: scale(1);
+            }
+        }
+    }
+
+    &.folder-empty {
+        .folder_svg__folder-file {
+            display: none;
+        }
+    }
+
+    &.count-0 {
+        .folder_svg__folder-file {
+            display: none;
+        }
+    }
+}

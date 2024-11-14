@@ -1,0 +1,14 @@
+body {
+    background: #F2F4F7;
+    padding-left: 130px;
+    color: #0C111D;
+    font-family: $font-family-sans-serif;
+
+    @include media-breakpoint-up(lg) {
+        padding-left: 362px;
+      }
+}
+
+main {
+    overflow: scroll;
+}

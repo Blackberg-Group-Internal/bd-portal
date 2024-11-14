@@ -1,0 +1,16 @@
+.tooltip {
+
+    display: block;
+
+    .tooltip-inner {
+        font-family: $font-family-sans-serif;
+    }
+    
+    .tooltip-arrow {
+        display: none !important;
+    }
+
+    @include media-breakpoint-up(lg) {
+        display: none !important;
+    }
+}

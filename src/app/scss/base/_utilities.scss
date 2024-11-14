@@ -1,0 +1,35 @@
+.unselectable {
+    user-select: none;
+}
+
+.text-figtree {
+    font-family: $font-family-sans-serif;
+}
+
+.text-noto {
+    font-family: $font-family-serif;
+}
+
+.fw-400 {
+    font-weight: 400;
+}
+
+.fw-bold-500 {
+    font-weight: 500;
+}
+
+.fw-bold-600 {
+    font-weight: 600;
+}
+
+.fw-bold-800 {
+    font-weight: 800;
+}
+
+.fw-bold-900 {
+    font-weight: 900;
+}
+
+.pointer {
+    cursor: pointer;
+}

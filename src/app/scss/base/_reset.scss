@@ -1,0 +1,51 @@
+* {
+    box-sizing: border-box;
+    padding: 0;
+    margin: 0;
+  }
+  
+  html {
+    scroll-behavior: smooth;
+  }
+  
+  html.lenis {
+    height: auto;
+  }
+  
+  .lenis.lenis-smooth {
+    scroll-behavior: auto !important;
+  }
+  
+  .lenis.lenis-smooth [data-lenis-prevent] {
+    overscroll-behavior: contain;
+  }
+  
+  .lenis.lenis-stopped {
+    overflow: hidden;
+  }
+  
+  .lenis.lenis-scrolling iframe {
+    pointer-events: none;
+  }
+
+  button {
+        &:active, &:focus {
+            outline: none !important;
+            box-shadow: none !important;
+        }
+  }
+
+  body {
+    & > div {
+      position: relative;
+      z-index: 10;
+    }
+  }
+
+  main {
+    min-height: 100vh;
+  }
+
+  .toast-container {
+    z-index: 999999;
+  }

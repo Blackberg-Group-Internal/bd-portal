@@ -1,0 +1,46 @@
+.list-view {
+    border-radius: 12px;
+
+    .list-view-header {
+        background: #F9FAFB;
+        border-top-left-radius: 12px;
+        border-top-right-radius: 12px;
+    }
+
+    input[type=checkbox] {
+        width: 20px;
+        height: 20px;
+        border: 1px solid #D0D5DD;
+        appearance: none;
+        cursor: pointer; 
+        transition: all 0.3s ease;
+
+        &:checked {
+            background: $jade-green-50;
+        }
+    }
+
+    .row {
+        // opacity: 0;
+
+        &:last-child {
+            border-bottom-left-radius: 12px;
+            border-bottom-right-radius: 12px;
+        }
+    }
+
+    .action-panel {
+        left: auto;
+        right: 16px;
+    }
+
+    .pg-viewer-wrapper, .pg-viewer-wrapper canvas {
+        height: 48px;
+    }
+
+    .count-0 {
+        .folder_svg__folder-file {
+            display: none;
+        }
+    }
+}

@@ -1,0 +1,105 @@
+.card {
+    border: 1px solid #EAECF0;
+    box-shadow: 0px 1px 2px 0px rgba(16, 24, 40, 0.05);
+}
+
+.card-opportunity {
+
+    height: 67vh;
+    overflow-y: auto;
+    padding-top: 40px;
+
+    .card-opportunity-item {
+        opacity: 0;
+        transform: translateY(20px);
+        
+        .title {
+            max-width: 80%;
+            text-overflow: ellipsis;
+            overflow: hidden;
+            font-size: 12px;
+            line-height: 1;
+        }
+
+        .date {
+            max-width: 20%;
+            line-height: 1;
+        }
+
+        &.danger {
+            background: #fff1f1;
+        }
+
+        &.warning {
+            background:#fff7ea
+        }
+    }
+
+    .card-opportunity-header {
+        opacity: 1;
+        transform: translateY(0);
+        * {
+            font-weight: 600;
+        }
+    }
+
+}
+
+.card-tool {
+
+   // transition: all 0.3s ease;
+
+    .tool-icon {
+        background: $jade-green-50;
+
+        svg path {
+            stroke: $jade-green-800;
+        }
+    }
+
+    &:hover {
+        box-shadow: var(--bs-box-shadow-lg) !important;
+        transition: all 0.3s ease;
+    }
+
+
+}
+
+.card-tool--no-hover {
+
+        &:hover {
+            box-shadow: none !important;
+            transition: all 0.3s ease;
+        }
+}
+
+.ai-rich-text {
+
+    strong {
+        margin: 8px 0;
+    }
+
+    h1 {
+        font-size: 20px;
+    }
+
+    h2 {
+        font-size: 18px;
+    }
+
+    h3, h4, h5 {
+        font-size: 16px;
+    }
+
+    h5 {
+        margin-top: 16px;
+    }
+
+    h6 {
+        margin-top: 16px;
+    }
+
+    ul li {
+        margin-bottom: 8px;
+    }
+}

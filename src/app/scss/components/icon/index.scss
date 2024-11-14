@@ -1,0 +1,54 @@
+.icon {
+    
+    * {
+        transition: all 0.3s ease;
+    }
+
+    &:hover, &:active, &:focus {
+        * {
+            stroke: $jade-green-800;
+        }
+    }
+
+    &.icon-white {
+        filter: invert(1) saturate(0) brightness(2);
+    }
+}
+
+.icon-animate {
+
+    &:hover {
+        svg {
+            animation: draw 4700ms ease-in-out;
+            animation-fill-mode: forwards;
+            -webkit-animation-fill-mode: forwards;
+            stroke-dasharray: 600 0;
+            fill-opacity: 0;
+            stroke-width: 0;
+            will-change: transform;
+        }
+    }
+}
+
+@keyframes draw {
+    0% {
+        stroke-dasharray: 0 800;
+        stroke-dashoffset: 200;
+        fill-opacity: 0;
+        stroke-width:1;
+   }
+    37% {
+        stroke-dasharray: 600 0;
+        stroke-dashoffset: 200;
+        fill-opacity: 0;
+        stroke-width: 1;
+   }
+    50% {
+        fill-opacity: 1;
+        stroke-width: 0;
+   }
+    100% {
+        fill-opacity: 1;
+        stroke-width: 0;
+   }
+}

@@ -1,0 +1,60 @@
+.btn {
+    border-radius: 8px;
+    pointer-events: all;
+
+    &--layout {
+        border: 1px solid #D0D5DD;
+
+        &:hover, &:active {
+            border: 1px solid #D0D5DD !important;
+            color: $jade-green !important;
+            outline: none;
+            box-shadow: none !important;
+
+            svg * {
+                stroke: $jade-green;
+            }
+        }
+
+        &:first-child {
+            border-top-right-radius: 0;
+            border-bottom-right-radius: 0;
+        }
+
+        &:last-child {
+            border-top-left-radius: 0;
+            border-bottom-left-radius: 0;
+        }
+
+        &.active {
+            border: 1px solid #D0D5DD;
+            background: #F9FAFB;
+        }
+    }
+
+    &--login {
+        border-radius: 50vw;
+    }
+
+    &--white {
+        border: 1px solid $gray-300;
+        background: #fff;
+
+        &:hover {
+            border: 1px solid $gray-300;
+            background: $gray-100; 
+        }
+    }
+}
+
+.btn-chat {
+
+    width: 50px;
+    height: 50px;
+    
+    svg path {
+        filter: invert(1) saturate(0) brightness(2);
+    }
+    
+}
+
