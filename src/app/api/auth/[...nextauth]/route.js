@@ -10,7 +10,7 @@ export const authOptions = {
       tenantId: process.env.AZURE_AD_TENANT_ID,
       authorization: {
         params: {
-          scope: 'openid email profile User.Read offline_access',
+          scope: 'openid email profile User.Read Files.ReadWrite.All Sites.ReadWrite.All offline_access',
         },
       },
       httpOptions: { timeout: 10000 },
@@ -85,7 +85,7 @@ async function refreshAccessToken(token) {
         client_secret: process.env.AZURE_AD_CLIENT_SECRET,
         grant_type: 'refresh_token',
         refresh_token: token.refreshToken,
-        scope: 'openid email profile User.Read offline_access',
+        scope: 'openid email profile User.Read Files.ReadWrite.All Sites.ReadWrite.All offline_access',
       }),
       method: 'POST',
     });
