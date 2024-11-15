@@ -262,9 +262,7 @@ const FileListPage = () => {
           ) : filesData && filesData.length > 0 ? (
             <div className="col-12">
               {viewMode === 'tiles' ? (
-                <div className="folder-container d-flex flex-wrap mt-4" ref={folderContainerRef}>
                   <FileTiles files={filesData} preview={true} />
-                </div>
               ) : (
                 <FileList files={filesData} preview={true} />
               )}
