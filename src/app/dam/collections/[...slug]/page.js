@@ -26,7 +26,7 @@ const CollectionDetailPage = ({ params }) => {
   const [previousSlug, setPreviousSlug] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const handleClose = () => setShowModal(false);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [collectionData, setCollectionData] = useState([]);
   const handleShow = () => setShowModal(true);
 
@@ -38,22 +38,29 @@ const CollectionDetailPage = ({ params }) => {
   useEffect(() => {
     if (slug && slug.length > 0) {
       const vanitySlug = slug.join('/');
-
-      if (vanitySlug !== previousSlug) {
-        setPreviousSlug(vanitySlug);
-
-        const mappedFolderId = getFolderIdFromVanity(vanitySlug);
-        if (mappedFolderId && mappedFolderId !== folderId) {
-          updateFolderId(mappedFolderId);
-        } else if (vanitySlug !== folderId) {
-          updateFolderId(vanitySlug);
-        }
+      const mappedFolderId = getFolderIdFromVanity(vanitySlug);
+  
+      // Always update the folderId if the vanitySlug changes, 
+      // even if the IDs are the same, to ensure re-render.
+      if (mappedFolderId && mappedFolderId !== folderId) {
+        updateFolderId(mappedFolderId);
+      } else if (vanitySlug !== previousSlug) {
+        updateFolderId(vanitySlug);
+      } else {
+        updateFolderId(mappedFolderId);
       }
+  
+      setPreviousSlug(vanitySlug);
     }
   }, [slug]);
 
   useEffect(() => {
     if (folderId && folderId !== previousFolderId && !isVanityOrId(folderId)) {
+      const savedData = JSON.parse(localStorage.getItem(`folderContents_${folderId}`));
+      if (savedData) {
+        setCollectionData(savedData);
+        setLoading(false);
+      }
       fetchFolderContents(folderId);
     }
   }, [folderId]);
@@ -78,19 +85,17 @@ const CollectionDetailPage = ({ params }) => {
               return existingItemsMap.get(item.id) || item;
             });
 
-            const newItems = updatedData.filter(item => !existingItemsMap.has(item.id));
-            if (newItems.length > 0) {
-              animateNewItems(newItems);
-            }
-
+            localStorage.setItem(`folderContents_${folderId}`, JSON.stringify(updatedData));
             return updatedData;
           });
         }
       } else {
         console.error('Error fetching folder contents:', data.error);
+        setLoading(false);
       }
     } catch (error) {
       console.error('Error fetching folder contents:', error);
+      setLoading(false);
     } finally {
       setLoading(false);
     }
@@ -144,7 +149,9 @@ const CollectionDetailPage = ({ params }) => {
   }, []);
 
   const handleFolderAdded = () => {
-    fetchFolderContents(folderId);
+    setTimeout(() => {
+      fetchFolderContents(folderId);
+    }, 0)
   };
 
   return (
@@ -192,9 +199,7 @@ const CollectionDetailPage = ({ params }) => {
             ) : collectionData && collectionData.length > 0 ? (
             <div className="col-12">
               {viewMode === 'tiles' ? (
-                <div className="folder-container d-flex flex-wrap mt-4" ref={folderContainerRef}>
                   <FileTiles files={collectionData} preview={true} />
-                </div>
               ) : (
                 <FileList files={collectionData} preview={true} />
               )}

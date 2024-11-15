@@ -29,15 +29,22 @@
         }
     }
 
+    .folder_svg__folder-file {
+        transition: all 0.3s ease;
+        opacity: 1;
+    }
+
     &.folder-empty {
         .folder_svg__folder-file {
-            display: none;
+            transform: translateY(20px);
+            opacity: 0;
         }
     }
 
     &.count-0 {
         .folder_svg__folder-file {
-            display: none;
+            transform: translateY(20px);
+            opacity: 0;
         }
     }
 }

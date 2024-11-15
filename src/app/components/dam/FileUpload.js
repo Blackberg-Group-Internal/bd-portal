@@ -27,7 +27,6 @@ const FileUpload = ({ show, handleClose, onFilesUploaded }) => {
         try {
           const response = await axios.get(`/api/graph/library?libraryId=""}`);
           setFolders(response.data.value);
-          console.log('Library contents', response.data.value)
         } catch (error) {
           console.error('Error fetching library contents:', error);
         }
@@ -35,15 +34,14 @@ const FileUpload = ({ show, handleClose, onFilesUploaded }) => {
       fetchFolders();
 
       const parts = pathname.replace(/^\/|\/$/g, '').split('/');
-      if (parts.length > 2) {
-        setShouldShowFolderSelect(false);
-      } else {
-        setShouldShowFolderSelect(true);
-      }
+      setShouldShowFolderSelect(parts.length <= 2);
     }
   }, [show]);
 
   const startUpload = async () => {
+    if (!files.length) {
+      return;
+    }
 
     const folderPath = getFolderPath();
 
@@ -56,56 +54,62 @@ const FileUpload = ({ show, handleClose, onFilesUploaded }) => {
     files.forEach((fileObj) => {
       formData.append('files', fileObj.file); 
     });
-
-
-
     formData.append('folderPath', folderPath);
 
-    let progressValue = 0;
     setUploading(true);
 
-    const progressInterval = setInterval(() => {
-      progressValue = Math.min(progressValue + Math.random() * 10, 90);
-      setProgress((prevProgress) => ({
-        ...prevProgress,
-        global: Math.round(progressValue),
-      }));
-    }, 100);
+    // Create individual intervals to update progress based on file size
+    const progressIntervals = files.map((fileObj, index) => {
+      let progressValue = 0;
+
+      // Adjust speed based on file size: Larger files upload slower
+      const fileSizeMB = fileObj.file.size / (1024 * 1024);
+      const maxSpeed = 15; // Minimum speed factor (larger files take longer)
+      const minSpeed = 5; // Maximum speed factor (smaller files are faster)
+      const speedFactor = Math.max(minSpeed, maxSpeed - Math.log2(fileSizeMB + 1));
+
+      return setInterval(() => {
+        progressValue = Math.min(progressValue + Math.random() * speedFactor, 90);
+        setProgress((prevProgress) => ({
+          ...prevProgress,
+          [index]: Math.round(progressValue),
+        }));
+      }, 100);
+    });
 
     try {
-      const response = await fetch('/api/graph/library/upload', {
-        method: 'POST',
-        body: formData,
-      });
-
-      const data = await response.json();
-      clearInterval(progressInterval);
-      setProgress((prevProgress) => ({
-        ...prevProgress,
-        global: 100, 
-      }));
-      setUploading(false);
-      if (onFilesUploaded) {
-        onFilesUploaded();
+      const response = await axios.post('/api/graph/library/upload', formData);
+      
+      if (response.status === 200) {
+        progressIntervals.forEach(clearInterval); // Clear all intervals
+        setProgress((prevProgress) => {
+          const newProgress = { ...prevProgress };
+          files.forEach((_, index) => {
+            newProgress[index] = 100;
+          });
+          return newProgress;
+        });
+        addToast('Your file(s) were uploaded.', 'success');
+        if (onFilesUploaded) {
+          onFilesUploaded();
+        }
+      } else {
+        throw new Error('Upload failed');
       }
-      //setTimeout(()=> {
-        handleClose();
-      //}, 1500);
-      //setTimeout(()=> {
-      addToast('Your file(s) were uploaded.', 'success');
-    //}, 2000);
-
-      console.log('Upload success', data);
     } catch (error) {
       console.error('Error uploading files:', error);
+      addToast('Failed to upload file(s).', 'danger');
+    } finally {
+      setUploading(false);
+      progressIntervals.forEach(clearInterval); // Ensure all intervals are cleared
+      handleClose();
     }
   };
 
   const getFolderPath = () => {
-
     const parts = pathname.replace(/^\/|\/$/g, '').split('/');
     let vanityPath;
-    
+
     if (parts.length === 2 && parts[1] === 'dam') {
       return selectedFolder; 
     } else {
@@ -114,12 +118,8 @@ const FileUpload = ({ show, handleClose, onFilesUploaded }) => {
 
     const folderMapping = localStorage.getItem('folderMapping:' + vanityPath);
 
-    if (folderMapping) {
-      return folderMapping || '';
-    }
-    return selectedFolder;
+    return folderMapping || selectedFolder;
   };
-
 
   const { getRootProps, getInputProps } = useDropzone({ onDrop, multiple: true });
 
@@ -141,7 +141,7 @@ const FileUpload = ({ show, handleClose, onFilesUploaded }) => {
       <Modal.Header className="d-flex flex-column align-items-start p-4 pb-1 border-0">
         <div className="d-flex justify-content-between align-items-center w-100 mb-2">
           <Modal.Title className="fw-bold-600 h5">Upload Files</Modal.Title>
-          <button className="btn-close p-0" onClick={handleClose} aria-label="Close"></button>
+          <button className="btn-close p-0" onClick={handleClose} aria-label="Close" disabled={uploading}></button>
         </div>
         <span className="small">Upload files to this collection.</span>
       </Modal.Header>
@@ -159,51 +159,50 @@ const FileUpload = ({ show, handleClose, onFilesUploaded }) => {
 
         {files.length > 0 && (
           <>
-          <div className="mt-3">
-            {files.map((fileObj, index) => (
-              <div key={index} className="d-flex flex-column align-items-start mb-3 border rounded p-3">
-                <div className="file-details d-flex flex-column mb-2">
-                  <p className="mb-1 fw-bold-500 small">{fileObj.file.name}</p>
-                  <small className="small">{(fileObj.file.size / (1024 * 1024)).toFixed(1)} MB</small>
+            <div className="mt-3">
+              {files.map((fileObj, index) => (
+                <div key={index} className="d-flex flex-column align-items-start mb-3 border rounded p-3">
+                  <div className="file-details d-flex flex-column mb-2">
+                    <p className="mb-1 fw-bold-500 small">{fileObj.file.name}</p>
+                    <small className="small">{(fileObj.file.size / (1024 * 1024)).toFixed(1)} MB</small>
+                  </div>
+                  <div className="d-flex w-100 align-items-center">
+                    <ProgressBar
+                      className="me-2"
+                      now={progress[index] || 0}
+                      style={{ width: '100%' }}
+                    />
+                    <span className="ms-1 small">{`${progress[index] || 0}%`}</span>
+                  </div>
                 </div>
-                <div className="d-flex w-100 align-items-center">
-                  <ProgressBar
-                    className="me-2"
-                    now={progress.global || 0}
-                    style={{ width: '100%' }}
-                  />
-                  <span className="ms-1 small">{`${progress.global || 0}%`}</span>
-                </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
 
-          {shouldShowFolderSelect && (
-          <Form.Group controlId="folderSelect" className="mb-3">
-          <Form.Label>Collection</Form.Label>
-          <Form.Control
-            as="select"
-            value={selectedFolder}
-            onChange={(e) => setSelectedFolder(e.target.value)}
-          >
-             <option value="" disabled>
-              Select a collection
-            </option>
-            {folders.map((folder) => (
-              <option key={folder.id} value={folder.id}>
-                {folder.name}
-              </option>
-            ))}
-          </Form.Control>
-        </Form.Group>
-          )}
-        </>
+            {shouldShowFolderSelect && (
+              <Form.Group controlId="folderSelect" className="mb-3">
+                <Form.Label>Collection</Form.Label>
+                <Form.Control
+                  as="select"
+                  value={selectedFolder}
+                  onChange={(e) => setSelectedFolder(e.target.value)}
+                >
+                  <option value="" disabled>
+                    Select a collection
+                  </option>
+                  {folders.map((folder) => (
+                    <option key={folder.id} value={folder.id}>
+                      {folder.name}
+                    </option>
+                  ))}
+                </Form.Control>
+              </Form.Group>
+            )}
+          </>
         )}
-
       </Modal.Body>
       <Modal.Footer className="d-flex pt-0 px-4 pb-4 gap border-0">
         <div className="col pe-0 me-2 ms-0">
-          <button className="btn btn--white w-100" onClick={handleClose}>
+          <button className="btn btn--white w-100" onClick={handleClose} disabled={uploading}>
             Cancel
           </button>
         </div>

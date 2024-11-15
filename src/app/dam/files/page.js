@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useRef } from 'react';
+import { useQuery } from 'react-query';
 import Breadcrumbs from '@/app/components/Breadcrumbs';
 import SearchIcon from '../../../../public/images/icons/search.svg';
 import ListIcon from '../../../../public/images/icons/list.svg';
@@ -16,63 +17,29 @@ import FileTiles from '@/app/components/dam/FileTiles';
 import axios from 'axios';
 import { useSession } from 'next-auth/react';
 
+const fetchFiles = async () => {
+  const response = await axios.get('/api/graph/library/files');
+  return response.data;
+};
+
 const FileListPage = () => {
   const [viewMode, setViewMode] = useState('tiles');
   const folderContainerRef = useRef(null);
   const [showModal, setShowModal] = useState(false);
   const handleClose = () => setShowModal(false);
   const handleShow = () => setShowModal(true);
-  const [loading, setLoading] = useState(false);
-  const [filesData, setFilesData] = useState([]);
   const { data: session, status } = useSession();
+
+  const { data: filesData, isLoading, error } = useQuery('files', fetchFiles, {
+    staleTime: 1000 * 60 * 5, // cache for 5 minutes
+    onSuccess: (data) => {
+      localStorage.setItem('allFiles', JSON.stringify(data));
+    },
+  });
 
   const toggleView = (mode) => {
     setViewMode(mode);
     localStorage.setItem('viewMode', mode);
-  };
-
-  useEffect(() => {
-    const storedFilesData = JSON.parse(localStorage.getItem('allFiles'));
-
-    if (storedFilesData) {
-      setFilesData(storedFilesData);
-    }
-
-    const fetchFiles = async () => {
-     // setLoading(true);
-      try {
-        const response = await axios.get('/api/graph/library/files');
-        if (response.status === 200) {
-          const newFilesData = response.data;
-          console.log('All Files Data: ', newFilesData);
-
-          const updatedFilesData = mergeFilesData(filesData, newFilesData);
-          setFilesData(updatedFilesData);
-
-          localStorage.setItem('allFiles', JSON.stringify(updatedFilesData));
-        }
-      } catch (error) {
-        console.error('Error fetching files:', error);
-      } finally {
-      //  setLoading(false);
-      }
-    };
-
-    fetchFiles();
-  }, []);
-
-  const mergeFilesData = (currentFiles, newFiles) => {
-    const currentFilesMap = new Map(currentFiles.map((file) => [file.id, file]));
-
-    newFiles.forEach((newFile) => {
-      if (currentFilesMap.has(newFile.id)) {
-        currentFilesMap.set(newFile.id, { ...currentFilesMap.get(newFile.id), ...newFile });
-      } else {
-        currentFilesMap.set(newFile.id, newFile);
-      }
-    });
-
-    return Array.from(currentFilesMap.values());
   };
 
   useEffect(() => {
@@ -146,7 +113,7 @@ const FileListPage = () => {
               </div>
             </div>
           </div>
-          {loading ? (
+          {isLoading ? (
             <Loader />
           ) : filesData && filesData.length > 0 ? (
             <div className="col-12">

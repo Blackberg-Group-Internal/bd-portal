@@ -12,10 +12,16 @@ import { createContext, useState } from "react";
 import ChatBot from "./components/Chat";
 import { FolderProvider } from "./context/FolderContext";
 import { ToastProvider } from "./context/ToastContext";
+import { QueryClient, QueryClientProvider, useQuery } from 'react-query';
 
 export const FileViewerContext = createContext();
 
+const queryClient = new QueryClient();
+
+
+
 export default function RootLayout({ children }) {
+
 
   const pathname = usePathname();
   const bodyClass = pathname === "/" ? "home" : pathname.replace(/\//g, "-").replace(/^-|-$/g, "");
@@ -41,6 +47,7 @@ export default function RootLayout({ children }) {
       </head>
       <body className={bodyClass}>
         <SessionProvider>
+        <QueryClientProvider client={queryClient}>
         <ToastProvider>
           <FolderProvider>
           <FileViewerContext.Provider value={{ openModal, closeModal }}>
@@ -65,6 +72,7 @@ export default function RootLayout({ children }) {
             )}
             </FolderProvider>
             </ToastProvider>
+            </QueryClientProvider>
         </SessionProvider>
       </body>
     </html>

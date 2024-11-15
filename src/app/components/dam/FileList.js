@@ -110,7 +110,7 @@ const FileList = ({ files, preview }) => {
                   src={file.webUrl}
                   alt={file.name}
                   className="img-fluid"
-                    loading="lazy"
+                  loading="lazy"
                 />
                 </div>
             );

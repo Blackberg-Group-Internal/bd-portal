@@ -146,10 +146,10 @@ const CollectionList = ({ collections }) => {
                   <FavoritesIcon className="icon me-2" />
                   Add to Favorites
                 </button>
-                <button className="btn-text px-3 py-2 border-0 text-left" onClick={() => alert('Download')}>
+                {/* <button className="btn-text px-3 py-2 border-0 text-left" onClick={() => alert('Download')}>
                   <DownloadIcon className="icon me-2" />
                   Download
-                </button>
+                </button> */}
               </div>
             )}
         </div>
