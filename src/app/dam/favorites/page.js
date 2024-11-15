@@ -121,7 +121,7 @@ const FavoritesPage = () => {
           <div className="row">
             <div className="col-12">
               <div className="d-flex justify-content-between align-items-center pb-3 border-bottom">
-                <h2 className="h5 fw-bold-600">{filesData?.length} Files</h2>
+                <h2 className="h5 fw-bold-600">{filesData?.length} Favorites</h2>
                 <div className="view-toggle d-flex">
                   <button
                     className={`btn btn--layout btn-text bg-white d-flex align-items-center ${viewMode === 'list' ? 'active' : ''}`}

@@ -39,7 +39,7 @@ const CollectionDetailPage = ({ params }) => {
     if (slug && slug.length > 0) {
       const vanitySlug = slug.join('/');
       const mappedFolderId = getFolderIdFromVanity(vanitySlug);
-      
+
       if (mappedFolderId && mappedFolderId !== folderId) {
         updateFolderId(mappedFolderId);
       } else if (vanitySlug !== previousSlug) {
@@ -55,12 +55,14 @@ const CollectionDetailPage = ({ params }) => {
   useEffect(() => {
     if (folderId && !isVanityOrId(folderId)) {
     //if (folderId && folderId !== previousFolderId && !isVanityOrId(folderId)) {
-      const savedData = JSON.parse(localStorage.getItem(`folderContents_${folderId}`));
+      const savedData = localStorage.getItem(`folderContents_${folderId}`);
       if (savedData) {
-        setCollectionData(savedData);
+        setCollectionData(JSON.parse(savedData));
         setLoading(false);
+        fetchFolderContents(folderId);
+      } else {
+        fetchFolderContents(folderId);
       }
-      fetchFolderContents(folderId);
     }
   }, [folderId]);
 
@@ -77,16 +79,26 @@ const CollectionDetailPage = ({ params }) => {
         if (data?.value && data.value.length > 0) {
           console.log('Folder contents', data.value);
 
-          setCollectionData((prevData) => {
-            const existingItemsMap = new Map(prevData.map(item => [item.id, item]));
-
-            const updatedData = data.value.map(item => {
-              return existingItemsMap.get(item.id) || item;
+          const savedData = localStorage.getItem(`folderContents_${folderId}`);
+          if (savedData) {
+            setCollectionData((prevData = []) => {
+              const existingItemsMap = new Map(prevData.map(item => [item.id, item]));
+            
+              const updatedData = data.value.map(item => {
+                return existingItemsMap.get(item.id) || item;
+              });
+            
+              localStorage.setItem(`folderContents_${folderId}`, JSON.stringify(updatedData));
+              return updatedData;
             });
-
-            localStorage.setItem(`folderContents_${folderId}`, JSON.stringify(updatedData));
-            return updatedData;
-          });
+          } else {
+            setCollectionData(data.value);
+          }
+          
+        } else {
+          setCollectionData(null);
+          localStorage.removeItem(`folderContents_${folderId}`);
+          setLoading(false);
         }
       } else {
         console.error('Error fetching folder contents:', data.error);
@@ -149,8 +161,8 @@ const CollectionDetailPage = ({ params }) => {
 
   const handleFolderAdded = () => {
     setTimeout(() => {
-      fetchFolderContents(folderId);
-    }, 0)
+      fetchFolderContents(previousFolderId);
+    }, 100)
   };
 
   return (

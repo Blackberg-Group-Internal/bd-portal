@@ -22,7 +22,7 @@ const Folder = ({ folder, viewMode }) => {
     setTimeout(() => {
       const url = createDynamicUrl(folder);
       router.push(url);
-    }, 100); 
+    }, 0); 
   };
 
   const createDynamicUrl = (folder) => {

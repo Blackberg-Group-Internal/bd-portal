@@ -159,7 +159,7 @@ const FileUpload = ({ show, handleClose, onFilesUploaded }) => {
 
         {files.length > 0 && (
           <>
-            <div className="mt-3">
+            <div className="mt-3 file-upload-preview">
               {files.map((fileObj, index) => (
                 <div key={index} className="d-flex flex-column align-items-start mb-3 border rounded p-3">
                   <div className="file-details d-flex flex-column mb-2">
