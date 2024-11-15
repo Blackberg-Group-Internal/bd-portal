@@ -111,7 +111,6 @@ const SearchModal = ({ show, handleClose }) => {
     }
   }, [debouncedSearchInput]);
 
-  // Animate in new users, resumes, and proposals
   useEffect(() => {
     const animateNewItems = (ref, previousItems, currentItems) => {
       const newItems = currentItems.filter(
@@ -122,7 +121,7 @@ const SearchModal = ({ show, handleClose }) => {
         const newElements = ref.current.children;
         gsap.from(newElements, {
           opacity: 0,
-          y: 20,
+          x: -20,
           stagger: 0.1,
           ease: 'power1.out',
           duration: 0.5,

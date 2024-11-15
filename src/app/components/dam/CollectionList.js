@@ -38,10 +38,8 @@ const CollectionList = ({ collections }) => {
 
     updateFolderId(folder.id); 
     updateFolderMapping(folder, folder.id);
-   // setTimeout(() => {
-      const url = createDynamicUrl(folder);
-      router.push(url);
-   // }, 0); 
+    const url = createDynamicUrl(folder);
+    router.push(url);
   };
 
   const handleSelectAll = () => {

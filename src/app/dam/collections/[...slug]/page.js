@@ -26,7 +26,7 @@ const CollectionDetailPage = ({ params }) => {
   const [previousSlug, setPreviousSlug] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const handleClose = () => setShowModal(false);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [collectionData, setCollectionData] = useState([]);
   const handleShow = () => setShowModal(true);
 
@@ -39,9 +39,7 @@ const CollectionDetailPage = ({ params }) => {
     if (slug && slug.length > 0) {
       const vanitySlug = slug.join('/');
       const mappedFolderId = getFolderIdFromVanity(vanitySlug);
-  
-      // Always update the folderId if the vanitySlug changes, 
-      // even if the IDs are the same, to ensure re-render.
+      
       if (mappedFolderId && mappedFolderId !== folderId) {
         updateFolderId(mappedFolderId);
       } else if (vanitySlug !== previousSlug) {
@@ -55,7 +53,8 @@ const CollectionDetailPage = ({ params }) => {
   }, [slug]);
 
   useEffect(() => {
-    if (folderId && folderId !== previousFolderId && !isVanityOrId(folderId)) {
+    if (folderId && !isVanityOrId(folderId)) {
+    //if (folderId && folderId !== previousFolderId && !isVanityOrId(folderId)) {
       const savedData = JSON.parse(localStorage.getItem(`folderContents_${folderId}`));
       if (savedData) {
         setCollectionData(savedData);

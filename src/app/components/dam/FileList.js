@@ -268,10 +268,12 @@ const FileList = ({ files, preview }) => {
                   <FavoritesIcon className="icon me-2" />
                   Add to Favorites
                 </button>
+                {!item.folder && (
                 <a className="btn-text px-3 py-2 border-0 text-left w-100 text-decoration-none text-dark" href={item['@microsoft.graph.downloadUrl']} download>
                   <DownloadIcon className="icon me-2" target="_blank" /> 
                   Download
                 </a>
+                )}
             </div>
           )}
         </div>
