@@ -160,9 +160,11 @@ const CollectionDetailPage = ({ params }) => {
   }, []);
 
   const handleFolderAdded = () => {
-    setTimeout(() => {
-      fetchFolderContents(previousFolderId);
-    }, 100)
+    if (slug && slug.length > 0) {
+      const vanitySlug = slug.join('/');
+      const mappedFolderId = getFolderIdFromVanity(vanitySlug);
+      fetchFolderContents(mappedFolderId);
+    }
   };
 
   return (

@@ -5,13 +5,15 @@ import UploadIcon from '../../../../public/images/icons/upload.svg';
 import axios from 'axios';
 import { useToast } from '@/app/context/ToastContext';
 import { usePathname } from "next/navigation";
+import { useSession } from 'next-auth/react';
 
 const FileUpload = ({ show, handleClose, onFilesUploaded }) => {
   const [files, setFiles] = useState([]);
+  const { data } = useSession();
   const [uploading, setUploading] = useState(false);
   const [progress, setProgress] = useState({});
-  const [folders, setFolders] = useState([]); 
-  const [selectedFolder, setSelectedFolder] = useState(''); 
+  const [folders, setFolders] = useState([]);
+  const [selectedFolder, setSelectedFolder] = useState('');
   const [shouldShowFolderSelect, setShouldShowFolderSelect] = useState(true);
   const { addToast } = useToast();
   const pathname = usePathname();
@@ -25,7 +27,7 @@ const FileUpload = ({ show, handleClose, onFilesUploaded }) => {
     if (show) {
       const fetchFolders = async () => {
         try {
-          const response = await axios.get(`/api/graph/library?libraryId=""}`);
+          const response = await axios.get(`/api/graph/library?libraryId=""`);
           setFolders(response.data.value);
         } catch (error) {
           console.error('Error fetching library contents:', error);
@@ -44,63 +46,80 @@ const FileUpload = ({ show, handleClose, onFilesUploaded }) => {
     }
 
     const folderPath = getFolderPath();
-
     if (!folderPath) {
       alert('Please select a folder before uploading.');
       return;
     }
 
-    const formData = new FormData();
-    files.forEach((fileObj) => {
-      formData.append('files', fileObj.file); 
-    });
-    formData.append('folderPath', folderPath);
-
     setUploading(true);
 
-    
-    const progressIntervals = files.map((fileObj, index) => {
-      let progressValue = 0;
+    try {
+      // Loop through each file and upload them using the generated upload URL.
+      for (let i = 0; i < files.length; i++) {
+        const fileObj = files[i];
+        const file = fileObj.file;
 
-      const fileSizeMB = fileObj.file.size / (1024 * 1024);
-      const maxSpeed = 15;
-      const minSpeed = 5; 
-      const speedFactor = Math.max(minSpeed, maxSpeed - Math.log2(fileSizeMB + 1));
+        // Create upload session URL via API
+        const response = await axios.post('/api/graph/library/upload-session', {
+          folderPath,
+          fileName: file.name,
+        }, {
+          headers: {
+            'Content-Type': 'application/json', // Ensure we're sending JSON
+          },
+        });
+  
 
-      return setInterval(() => {
-        progressValue = Math.min(progressValue + Math.random() * speedFactor, 90);
+        if (response.status !== 200 || !response.data.uploadUrl) {
+          throw new Error('Failed to create upload session.');
+        }
+
+        const uploadUrl = response.data.uploadUrl;
+
+        // Upload file in chunks
+        const chunkSize = 5 * 1024 * 1024; // 5MB chunks
+        let start = 0;
+        let end = Math.min(chunkSize, file.size) - 1;
+
+        while (start < file.size) {
+          const chunk = file.slice(start, end + 1);
+          const contentLength = end - start + 1;
+
+          await axios.put(uploadUrl, chunk, {
+            headers: {
+              Authorization: `Bearer ${data.accessToken}`,
+              'Content-Length': contentLength,
+              'Content-Range': `bytes ${start}-${end}/${file.size}`,
+            },
+          });
+
+          // Update progress for each chunk uploaded
+          const progressValue = Math.min(((end + 1) / file.size) * 100, 99);
+          setProgress((prevProgress) => ({
+            ...prevProgress,
+            [i]: Math.round(progressValue),
+          }));
+
+          start = end + 1;
+          end = Math.min(start + chunkSize - 1, file.size - 1);
+        }
+
+        // Mark the progress as complete for this file
         setProgress((prevProgress) => ({
           ...prevProgress,
-          [index]: Math.round(progressValue),
+          [i]: 100,
         }));
-      }, 100);
-    });
+      }
 
-    try {
-      const response = await axios.post('/api/graph/library/upload', formData);
-      
-      if (response.status === 200) {
-        progressIntervals.forEach(clearInterval); 
-        setProgress((prevProgress) => {
-          const newProgress = { ...prevProgress };
-          files.forEach((_, index) => {
-            newProgress[index] = 100;
-          });
-          return newProgress;
-        });
-        addToast('Your file(s) were uploaded.', 'success');
-        if (onFilesUploaded) {
-          onFilesUploaded();
-        }
-      } else {
-        throw new Error('Upload failed');
+      addToast('Your file(s) were uploaded.', 'success');
+      if (onFilesUploaded) {
+        onFilesUploaded();
       }
     } catch (error) {
       console.error('Error uploading files:', error);
       addToast('Failed to upload file(s).', 'danger');
     } finally {
       setUploading(false);
-      progressIntervals.forEach(clearInterval); 
       handleClose();
     }
   };
@@ -110,7 +129,7 @@ const FileUpload = ({ show, handleClose, onFilesUploaded }) => {
     let vanityPath;
 
     if (parts.length === 2 && parts[1] === 'dam') {
-      return selectedFolder; 
+      return selectedFolder;
     } else {
       vanityPath = parts.slice(2).join('/').toLowerCase().replace(/\s+/g, '-');
     }
@@ -145,7 +164,6 @@ const FileUpload = ({ show, handleClose, onFilesUploaded }) => {
         <span className="small">Upload files to this collection.</span>
       </Modal.Header>
       <Modal.Body className="px-4">
-
         <div {...getRootProps()} className="upload-area rounded py-3 text-center">
           <input {...getInputProps()} />
           <div className="btn btn-icon border rounded d-inline-flex align-items-center justify-content-center mb-2 pb-1">
