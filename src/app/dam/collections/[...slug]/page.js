@@ -98,31 +98,38 @@ const CollectionDetailPage = ({ params }) => {
           const savedData = localStorage.getItem(`folderContents_${folderId}`);
           if (savedData) {
             setCollectionData((prevData = []) => {
-              const existingItemsMap = new Map(prevData.map(item => [item.id, item]));
-              
+              const existingItemsMap = new Map(prevData.map((item) => [item.id, item]));
+          
               // Add previously saved data from localStorage to the map
-              JSON.parse(savedData).forEach(item => {
+              JSON.parse(savedData).forEach((item) => {
                 if (!existingItemsMap.has(item.id)) {
                   existingItemsMap.set(item.id, item);
                 }
               });
-
-              // Add new data from the response to the map
-              data.value.forEach(item => {
+          
+              // Add new data from the response to the map and also ensure we update existing items
+              data.value.forEach((item) => {
                 existingItemsMap.set(item.id, item);
               });
-
-              const updatedData = Array.from(existingItemsMap.values());
-
-              // Update localStorage with the new set of data
+          
+              // Create an updated array from the existing items map
+              let updatedData = Array.from(existingItemsMap.values());
+          
+              // Filter out items that exist in local storage but not in the response data
+              updatedData = updatedData.filter((item) =>
+                data.value.some((apiItem) => apiItem.id === item.id)
+              );
+          
+              // Update localStorage with the filtered data
               localStorage.setItem(`folderContents_${folderId}`, JSON.stringify(updatedData));
-              
+          
               return updatedData;
             });
           } else {
             setCollectionData(data.value);
             localStorage.setItem(`folderContents_${folderId}`, JSON.stringify(data.value));
           }
+          
 
           
         } else {
