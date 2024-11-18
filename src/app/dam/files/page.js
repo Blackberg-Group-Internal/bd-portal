@@ -26,12 +26,17 @@ const FileListPage = () => {
   const [viewMode, setViewMode] = useState('tiles');
   const folderContainerRef = useRef(null);
   const [showModal, setShowModal] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const handleClose = () => setShowModal(false);
   const handleShow = () => setShowModal(true);
   const { data: session, status } = useSession();
 
-  const { data: filesData, isLoading, error } = useQuery('files', fetchFiles, {
+  const { data: filesData, error } = useQuery('files', fetchFiles, {
     staleTime: 10000, // cache for 10 seconds
+    initialData: () => {
+      const storedFilesData = JSON.parse(localStorage.getItem('allFiles'));
+      return storedFilesData || [];
+    },
     onSuccess: (data) => {
       localStorage.setItem('allFiles', JSON.stringify(data));
     },
@@ -58,6 +63,13 @@ const FileListPage = () => {
       );
     }
   }, [viewMode, filesData]);
+
+  useEffect(() => {
+    const savedViewMode = localStorage.getItem('viewMode');
+    if (savedViewMode) {
+      setViewMode(savedViewMode);
+    }
+  }, []);
 
   useEffect(() => {
     const savedViewMode = localStorage.getItem('viewMode');

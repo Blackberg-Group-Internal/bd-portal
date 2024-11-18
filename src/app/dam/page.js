@@ -15,6 +15,7 @@ import TilesIcon from '../../../public/images/icons/tiles.svg';
 import AddFolderButton from '../components/dam/AddFolderButton';
 import { useSession } from 'next-auth/react';
 import CollectionTiles from '../components/dam/CollectionTiles';
+import { useQuery } from 'react-query';
 
 const DamPage = () => {
   const [viewMode, setViewMode] = useState('tiles');
@@ -23,6 +24,18 @@ const DamPage = () => {
   const folderContainerRef = useRef(null);
   const [showModal, setShowModal] = useState(false);
   const { data: session, status } = useSession();
+
+  const fetchFiles = async () => {
+    const response = await axios.get('/api/graph/library/files');
+    return response.data;
+  };
+
+  const { data: filesData, isLoading, error } = useQuery('files', fetchFiles, {
+    staleTime: 10000, 
+    onSuccess: (data) => {
+      localStorage.setItem('allFiles', JSON.stringify(data));
+    },
+  });
 
   const handleShow = () => setShowModal(true);
   const handleClose = () => setShowModal(false);
