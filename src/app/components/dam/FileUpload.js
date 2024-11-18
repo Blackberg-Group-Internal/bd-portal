@@ -58,14 +58,13 @@ const FileUpload = ({ show, handleClose, onFilesUploaded }) => {
 
     setUploading(true);
 
-    // Create individual intervals to update progress based on file size
+    
     const progressIntervals = files.map((fileObj, index) => {
       let progressValue = 0;
 
-      // Adjust speed based on file size: Larger files upload slower
       const fileSizeMB = fileObj.file.size / (1024 * 1024);
-      const maxSpeed = 15; // Minimum speed factor (larger files take longer)
-      const minSpeed = 5; // Maximum speed factor (smaller files are faster)
+      const maxSpeed = 15;
+      const minSpeed = 5; 
       const speedFactor = Math.max(minSpeed, maxSpeed - Math.log2(fileSizeMB + 1));
 
       return setInterval(() => {
@@ -81,7 +80,7 @@ const FileUpload = ({ show, handleClose, onFilesUploaded }) => {
       const response = await axios.post('/api/graph/library/upload', formData);
       
       if (response.status === 200) {
-        progressIntervals.forEach(clearInterval); // Clear all intervals
+        progressIntervals.forEach(clearInterval); 
         setProgress((prevProgress) => {
           const newProgress = { ...prevProgress };
           files.forEach((_, index) => {
@@ -101,7 +100,7 @@ const FileUpload = ({ show, handleClose, onFilesUploaded }) => {
       addToast('Failed to upload file(s).', 'danger');
     } finally {
       setUploading(false);
-      progressIntervals.forEach(clearInterval); // Ensure all intervals are cleared
+      progressIntervals.forEach(clearInterval); 
       handleClose();
     }
   };

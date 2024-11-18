@@ -205,7 +205,7 @@ export const getDocumentLibraryContents = async (libraryId) => {
     }
   }
   
-export const addFolder = async (folderName, parentFolderId) => {
+export const addFolder = async (folderName, parentFolderId, userAccessToken) => {
   const siteId = "871f4fc4-277d-44b7-8776-759d5c51c429"; 
   const driveId = "b!xE8fh30nt0SHdnWdXFHEKTzU3LKnVJJAsgMV8Ij6KKRtXG_wHCViQoQJbMU201re";
 
@@ -229,7 +229,7 @@ export const addFolder = async (folderName, parentFolderId) => {
       },
       {
         headers: {
-          Authorization: `Bearer ${accessToken}`,
+          Authorization: `Bearer ${userAccessToken}`,
           'Content-Type': 'application/json',
         },
       }

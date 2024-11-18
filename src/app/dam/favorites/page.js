@@ -27,12 +27,11 @@ const fetchFavorites = async (userId) => {
       if (error.response && error.response.status === 500) {
         try {
           await axios.delete(`/api/graph/library/file/favorite?favoriteId=${favorite.id}`);
-         // console.log(`Deleted favorite file with ID ${favorite.id} from database.`);
         } catch (deleteError) {
-         // console.error(`Failed to delete favorite file with ID ${favorite.id} from database:`, deleteError);
+
         }
       } else {
-       // console.error(`Error fetching file data for file ID ${favorite.fileId}:`, error);
+
       }
       return null;
     }

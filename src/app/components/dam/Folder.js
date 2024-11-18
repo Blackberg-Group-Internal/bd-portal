@@ -19,10 +19,8 @@ const Folder = ({ folder, viewMode }) => {
 
   const handleFolderClick = (folder) => {
     updateFolderId(folder.id); 
-   // setTimeout(() => {
       const url = createDynamicUrl(folder);
       router.push(url);
-   // }, 0); 
   };
 
   const createDynamicUrl = (folder) => {
