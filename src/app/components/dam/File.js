@@ -34,7 +34,7 @@ const File = ({ file, preview }) => {
 
   const renderFilePreview = () => {
     const fileExtension = file.name.split('.').pop(); 
-    console.log('File Extension: ' + fileExtension);
+    //console.log('File Extension: ' + fileExtension);
    // console.log('File: ', file);
     if (preview) {
       switch (fileExtension) {

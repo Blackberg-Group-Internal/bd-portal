@@ -56,9 +56,9 @@ const FileListPage = () => {
         {
           opacity: 1,
           y: 0,
-          stagger: 0.075,
+          stagger: 0.05,
           ease: 'power1.out',
-          duration: 0.5,
+          duration: 0.3,
         }
       );
     }

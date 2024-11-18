@@ -185,9 +185,9 @@ const FileList = ({ files, preview }) => {
         {
           opacity: 1,
           y: 0,
-          stagger: 0.075,
+          stagger: 0.05,
           ease: 'power1.out',
-          duration: 0.5,
+          duration: 0.3,
           onComplete: () => {
             rows.forEach((row) => {
               row.style.transform = 'none';
@@ -241,7 +241,7 @@ const FileList = ({ files, preview }) => {
           <div
             className={`col-9 col-md-7 col-lg-5 d-flex align-items-center pointer count-${item.folder?.childCount}`}
           >
-            <div onClick={() => handleFolderClick(item)}  className="folder-icon text-black text-decoration-none d-flex">
+            <div onClick={() => handleFolderClick(item)}  className="folder-icon text-black text-decoration-none d-flex pointer">
           <FolderIcon className={`icon--folder`} width="48" height="48" />
           <div className="folder-name mt-3 ms-2">{item.name}</div>
         </div>
