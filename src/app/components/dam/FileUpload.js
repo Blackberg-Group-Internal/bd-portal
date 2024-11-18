@@ -232,7 +232,7 @@ const FileUpload = ({ show, handleClose, onFilesUploaded }) => {
           <button
             className="btn btn-primary w-100"
             onClick={startUpload}
-            disabled={uploading || files.length === 0 || !getFolderPath()}
+            disabled={uploading || files.length === 0}
           >
             {uploading ? 'Uploading...' : 'Upload Files'}
           </button>
