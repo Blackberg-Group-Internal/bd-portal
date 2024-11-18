@@ -98,31 +98,38 @@ const CollectionDetailPage = ({ params }) => {
           const savedData = localStorage.getItem(`folderContents_${folderId}`);
           if (savedData) {
             setCollectionData((prevData = []) => {
-              const existingItemsMap = new Map(prevData.map(item => [item.id, item]));
-              
+              const existingItemsMap = new Map(prevData.map((item) => [item.id, item]));
+          
               // Add previously saved data from localStorage to the map
-              JSON.parse(savedData).forEach(item => {
+              JSON.parse(savedData).forEach((item) => {
                 if (!existingItemsMap.has(item.id)) {
                   existingItemsMap.set(item.id, item);
                 }
               });
-
-              // Add new data from the response to the map
-              data.value.forEach(item => {
+          
+              // Add new data from the response to the map and also ensure we update existing items
+              data.value.forEach((item) => {
                 existingItemsMap.set(item.id, item);
               });
-
-              const updatedData = Array.from(existingItemsMap.values());
-
-              // Update localStorage with the new set of data
+          
+              // Create an updated array from the existing items map
+              let updatedData = Array.from(existingItemsMap.values());
+          
+              // Filter out items that exist in local storage but not in the response data
+              updatedData = updatedData.filter((item) =>
+                data.value.some((apiItem) => apiItem.id === item.id)
+              );
+          
+              // Update localStorage with the filtered data
               localStorage.setItem(`folderContents_${folderId}`, JSON.stringify(updatedData));
-              
+          
               return updatedData;
             });
           } else {
             setCollectionData(data.value);
             localStorage.setItem(`folderContents_${folderId}`, JSON.stringify(data.value));
           }
+          
 
           
         } else {
@@ -199,7 +206,7 @@ const CollectionDetailPage = ({ params }) => {
 
   return (
     <>
-       <section className="container p-4 py-lg-5 px-lg-5">
+       <section className="container p-4 pt-lg-5 px-lg-5 pb-0">
         <div className="row">
           <div className="col-12">
             <Breadcrumbs first="Digital Asset Manager" second="Collections" />
@@ -223,8 +230,8 @@ const CollectionDetailPage = ({ params }) => {
       <section className="container px-4 px-lg-5 mb-6">
         <div className="row">
           <div className="col-12">
-            <div className="d-flex justify-content-between align-items-center pb-3 border-bottom">
-              <h2 className="h5 fw-bold-600">{collectionData?.length || 0} {collectionTitle}</h2>
+            <div className="d-flex justify-content-between align-items-center py-2 border-bottom">
+              <h2 className="h5 fw-bold-600 m-0">{collectionData?.length || 0} {collectionTitle}</h2>
               <div className="view-toggle d-flex">
                 <button className={`btn btn--layout btn-text bg-white d-flex align-items-center ${viewMode === 'list' ? 'active' : ''}`} onClick={() => toggleView('list')}>
                   <ListIcon className="me-2 icon" />

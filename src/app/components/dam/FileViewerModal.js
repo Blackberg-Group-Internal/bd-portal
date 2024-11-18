@@ -122,6 +122,7 @@ const FileViewerModal = ({ show, handleClose, fileData }) => {
       } catch (error) {
         console.error('Error fetching PDF:', error);
         addToast('Error loading PDF.', 'danger');
+        
       }
     }
   };

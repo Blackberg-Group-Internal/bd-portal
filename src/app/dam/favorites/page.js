@@ -97,7 +97,7 @@ const FavoritesPage = () => {
 
   return (
     <>
-      <section className="container p-4 py-lg-5 px-lg-5">
+      <section className="container p-4 pt-lg-5 px-lg-5 pb-0">
         <div className="row">
           <div className="col-12">
             <Breadcrumbs first="Digital Asset Manager" second="Favorites" />
@@ -119,8 +119,8 @@ const FavoritesPage = () => {
         <section className="container px-4 px-lg-5 mb-6">
           <div className="row">
             <div className="col-12">
-              <div className="d-flex justify-content-between align-items-center pb-3 border-bottom">
-                <h2 className="h5 fw-bold-600">{filesData?.length} Favorites</h2>
+              <div className="d-flex justify-content-between align-items-center py-2 border-bottom">
+                <h2 className="h5 fw-bold-600 m-0">{filesData?.length} Favorites</h2>
                 <div className="view-toggle d-flex">
                   <button
                     className={`btn btn--layout btn-text bg-white d-flex align-items-center ${viewMode === 'list' ? 'active' : ''}`}

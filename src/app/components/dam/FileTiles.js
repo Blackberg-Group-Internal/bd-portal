@@ -14,7 +14,7 @@ const FileTiles = ({ files, preview }) => {
   const [selectedItems, setSelectedItems] = useState([]);
   const [activeActionPanel, setActiveActionPanel] = useState(null);
   const tileViewRef = useRef(null);
-  const renderedItemsRef = useRef(new Set()); // Track rendered items
+  const renderedItemsRef = useRef(new Set()); 
   const { openModal } = useContext(FileViewerContext);
 
   const handleItemSelect = (id) => {
@@ -52,7 +52,6 @@ const FileTiles = ({ files, preview }) => {
           }
         );
 
-        // Add new tiles to the rendered set
         newTiles.forEach((tile) => renderedItemsRef.current.add(tile.dataset.id));
       }
     }
