@@ -47,7 +47,7 @@ const FileTiles = ({ files, preview }) => {
         }
       );
     }
-  }, []);
+  }, [files]);
 
   return (
     <div className="tile-view container mt-4 d-flex flex-wrap" ref={tileViewRef}>

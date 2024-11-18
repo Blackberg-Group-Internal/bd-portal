@@ -44,73 +44,77 @@ const FileUpload = ({ show, handleClose, onFilesUploaded }) => {
     if (!files.length) {
       return;
     }
-
+  
     const folderPath = getFolderPath();
     if (!folderPath) {
       alert('Please select a folder before uploading.');
       return;
     }
-
+  
     setUploading(true);
-
+  
     try {
-      // Loop through each file and upload them using the generated upload URL.
       for (let i = 0; i < files.length; i++) {
         const fileObj = files[i];
         const file = fileObj.file;
-
+  
         // Create upload session URL via API
         const response = await axios.post('/api/graph/library/upload-session', {
           folderPath,
           fileName: file.name,
         }, {
           headers: {
-            'Content-Type': 'application/json', // Ensure we're sending JSON
+            'Content-Type': 'application/json',
           },
         });
   
-
         if (response.status !== 200 || !response.data.uploadUrl) {
           throw new Error('Failed to create upload session.');
         }
-
+  
         const uploadUrl = response.data.uploadUrl;
-
+  
         // Upload file in chunks
         const chunkSize = 5 * 1024 * 1024; // 5MB chunks
         let start = 0;
         let end = Math.min(chunkSize, file.size) - 1;
-
+        let totalUploaded = 0;
+  
         while (start < file.size) {
           const chunk = file.slice(start, end + 1);
           const contentLength = end - start + 1;
-
+  
           await axios.put(uploadUrl, chunk, {
             headers: {
               Authorization: `Bearer ${data.accessToken}`,
               'Content-Length': contentLength,
               'Content-Range': `bytes ${start}-${end}/${file.size}`,
             },
+            onUploadProgress: (progressEvent) => {
+              // Calculate the progress for the current chunk
+              const uploadedBytes = progressEvent.loaded;
+              totalUploaded += uploadedBytes;
+  
+              // Update the total progress for the current file
+              const progressValue = Math.min((totalUploaded / file.size) * 100, 99);
+              setProgress((prevProgress) => ({
+                ...prevProgress,
+                [i]: Math.round(progressValue),
+              }));
+            },
           });
-
-          // Update progress for each chunk uploaded
-          const progressValue = Math.min(((end + 1) / file.size) * 100, 99);
-          setProgress((prevProgress) => ({
-            ...prevProgress,
-            [i]: Math.round(progressValue),
-          }));
-
+  
           start = end + 1;
           end = Math.min(start + chunkSize - 1, file.size - 1);
         }
-
+  
         // Mark the progress as complete for this file
         setProgress((prevProgress) => ({
           ...prevProgress,
           [i]: 100,
         }));
       }
-
+  
       addToast('Your file(s) were uploaded.', 'success');
       if (onFilesUploaded) {
         onFilesUploaded();
@@ -123,6 +127,7 @@ const FileUpload = ({ show, handleClose, onFilesUploaded }) => {
       handleClose();
     }
   };
+  
 
   const getFolderPath = () => {
     const parts = pathname.replace(/^\/|\/$/g, '').split('/');

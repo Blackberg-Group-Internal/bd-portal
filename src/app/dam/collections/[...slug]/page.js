@@ -79,21 +79,51 @@ const CollectionDetailPage = ({ params }) => {
         if (data?.value && data.value.length > 0) {
           //console.log('Folder contents', data.value);
 
+          // const savedData = localStorage.getItem(`folderContents_${folderId}`);
+          // if (savedData) {
+          //   setCollectionData((prevData = []) => {
+          //     const existingItemsMap = new Map(prevData.map(item => [item.id, item]));
+            
+          //     const updatedData = data.value.map(item => {
+          //       return existingItemsMap.get(item.id) || item;
+          //     });
+            
+          //     localStorage.setItem(`folderContents_${folderId}`, JSON.stringify(updatedData));
+          //     return updatedData;
+          //   });
+          // } else {
+          //   setCollectionData(data.value);
+          // }
+
           const savedData = localStorage.getItem(`folderContents_${folderId}`);
           if (savedData) {
             setCollectionData((prevData = []) => {
               const existingItemsMap = new Map(prevData.map(item => [item.id, item]));
-            
-              const updatedData = data.value.map(item => {
-                return existingItemsMap.get(item.id) || item;
+              
+              // Add previously saved data from localStorage to the map
+              JSON.parse(savedData).forEach(item => {
+                if (!existingItemsMap.has(item.id)) {
+                  existingItemsMap.set(item.id, item);
+                }
               });
-            
+
+              // Add new data from the response to the map
+              data.value.forEach(item => {
+                existingItemsMap.set(item.id, item);
+              });
+
+              const updatedData = Array.from(existingItemsMap.values());
+
+              // Update localStorage with the new set of data
               localStorage.setItem(`folderContents_${folderId}`, JSON.stringify(updatedData));
+              
               return updatedData;
             });
           } else {
             setCollectionData(data.value);
+            localStorage.setItem(`folderContents_${folderId}`, JSON.stringify(data.value));
           }
+
           
         } else {
           setCollectionData(null);

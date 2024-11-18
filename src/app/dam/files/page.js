@@ -32,7 +32,7 @@ const FileListPage = () => {
   const { data: session, status } = useSession();
 
   const { data: filesData, error } = useQuery('files', fetchFiles, {
-    staleTime: 10000, // cache for 10 seconds
+    staleTime: 0, // cache for 10 seconds
     initialData: () => {
       const storedFilesData = JSON.parse(localStorage.getItem('allFiles'));
       return storedFilesData || [];

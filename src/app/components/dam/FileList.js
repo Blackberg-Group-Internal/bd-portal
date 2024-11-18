@@ -87,15 +87,15 @@ const FileList = ({ files, preview }) => {
       switch (fileExtension) {
         case 'doc':
         case 'docx':
-          return <DocPreview className="icon--file me-2" width="40" height="48" />;
+          return <DocPreview className="icon--file me-2 pointer" width="40" height="48" />;
         case 'pdf':
-          return <PdfPreview className="icon--file me-2 test" width="40" height="48" />;
+          return <PdfPreview className="icon--file me-2 test pointer" width="40" height="48" />;
         case 'xls':
         case 'xlsx':
-          return <XlsxPreview className="icon--file me-2" width="40" height="43" />;
+          return <XlsxPreview className="icon--file me-2 pointer" width="40" height="43" />;
         case 'ppt':
         case 'pptx':
-          return <PowerpointIcon className="icon--file me-2" width="40" height="48" />;
+          return <PowerpointIcon className="icon--file me-2 pointer" width="40" height="48" />;
         case 'jpg':
         case 'jpeg':
         case 'png':
@@ -105,7 +105,7 @@ const FileList = ({ files, preview }) => {
         case 'tiff':
         case 'svg':
             return (
-              <div className="img-preview">
+              <div className="img-preview pointer">
                 <img
                   src={file.webUrl}
                   alt={file.name}
@@ -115,7 +115,7 @@ const FileList = ({ files, preview }) => {
                 </div>
             );
         default:
-          return <DefaultIcon className="icon--file me-2" width="40" height="48" />;;
+          return <DefaultIcon className="icon--file me-2 pointer" width="40" height="48" />;;
       }
     }
   };

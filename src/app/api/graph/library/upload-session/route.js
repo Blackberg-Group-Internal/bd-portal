@@ -14,7 +14,7 @@ export async function POST(req) {
 
     const userAccessToken = token.accessToken;
 
-    const { folderPath, fileName } = await req.json(); // Parse JSON directly
+    const { folderPath, fileName } = await req.json(); 
 
     if (!folderPath || !fileName) {
       return NextResponse.json({ error: 'Missing folderPath or fileName' }, { status: 400 });
