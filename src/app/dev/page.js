@@ -61,7 +61,7 @@ function DevPage() {
           y: 0,
           stagger: 0.05,
           ease: 'power1.out',
-          duration: 0.5,
+          duration: 0.3,
           delay: 0.15,
         }
       );

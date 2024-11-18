@@ -117,12 +117,15 @@ export const getDocumentLibraryContents = async (libraryId) => {
     const driveId = "b!xE8fh30nt0SHdnWdXFHEKTzU3LKnVJJAsgMV8Ij6KKRtXG_wHCViQoQJbMU201re";
     try {
       const accessToken = await getAccessToken();
+      console.log('File Upload Access Token: ' + userAccessToken);
   
       const uploadPromises = files.map(async (file, index) => {
         const fileContent = filesBuffer[index];
   
+        console.log('File Upload Size: ' + file.size);
         // If the file is less than 4MB, we use a simple upload (PUT request)
         if (file.size <= 4 * 1024 * 1024) {
+          console.log('Small file: ' + file.size);
           const uploadUrl = `https://graph.microsoft.com/v1.0/sites/${siteId}/drives/${driveId}/items/${folderPath}:/${file.name}:/content`;
           return axios.put(uploadUrl, fileContent, {
             headers: {
@@ -205,7 +208,7 @@ export const getDocumentLibraryContents = async (libraryId) => {
     }
   }
   
-export const addFolder = async (folderName, parentFolderId) => {
+export const addFolder = async (folderName, parentFolderId, userAccessToken) => {
   const siteId = "871f4fc4-277d-44b7-8776-759d5c51c429"; 
   const driveId = "b!xE8fh30nt0SHdnWdXFHEKTzU3LKnVJJAsgMV8Ij6KKRtXG_wHCViQoQJbMU201re";
 
@@ -229,7 +232,7 @@ export const addFolder = async (folderName, parentFolderId) => {
       },
       {
         headers: {
-          Authorization: `Bearer ${accessToken}`,
+          Authorization: `Bearer ${userAccessToken}`,
           'Content-Type': 'application/json',
         },
       }
@@ -380,5 +383,29 @@ export async function getGroupOwners(groupId) {
   } catch (error) {
     console.error('Error fetching group owners:', error);
     throw new Error('Failed to fetch group owners');
+  }
+}
+
+export async function createUploadSession(folderPath, fileName, userAccessToken) {
+  const siteId = "871f4fc4-277d-44b7-8776-759d5c51c429";
+  const driveId = "b!xE8fh30nt0SHdnWdXFHEKTzU3LKnVJJAsgMV8Ij6KKRtXG_wHCViQoQJbMU201re";
+
+  try {
+    const createUploadSessionUrl = `https://graph.microsoft.com/v1.0/sites/${siteId}/drives/${driveId}/items/${folderPath}:/${fileName}:/createUploadSession`;
+    const uploadSessionResponse = await axios.post(createUploadSessionUrl, {}, {
+      headers: {
+        Authorization: `Bearer ${userAccessToken}`,
+        'Content-Type': 'application/json',
+      },
+    });
+
+    if (uploadSessionResponse.status === 200) {
+      return uploadSessionResponse.data.uploadUrl;
+    } else {
+      throw new Error('Failed to create upload session');
+    }
+  } catch (error) {
+    console.error('Error creating upload session:', error);
+    throw new Error('File upload session creation failed');
   }
 }

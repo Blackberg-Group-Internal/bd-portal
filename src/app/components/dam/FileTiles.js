@@ -14,6 +14,7 @@ const FileTiles = ({ files, preview }) => {
   const [selectedItems, setSelectedItems] = useState([]);
   const [activeActionPanel, setActiveActionPanel] = useState(null);
   const tileViewRef = useRef(null);
+  const renderedItemsRef = useRef(new Set()); // Track rendered items
   const { openModal } = useContext(FileViewerContext);
 
   const handleItemSelect = (id) => {
@@ -34,28 +35,36 @@ const FileTiles = ({ files, preview }) => {
 
   useEffect(() => {
     if (tileViewRef.current) {
-      const tiles = tileViewRef.current.querySelectorAll('.tile');
-      gsap.fromTo(
-        tiles,
-        { opacity: 0, y: 20 },
-        {
-          opacity: 1,
-          y: 0,
-          stagger: 0.075,
-          ease: 'power1.out',
-          duration: 0.5,
-        }
+      const newTiles = Array.from(tileViewRef.current.querySelectorAll('.tile')).filter(
+        (tile) => !renderedItemsRef.current.has(tile.dataset.id)
       );
+
+      if (newTiles.length > 0) {
+        gsap.fromTo(
+          newTiles,
+          { opacity: 0, y: 20 },
+          {
+            opacity: 1,
+            y: 0,
+            stagger: 0.05,
+            ease: 'power1.out',
+            duration: 0.3,
+          }
+        );
+
+        // Add new tiles to the rendered set
+        newTiles.forEach((tile) => renderedItemsRef.current.add(tile.dataset.id));
+      }
     }
-  }, []);
+  }, [files]);
 
   return (
     <div className="tile-view container mt-4 d-flex flex-wrap" ref={tileViewRef}>
       {files.map((item, index) => (
         item.folder ? (
-          <Folder key={index} folder={item} viewMode="tiles" />
+          <Folder key={index} folder={item} viewMode="tiles" data-id={item.id} />
         ) : (
-          <File key={index} file={item} preview={preview} />
+          <File key={index} file={item} preview={preview} data-id={item.id} />
         )
       ))}
     </div>

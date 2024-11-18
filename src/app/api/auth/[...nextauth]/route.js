@@ -41,18 +41,18 @@ export const authOptions = {
       session.error = token.error;
 
 
-      try {
-      const firstName = session.user.name.split(' ')[0];
-      const lastName = session.user.name.split(' ')[1];
+      // try {
+      // const firstName = session.user.name.split(' ')[0];
+      // const lastName = session.user.name.split(' ')[1];
 
-      const hygraphUser = await fetchEmployeeHygraph(firstName, lastName);
+      // const hygraphUser = await fetchEmployeeHygraph(firstName, lastName);
 
-        if (hygraphUser && hygraphUser[0]?.image?.url) {
-          session.user.hygraphImage = hygraphUser[0].image.url; 
-        }
-      } catch (error) {
-        console.error("Error fetching Hygraph user data:", error);
-      }
+      //   if (hygraphUser && hygraphUser[0]?.image?.url) {
+      //     session.user.hygraphImage = hygraphUser[0].image.url; 
+      //   }
+      // } catch (error) {
+      //   console.error("Error fetching route Hygraph user data:", error);
+      // }
 
       return session;
     },

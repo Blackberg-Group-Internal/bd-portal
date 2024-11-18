@@ -28,7 +28,7 @@ const Header = () => {
     const [activeSubLink, setActiveSubLink] = useState('/');
     const pathname = usePathname();
 
-    console.log('Session: ', session);
+    //console.log('Session: ', session);
     useEffect(() => {
         if (status === "authenticated" && session?.accessToken) {
             const fetchData = async () => {

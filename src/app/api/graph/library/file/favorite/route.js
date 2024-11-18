@@ -46,6 +46,12 @@ export async function GET(request) {
     try {
       const favorites = await prisma.favorite.findMany({
         where: { userId },
+        select: {
+          id: true,          
+          userId: true,
+          fileId: true,
+          createdAt: true
+        },
       });
   
       return new Response(JSON.stringify(favorites), {

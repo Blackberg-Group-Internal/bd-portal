@@ -38,10 +38,8 @@ const CollectionList = ({ collections }) => {
 
     updateFolderId(folder.id); 
     updateFolderMapping(folder, folder.id);
-   // setTimeout(() => {
-      const url = createDynamicUrl(folder);
-      router.push(url);
-   // }, 0); 
+    const url = createDynamicUrl(folder);
+    router.push(url);
   };
 
   const handleSelectAll = () => {
@@ -81,9 +79,9 @@ const CollectionList = ({ collections }) => {
             {
                 opacity: 1,
                 y: 0,
-                stagger: 0.075,
+                stagger: 0.05,
                 ease: 'power1.out',
-                duration: 0.5,
+                duration: 0.3,
                 onComplete: () => {
                     rows.forEach((row) => {
                       row.style.transform = 'none';
@@ -146,10 +144,10 @@ const CollectionList = ({ collections }) => {
                   <FavoritesIcon className="icon me-2" />
                   Add to Favorites
                 </button>
-                <button className="btn-text px-3 py-2 border-0 text-left" onClick={() => alert('Download')}>
+                {/* <button className="btn-text px-3 py-2 border-0 text-left" onClick={() => alert('Download')}>
                   <DownloadIcon className="icon me-2" />
                   Download
-                </button>
+                </button> */}
               </div>
             )}
         </div>

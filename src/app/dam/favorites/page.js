@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect, useRef, useState } from 'react';
+import { useQuery } from 'react-query';
 import Breadcrumbs from '../../components/Breadcrumbs';
 import axios from 'axios';
 import { useSession } from 'next-auth/react';
@@ -14,77 +15,56 @@ import Loader from '@/app/components/Loader';
 import FileList from '@/app/components/dam/FileList';
 import FileTiles from '@/app/components/dam/FileTiles';
 
+const fetchFavorites = async (userId) => {
+  const response = await axios.get(`/api/graph/library/file/favorite?userId=${userId}`);
+  const favoriteFiles = response.data;
+
+  const fileDataPromises = favoriteFiles.map(async (favorite) => {
+    try {
+      const graphResponse = await axios.get(`/api/graph/library/file?fileId=${favorite.fileId}`);
+      return graphResponse.data;
+    } catch (error) {
+      if (error.response && error.response.status === 500) {
+        try {
+          await axios.delete(`/api/graph/library/file/favorite?favoriteId=${favorite.id}`);
+        } catch (deleteError) {
+
+        }
+      } else {
+
+      }
+      return null;
+    }
+  });
+
+  const filesData = await Promise.all(fileDataPromises);
+  return filesData.filter((file) => file !== null);
+};
+
 const FavoritesPage = () => {
   const searchRef = useRef(null);
   const [showModal, setShowModal] = useState(false);
-  const [loading, setLoading] = useState(false);
   const { data: session, status } = useSession();
   const [viewMode, setViewMode] = useState('tiles');
   const folderContainerRef = useRef(null);
-  const [filesData, setFilesData] = useState(null);
   const handleClose = () => setShowModal(false);
   const handleShow = () => setShowModal(true);
 
-  useEffect(() => {
-    const savedFavoritesData = JSON.parse(localStorage.getItem('userFavorites'));
-
-    if (savedFavoritesData) {
-      setFilesData(savedFavoritesData);
+  const { data: filesData, isLoading, error } = useQuery(
+    ['favorites', session?.user?.id],
+    () => fetchFavorites(session?.user?.id),
+    {
+      enabled: !!session?.user?.id, 
+      staleTime: 1, 
+      initialData: () => {
+        const savedFavoritesData = JSON.parse(localStorage.getItem('userFavorites'));
+        return savedFavoritesData || [];
+      },
+      onSuccess: (data) => {
+        localStorage.setItem('userFavorites', JSON.stringify(data));
+      },
     }
-
-    const handleGetFavorites = async () => {
-      try {
-        if (!session || !session.user?.id) {
-          return;
-        }
-
-       // setLoading(true);
-        const userId = session.user.id;
-
-        const response = await axios.get(`/api/graph/library/file/favorite?userId=${userId}`);
-
-        if (response.status === 200) {
-          const favoriteFiles = response.data;
-
-          if (!favoriteFiles || favoriteFiles.length === 0) {
-            console.log('No favorites found');
-           // setFilesData([]);
-          //  setLoading(false);
-            return;
-          }
-
-          const fileDataPromises = favoriteFiles.map(async (favorite) => {
-            try {
-              const graphResponse = await axios.get(`/api/graph/library/file?fileId=${favorite.fileId}`);
-              return graphResponse.data;
-            } catch (error) {
-              console.error(`Error fetching file data for file ID ${favorite.fileId}:`, error);
-              return null;
-            }
-          });
-
-          const filesData = await Promise.all(fileDataPromises);
-          const validFilesData = filesData.filter(file => file !== null);
-
-          const previousData = JSON.parse(localStorage.getItem('userFavorites'));
-          if (JSON.stringify(previousData) !== JSON.stringify(validFilesData)) {
-            setFilesData(validFilesData);
-            localStorage.setItem('userFavorites', JSON.stringify(validFilesData));
-          }
-
-          console.log('Favorites files data:', validFilesData);
-        } else {
-          throw new Error('Failed to fetch favorites');
-        }
-      } catch (error) {
-        console.error('Error fetching favorites:', error);
-      } finally {
-       // setLoading(false);
-      }
-    };
-
-    handleGetFavorites();
-  }, [session, status]);
+  );
 
   const toggleView = (mode) => {
     setViewMode(mode);
@@ -107,9 +87,9 @@ const FavoritesPage = () => {
         {
           opacity: 1,
           y: 0,
-          stagger: 0.075,
+          stagger: 0.05,
           ease: 'power1.out',
-          duration: 0.5,
+          duration: 0.3,
         }
       );
     }
@@ -135,12 +115,12 @@ const FavoritesPage = () => {
           </div>
         </div>
       </section>
-      {!loading ? (
+      {!isLoading ? (
         <section className="container px-4 px-lg-5 mb-6">
           <div className="row">
             <div className="col-12">
               <div className="d-flex justify-content-between align-items-center pb-3 border-bottom">
-                <h2 className="h5 fw-bold-600">{filesData?.length} Files</h2>
+                <h2 className="h5 fw-bold-600">{filesData?.length} Favorites</h2>
                 <div className="view-toggle d-flex">
                   <button
                     className={`btn btn--layout btn-text bg-white d-flex align-items-center ${viewMode === 'list' ? 'active' : ''}`}
@@ -159,12 +139,12 @@ const FavoritesPage = () => {
             </div>
 
             <div className="col-12">
-                {loading ? (
+              {isLoading ? (
                 <Loader />
               ) : filesData && filesData.length > 0 ? (
                 <div className="col-12">
                   {viewMode === 'tiles' ? (
-                    <FileTiles files={filesData} preview={true} />
+                      <FileTiles files={filesData} preview={true} />
                   ) : (
                     <FileList files={filesData} preview={true} />
                   )}

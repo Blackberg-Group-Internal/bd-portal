@@ -87,15 +87,15 @@ const FileList = ({ files, preview }) => {
       switch (fileExtension) {
         case 'doc':
         case 'docx':
-          return <DocPreview className="icon--file me-2" width="40" height="48" />;
+          return <DocPreview className="icon--file me-2 pointer" width="40" height="48" />;
         case 'pdf':
-          return <PdfPreview className="icon--file me-2 test" width="40" height="48" />;
+          return <PdfPreview className="icon--file me-2 test pointer" width="40" height="48" />;
         case 'xls':
         case 'xlsx':
-          return <XlsxPreview className="icon--file me-2" width="40" height="43" />;
+          return <XlsxPreview className="icon--file me-2 pointer" width="40" height="43" />;
         case 'ppt':
         case 'pptx':
-          return <PowerpointIcon className="icon--file me-2" width="40" height="48" />;
+          return <PowerpointIcon className="icon--file me-2 pointer" width="40" height="48" />;
         case 'jpg':
         case 'jpeg':
         case 'png':
@@ -105,17 +105,17 @@ const FileList = ({ files, preview }) => {
         case 'tiff':
         case 'svg':
             return (
-              <div className="img-preview">
+              <div className="img-preview pointer">
                 <img
                   src={file.webUrl}
                   alt={file.name}
                   className="img-fluid"
-                    loading="lazy"
+                  loading="lazy"
                 />
                 </div>
             );
         default:
-          return <DefaultIcon className="icon--file me-2" width="40" height="48" />;;
+          return <DefaultIcon className="icon--file me-2 pointer" width="40" height="48" />;;
       }
     }
   };
@@ -185,9 +185,9 @@ const FileList = ({ files, preview }) => {
         {
           opacity: 1,
           y: 0,
-          stagger: 0.075,
+          stagger: 0.05,
           ease: 'power1.out',
-          duration: 0.5,
+          duration: 0.3,
           onComplete: () => {
             rows.forEach((row) => {
               row.style.transform = 'none';
@@ -241,7 +241,7 @@ const FileList = ({ files, preview }) => {
           <div
             className={`col-9 col-md-7 col-lg-5 d-flex align-items-center pointer count-${item.folder?.childCount}`}
           >
-            <div onClick={() => handleFolderClick(item)}  className="folder-icon text-black text-decoration-none d-flex">
+            <div onClick={() => handleFolderClick(item)}  className="folder-icon text-black text-decoration-none d-flex pointer">
           <FolderIcon className={`icon--folder`} width="48" height="48" />
           <div className="folder-name mt-3 ms-2">{item.name}</div>
         </div>
@@ -268,10 +268,12 @@ const FileList = ({ files, preview }) => {
                   <FavoritesIcon className="icon me-2" />
                   Add to Favorites
                 </button>
+                {!item.folder && (
                 <a className="btn-text px-3 py-2 border-0 text-left w-100 text-decoration-none text-dark" href={item['@microsoft.graph.downloadUrl']} download>
                   <DownloadIcon className="icon me-2" target="_blank" /> 
                   Download
                 </a>
+                )}
             </div>
           )}
         </div>

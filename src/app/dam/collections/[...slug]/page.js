@@ -38,23 +38,31 @@ const CollectionDetailPage = ({ params }) => {
   useEffect(() => {
     if (slug && slug.length > 0) {
       const vanitySlug = slug.join('/');
+      const mappedFolderId = getFolderIdFromVanity(vanitySlug);
 
-      if (vanitySlug !== previousSlug) {
-        setPreviousSlug(vanitySlug);
-
-        const mappedFolderId = getFolderIdFromVanity(vanitySlug);
-        if (mappedFolderId && mappedFolderId !== folderId) {
-          updateFolderId(mappedFolderId);
-        } else if (vanitySlug !== folderId) {
-          updateFolderId(vanitySlug);
-        }
+      if (mappedFolderId && mappedFolderId !== folderId) {
+        updateFolderId(mappedFolderId);
+      } else if (vanitySlug !== previousSlug) {
+        updateFolderId(vanitySlug);
+      } else {
+        updateFolderId(mappedFolderId);
       }
+  
+      setPreviousSlug(vanitySlug);
     }
   }, [slug]);
 
   useEffect(() => {
-    if (folderId && folderId !== previousFolderId && !isVanityOrId(folderId)) {
-      fetchFolderContents(folderId);
+    if (folderId && !isVanityOrId(folderId)) {
+    //if (folderId && folderId !== previousFolderId && !isVanityOrId(folderId)) {
+      const savedData = localStorage.getItem(`folderContents_${folderId}`);
+      if (savedData) {
+        setCollectionData(JSON.parse(savedData));
+        setLoading(false);
+        fetchFolderContents(folderId);
+      } else {
+        fetchFolderContents(folderId);
+      }
     }
   }, [folderId]);
 
@@ -69,28 +77,66 @@ const CollectionDetailPage = ({ params }) => {
 
       if (response.ok) {
         if (data?.value && data.value.length > 0) {
-          console.log('Folder contents', data.value);
+          //console.log('Folder contents', data.value);
 
-          setCollectionData((prevData) => {
-            const existingItemsMap = new Map(prevData.map(item => [item.id, item]));
+          // const savedData = localStorage.getItem(`folderContents_${folderId}`);
+          // if (savedData) {
+          //   setCollectionData((prevData = []) => {
+          //     const existingItemsMap = new Map(prevData.map(item => [item.id, item]));
+            
+          //     const updatedData = data.value.map(item => {
+          //       return existingItemsMap.get(item.id) || item;
+          //     });
+            
+          //     localStorage.setItem(`folderContents_${folderId}`, JSON.stringify(updatedData));
+          //     return updatedData;
+          //   });
+          // } else {
+          //   setCollectionData(data.value);
+          // }
 
-            const updatedData = data.value.map(item => {
-              return existingItemsMap.get(item.id) || item;
+          const savedData = localStorage.getItem(`folderContents_${folderId}`);
+          if (savedData) {
+            setCollectionData((prevData = []) => {
+              const existingItemsMap = new Map(prevData.map(item => [item.id, item]));
+              
+              // Add previously saved data from localStorage to the map
+              JSON.parse(savedData).forEach(item => {
+                if (!existingItemsMap.has(item.id)) {
+                  existingItemsMap.set(item.id, item);
+                }
+              });
+
+              // Add new data from the response to the map
+              data.value.forEach(item => {
+                existingItemsMap.set(item.id, item);
+              });
+
+              const updatedData = Array.from(existingItemsMap.values());
+
+              // Update localStorage with the new set of data
+              localStorage.setItem(`folderContents_${folderId}`, JSON.stringify(updatedData));
+              
+              return updatedData;
             });
+          } else {
+            setCollectionData(data.value);
+            localStorage.setItem(`folderContents_${folderId}`, JSON.stringify(data.value));
+          }
 
-            const newItems = updatedData.filter(item => !existingItemsMap.has(item.id));
-            if (newItems.length > 0) {
-              animateNewItems(newItems);
-            }
-
-            return updatedData;
-          });
+          
+        } else {
+          setCollectionData(null);
+          localStorage.removeItem(`folderContents_${folderId}`);
+          setLoading(false);
         }
       } else {
         console.error('Error fetching folder contents:', data.error);
+        setLoading(false);
       }
     } catch (error) {
       console.error('Error fetching folder contents:', error);
+      setLoading(false);
     } finally {
       setLoading(false);
     }
@@ -128,9 +174,9 @@ const CollectionDetailPage = ({ params }) => {
         {
           opacity: 1,
           y: 0,
-          stagger: 0.075,
+          stagger: 0.05,
           ease: 'power1.out',
-          duration: 0.5,
+          duration: 0.3,
         }
       );
     }
@@ -144,7 +190,11 @@ const CollectionDetailPage = ({ params }) => {
   }, []);
 
   const handleFolderAdded = () => {
-    fetchFolderContents(folderId);
+    if (slug && slug.length > 0) {
+      const vanitySlug = slug.join('/');
+      const mappedFolderId = getFolderIdFromVanity(vanitySlug);
+      fetchFolderContents(mappedFolderId);
+    }
   };
 
   return (
@@ -192,9 +242,7 @@ const CollectionDetailPage = ({ params }) => {
             ) : collectionData && collectionData.length > 0 ? (
             <div className="col-12">
               {viewMode === 'tiles' ? (
-                <div className="folder-container d-flex flex-wrap mt-4" ref={folderContainerRef}>
                   <FileTiles files={collectionData} preview={true} />
-                </div>
               ) : (
                 <FileList files={collectionData} preview={true} />
               )}

@@ -19,10 +19,8 @@ const Folder = ({ folder, viewMode }) => {
 
   const handleFolderClick = (folder) => {
     updateFolderId(folder.id); 
-    setTimeout(() => {
       const url = createDynamicUrl(folder);
       router.push(url);
-    }, 100); 
   };
 
   const createDynamicUrl = (folder) => {
@@ -44,7 +42,7 @@ const Folder = ({ folder, viewMode }) => {
       className={`folder tile count-${folder.folder.childCount} text-figtree text-center p-3 mb-4 col-6 col-sm-4 col-md-3 col-xl-2 d-flex flex-column  align-items-center position-relative ${viewMode} ${folder.isEmpty ? 'folder-empty' : ''}`} 
       onMouseLeave={() => setShowActions(false)}
     >
-      <div onClick={() => handleFolderClick(folder)} className="folder-icon text-black text-decoration-none">
+      <div onClick={() => handleFolderClick(folder)} className="folder-icon text-black text-decoration-none pointer">
         <FolderIcon className={`icon--folder`} width="48" height="48" />
         <div className="folder-name mt-3">{folder.name}</div>
       </div>

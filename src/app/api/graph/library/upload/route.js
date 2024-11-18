@@ -1,7 +1,5 @@
 import { uploadFileToSharePoint } from '@/app/lib/microsoft/graphHelper';
 import { NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth';  // Assuming you use NextAuth.js for authentication
-import { authOptions } from '@/app/api/auth/[...nextauth]/route'; // Import auth options for session
 import { getToken } from 'next-auth/jwt';
 
 const secret = process.env.NEXTAUTH_SECRET;

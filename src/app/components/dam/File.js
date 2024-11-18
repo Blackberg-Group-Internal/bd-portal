@@ -34,7 +34,7 @@ const File = ({ file, preview }) => {
 
   const renderFilePreview = () => {
     const fileExtension = file.name.split('.').pop(); 
-    console.log('File Extension: ' + fileExtension);
+    //console.log('File Extension: ' + fileExtension);
    // console.log('File: ', file);
     if (preview) {
       switch (fileExtension) {
@@ -118,7 +118,7 @@ const File = ({ file, preview }) => {
 
   return (
     <div
-      className="file tile text-figtree text-center p-3 mb-4 col-6 col-sm-4 col-md-3 col-xl-2 d-flex flex-column align-items-center position-relative"
+      className="file tile text-figtree text-center p-3 mb-4 col-6 col-sm-4 col-md-3 col-xl-2 d-flex flex-column align-items-center position-relative pointer"
       onMouseLeave={() => setShowActions(false)}
     >
       <div className="d-flex flex-column pointer" onClick={() => showModal(file)}>
