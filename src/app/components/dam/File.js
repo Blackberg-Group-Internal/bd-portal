@@ -121,11 +121,15 @@ const File = ({ file, preview }) => {
       className="file tile text-figtree text-center p-3 mb-4 col-6 col-sm-4 col-md-3 col-xl-2 d-flex flex-column align-items-center position-relative pointer"
       onMouseLeave={() => setShowActions(false)}
     >
-      <div className="d-flex flex-column pointer" onClick={() => showModal(file)}>
+      <div className="d-flex flex-column pointer w-100" onClick={() => showModal(file)}>
       <div className="file-icon d-flex justify-content-center">
         {renderFilePreview()}
       </div>
-      <div className="file-name mt-3">{file.name}</div>
+      <div className="file-name mt-3">
+        <span className="text-nowrap d-block text-truncate">
+          {file.name}
+        </span>
+        </div>
       </div>
 
       <button

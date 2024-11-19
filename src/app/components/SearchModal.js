@@ -162,7 +162,7 @@ const SearchModal = ({ show, handleClose }) => {
           </div>
         </Form>
 
-        <div className="search-results mt-3">
+        <div className="search-results mt-0">
           <div className="search-section">
             <div className="p-3 d-flex flex-column">
               <span className="section-title">Users</span>
