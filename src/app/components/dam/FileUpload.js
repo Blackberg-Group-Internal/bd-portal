@@ -1,3 +1,5 @@
+'use client';
+
 import React, { useState, useCallback, useEffect } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { Modal, ProgressBar, Form } from 'react-bootstrap';
@@ -232,7 +234,7 @@ const FileUpload = ({ show, handleClose, onFilesUploaded }) => {
           <button
             className="btn btn-primary w-100"
             onClick={startUpload}
-            disabled={uploading || files.length === 0}
+            disabled={uploading || files.length === 0 || !getFolderPath()}
           >
             {uploading ? 'Uploading...' : 'Upload Files'}
           </button>

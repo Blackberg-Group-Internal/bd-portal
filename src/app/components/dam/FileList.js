@@ -243,7 +243,11 @@ const FileList = ({ files, preview }) => {
           >
             <div onClick={() => handleFolderClick(item)}  className="folder-icon text-black text-decoration-none d-flex pointer">
           <FolderIcon className={`icon--folder`} width="48" height="48" />
-          <div className="folder-name mt-3 ms-2">{item.name}</div>
+          <div className="folder-name mt-3 ms-2">
+            <span className="text-nowrap d-block text-truncate">
+              {item.name}
+            </span>
+          </div>
         </div>
           </div>
           <div className="col-3 col-lg-2 d-none d-md-flex">{formatModifiedDate(item.lastModifiedDateTime)}</div>
@@ -295,7 +299,11 @@ const FileList = ({ files, preview }) => {
             onClick={() => showModal(item)}
           >
             {renderFilePreview(item)}
-            <span className="text-nowrap ms-2 d-flex w-75 overflow-hidden">{item.name}</span>
+            <span className="text-nowrap ms-2 d-flex w-75 overflow-hidden">  
+              <span className="text-nowrap d-block text-truncate">
+              {item.name}
+            </span>
+            </span>
           </div>
           <div className="col-3 col-lg-2 d-none d-md-flex">{formatModifiedDate(item.lastModifiedDateTime)}</div>
           <div className="col-4 d-none d-lg-flex">{item.lastModifiedBy.user.displayName}</div>

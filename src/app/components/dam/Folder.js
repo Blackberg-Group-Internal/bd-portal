@@ -9,7 +9,7 @@ import { useFolder } from '@/app/context/FolderContext';
 import { useRouter, usePathname } from 'next/navigation';
 
 const Folder = ({ folder, viewMode }) => {
-  const { updateFolderId } = useFolder(); 
+  const { updateFolderId, updateFolderMapping } = useFolder(); 
   const [showActions, setShowActions] = useState(false);
   const router = useRouter();
 
@@ -19,6 +19,7 @@ const Folder = ({ folder, viewMode }) => {
 
   const handleFolderClick = (folder) => {
     updateFolderId(folder.id); 
+    updateFolderMapping(folder, folder.id);
       const url = createDynamicUrl(folder);
       router.push(url);
   };
