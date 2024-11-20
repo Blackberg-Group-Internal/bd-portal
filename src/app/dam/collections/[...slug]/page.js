@@ -36,6 +36,8 @@ const CollectionDetailPage = ({ params }) => {
   };
 
   useEffect(() => {
+   // setTimeout(() => {
+    setLoading(true);
     if (slug && slug.length > 0) {
       const vanitySlug = slug.join('/');
       const mappedFolderId = getFolderIdFromVanity(vanitySlug);
@@ -47,24 +49,25 @@ const CollectionDetailPage = ({ params }) => {
       } else {
         updateFolderId(mappedFolderId);
       }
-  
+      fetchFolderContents(mappedFolderId);
       setPreviousSlug(vanitySlug);
     }
+ // }, 100);
   }, [slug]);
 
-  useEffect(() => {
-    if (folderId && !isVanityOrId(folderId)) {
-    //if (folderId && folderId !== previousFolderId && !isVanityOrId(folderId)) {
-      const savedData = localStorage.getItem(`folderContents_${folderId}`);
-      if (savedData) {
-        setCollectionData(JSON.parse(savedData));
-        setLoading(false);
-        fetchFolderContents(folderId);
-      } else {
-        fetchFolderContents(folderId);
-      }
-    }
-  }, [folderId]);
+  // useEffect(() => {
+  //   if (folderId && !isVanityOrId(folderId)) {
+  //   //if (folderId && folderId !== previousFolderId && !isVanityOrId(folderId)) {
+  //     // const savedData = localStorage.getItem(`folderContents_${folderId}`);
+  //     // if (savedData) {
+  //     //   setCollectionData(JSON.parse(savedData));
+  //     //   setLoading(false);
+  //     //   fetchFolderContents(folderId);
+  //     // } else {
+  //       fetchFolderContents(folderId);
+  //     //}
+  //   }
+  // }, [folderId]);
 
   const isVanityOrId = (folderId) => {
     return !(folderId.length > 20 && /[A-Za-z]/.test(folderId) && /[0-9]/.test(folderId));
@@ -95,40 +98,40 @@ const CollectionDetailPage = ({ params }) => {
           //   setCollectionData(data.value);
           // }
 
-          const savedData = localStorage.getItem(`folderContents_${folderId}`);
-          if (savedData) {
-            setCollectionData((prevData = []) => {
-              const existingItemsMap = new Map(prevData.map((item) => [item.id, item]));
+          // const savedData = localStorage.getItem(`folderContents_${folderId}`);
+          // if (savedData) {
+          //   setCollectionData((prevData = []) => {
+          //     const existingItemsMap = new Map(prevData.map((item) => [item.id, item]));
           
-              // Add previously saved data from localStorage to the map
-              JSON.parse(savedData).forEach((item) => {
-                if (!existingItemsMap.has(item.id)) {
-                  existingItemsMap.set(item.id, item);
-                }
-              });
+          //     // Add previously saved data from localStorage to the map
+          //     JSON.parse(savedData).forEach((item) => {
+          //       if (!existingItemsMap.has(item.id)) {
+          //         existingItemsMap.set(item.id, item);
+          //       }
+          //     });
           
-              // Add new data from the response to the map and also ensure we update existing items
-              data.value.forEach((item) => {
-                existingItemsMap.set(item.id, item);
-              });
+          //     // Add new data from the response to the map and also ensure we update existing items
+          //     data.value.forEach((item) => {
+          //       existingItemsMap.set(item.id, item);
+          //     });
           
-              // Create an updated array from the existing items map
-              let updatedData = Array.from(existingItemsMap.values());
+          //     // Create an updated array from the existing items map
+          //     let updatedData = Array.from(existingItemsMap.values());
           
-              // Filter out items that exist in local storage but not in the response data
-              updatedData = updatedData.filter((item) =>
-                data.value.some((apiItem) => apiItem.id === item.id)
-              );
+          //     // Filter out items that exist in local storage but not in the response data
+          //     updatedData = updatedData.filter((item) =>
+          //       data.value.some((apiItem) => apiItem.id === item.id)
+          //     );
           
-              // Update localStorage with the filtered data
-              localStorage.setItem(`folderContents_${folderId}`, JSON.stringify(updatedData));
+          //     // Update localStorage with the filtered data
+          //     localStorage.setItem(`folderContents_${folderId}`, JSON.stringify(updatedData));
           
-              return updatedData;
-            });
-          } else {
+          //     return updatedData;
+          //   });
+          // } else {
             setCollectionData(data.value);
-            localStorage.setItem(`folderContents_${folderId}`, JSON.stringify(data.value));
-          }
+          //   localStorage.setItem(`folderContents_${folderId}`, JSON.stringify(data.value));
+          // }
           
 
           
