@@ -136,7 +136,8 @@ export const getDocumentLibraryContents = async (libraryId) => {
           });
         } else {
           // For larger files, create an upload session
-          const createUploadSessionUrl = `https://graph.microsoft.com/v1.0/sites/${siteId}/drives/${driveId}/items/${folderPath}:/${file.name}:/createUploadSession`;
+          const sanitizedFilename = sanitizeFilename(file.name);
+          const createUploadSessionUrl = `https://graph.microsoft.com/v1.0/sites/${siteId}/drives/${driveId}/items/${folderPath}:/${sanitizedFilename}:/createUploadSession`;
           
           const uploadSessionResponse = await axios.post(createUploadSessionUrl, {}, {
             headers: {
@@ -391,7 +392,8 @@ export async function createUploadSession(folderPath, fileName, userAccessToken)
   const driveId = "b!xE8fh30nt0SHdnWdXFHEKTzU3LKnVJJAsgMV8Ij6KKRtXG_wHCViQoQJbMU201re";
 
   try {
-    const createUploadSessionUrl = `https://graph.microsoft.com/v1.0/sites/${siteId}/drives/${driveId}/items/${folderPath}:/${fileName}:/createUploadSession`;
+    const sanitizedFilename = sanitizeFilename(fileName);
+    const createUploadSessionUrl = `https://graph.microsoft.com/v1.0/sites/${siteId}/drives/${driveId}/items/${folderPath}:/${sanitizedFilename}:/createUploadSession`;
     const uploadSessionResponse = await axios.post(createUploadSessionUrl, {}, {
       headers: {
         Authorization: `Bearer ${userAccessToken}`,
@@ -409,3 +411,15 @@ export async function createUploadSession(folderPath, fileName, userAccessToken)
     throw new Error('File upload session creation failed');
   }
 }
+
+const sanitizeFilename = (filename) => {
+  const dotIndex = filename.lastIndexOf('.');
+  let name = filename.substring(0, dotIndex);
+  let extension = filename.substring(dotIndex);
+
+  name = name.replace(/[^a-z0-9]/gi, '-') 
+    .replace(/-+/g, '-') 
+    .substring(0, 200); 
+
+  return `${name}${extension}`;
+};
