@@ -199,7 +199,9 @@ export const getDocumentLibraryContents = async (libraryId) => {
           },
         }
       );
-      const files = response.data.value.filter(item => item.file);
+      const files = response.data.value.filter(item => {
+        return item.file && item.name.toLowerCase().includes(query.toLowerCase());
+      });
     
       return files;
 
