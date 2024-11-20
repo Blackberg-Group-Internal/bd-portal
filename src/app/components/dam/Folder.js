@@ -12,6 +12,7 @@ const Folder = ({ folder, viewMode }) => {
   const { updateFolderId, updateFolderMapping } = useFolder(); 
   const [showActions, setShowActions] = useState(false);
   const router = useRouter();
+  const pathname = usePathname().toLowerCase(); ;
 
   const toggleActions = () => {
     setShowActions((prevState) => !prevState);
@@ -24,19 +25,45 @@ const Folder = ({ folder, viewMode }) => {
       router.push(url);
   };
 
-  const createDynamicUrl = (folder) => {
-    let urlPath = folder.name.toLowerCase().replace(/\s+/g, '-');
-    let parent = folder.parentReference;
+  // const createDynamicUrl = (folder) => {
+  //   let urlPath = folder.name.toLowerCase().replace(/\s+/g, '-');
+  //   let parent = folder.parentReference;
 
+  //   while (parent && parent.id !== "01MODA5PF6Y2GOVW7725BZO354PWSELRRZ") {
+  //     const parentName = parent.name.toLowerCase().replace(/\s+/g, '-');
+  //     urlPath = `${parentName}/${urlPath}`;
+  //     parent = parent.parentReference;
+  //   }
+
+  //   return `/dam/collections/${urlPath}`;
+  // };
+
+  const createDynamicUrl = (folder) => {
+    let newPath = folder.name.toLowerCase().replace(/\s+/g, '-');
+    let parent = folder.parentReference;
+  
+    // Get the current path after "/dam/collections/" part
+    let currentUrlParts = pathname.replace(/^\/|\/$/g, '').split('/').slice(2);
+    
+    // Traverse up the parent chain and build the path for the new folder
+    let constructedPath = [];
     while (parent && parent.id !== "01MODA5PF6Y2GOVW7725BZO354PWSELRRZ") {
       const parentName = parent.name.toLowerCase().replace(/\s+/g, '-');
-      urlPath = `${parentName}/${urlPath}`;
+      constructedPath.unshift(parentName);
       parent = parent.parentReference;
     }
-
-    return `/dam/collections/${urlPath}`;
+  
+    // If the last part of the current URL matches the last part of constructed path, retain existing path and append the new folder
+    if (currentUrlParts.length > 0 && constructedPath.length > 0 && currentUrlParts[currentUrlParts.length - 1] === constructedPath[constructedPath.length - 1]) {
+      currentUrlParts = currentUrlParts.concat(newPath);
+    } else {
+      currentUrlParts = constructedPath.concat(newPath);
+    }
+  
+    return `/dam/collections/${currentUrlParts.join('/')}`;
   };
-
+  
+  
 
   return (
     <div

@@ -71,6 +71,12 @@ const CollectionList = ({ collections }) => {
 
 
   useEffect(() => {
+    const rows = listViewRef.current.querySelectorAll('.row');
+    gsap.set(rows.current, { y: 20, opacity: 0 });
+  });
+
+
+  useEffect(() => {
     if (listViewRef.current) {
         const rows = listViewRef.current.querySelectorAll('.row');
         gsap.fromTo(

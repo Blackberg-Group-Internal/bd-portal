@@ -106,6 +106,8 @@ function DevPage() {
             const dateB = new Date(b.deadline);
             return dateA - dateB;
           });
+
+          localStorage.setItem('allOpportunities', JSON.stringify(transformedItems));
     
         setOpportunities(transformedItems);
       } catch (error) {
@@ -113,7 +115,12 @@ function DevPage() {
       }
     };
     
-    fetchOpportunities();
+    const storedOpportunities = JSON.parse(localStorage.getItem('allOpportunities'));
+    if(storedOpportunities) {
+      setOpportunities(storedOpportunities);
+    } else {
+      fetchOpportunities();
+    }
   }, [count]);
 
   useEffect(() => {

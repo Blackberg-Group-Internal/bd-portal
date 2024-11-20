@@ -34,6 +34,11 @@ const FileTiles = ({ files, preview }) => {
   };
 
   useEffect(() => {
+    const tiles = tileViewRef.current.querySelectorAll('.tile');
+    gsap.set(tiles.current, { y: 20, opacity: 0 });
+  });
+
+  useEffect(() => {
     if (tileViewRef.current) {
       const newTiles = Array.from(tileViewRef.current.querySelectorAll('.tile')).filter(
         (tile) => !renderedItemsRef.current.has(tile.dataset.id)

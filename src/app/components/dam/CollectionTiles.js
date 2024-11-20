@@ -33,6 +33,11 @@ const CollectionTiles = ({ collections, preview }) => {
   };
 
   useEffect(() => {
+    const tiles = tileViewRef.current.querySelectorAll('.tile');
+    gsap.set(tiles.current, { y: 20, opacity: 0 });
+  });
+
+  useEffect(() => {
     if (tileViewRef.current) {
       const tiles = tileViewRef.current.querySelectorAll('.tile');
       gsap.fromTo(

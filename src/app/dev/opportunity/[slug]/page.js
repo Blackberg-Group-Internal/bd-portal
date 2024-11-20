@@ -159,6 +159,8 @@ function OpportunityPage() {
             </div>
 
             <div className="col-12 col-md-6 col-lg-3 mb-4">
+            <a href={selectedOpportunity.link[0]} target="_blank" className="btn btn-primary mb-4 w-100">View Source</a>
+
               <div className="card  card-tool card-tool--no-hover rounded shadow-sm bg-white py-3 pointer">
                 <div className="card-body text-left d-flex flex-column">
                   <div className="tool-icon rounded-3 mb-2 align-self-start p-2">
