@@ -32,6 +32,8 @@
 
 .search-section {
     border-bottom: 1px solid #EAECF0;
+    max-height: 142px;
+    overflow-y: auto;
     
     > div {
         transition: all 0.3s ease;

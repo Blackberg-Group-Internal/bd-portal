@@ -244,9 +244,9 @@ const FileList = ({ files, preview }) => {
           <div
             className={`col-9 col-md-7 col-lg-5 d-flex align-items-center pointer count-${item.folder?.childCount}`}
           >
-            <div onClick={() => handleFolderClick(item)}  className="folder-icon text-black text-decoration-none d-flex pointer">
+            <div onClick={() => handleFolderClick(item)}  className="folder-icon text-black text-decoration-none d-flex pointer w-100">
           <FolderIcon className={`icon--folder`} width="48" height="48" />
-          <div className="folder-name mt-3 ms-2">
+          <div className="folder-name mt-3 ms-2 text-truncate">
             <span className="text-nowrap d-block text-truncate">
               {item.name}
             </span>
