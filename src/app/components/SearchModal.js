@@ -190,7 +190,7 @@ const SearchModal = ({ show, handleClose }) => {
               <div ref={resumesRef}>
                 {results.resumes.length > 0 ? (
                   results.resumes.map((resume, index) => (
-                    <div key={index} className="search-item d-flex align-items-center pt-2" onClick={() => showModal(resume)}>
+                    <div key={index} className="search-item d-flex align-items-center pt-2 pointer" onClick={() => showModal(resume)}>
                       <FilesIcon className="me-1" />
                       <span>{resume.name}</span>
                     </div>
@@ -208,7 +208,7 @@ const SearchModal = ({ show, handleClose }) => {
               <div ref={proposalsRef}>
                 {results.proposals.length > 0 ? (
                   results.proposals.map((proposal, index) => (
-                    <div key={index} className="search-item d-flex flex-column" onClick={() => showModal(proposal)}>
+                    <div key={index} className="search-item d-flex flex-column pointer" onClick={() => showModal(proposal)}>
                       <span className="proposal-title">{proposal.name}</span>
                       <small className="proposal-type text-muted">{proposal.type}</small>
                     </div>
