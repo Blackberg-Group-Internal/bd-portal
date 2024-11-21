@@ -195,7 +195,7 @@ const FileViewerModal = ({ show, handleClose, fileData }) => {
       case 'svg':
 
         return (
-          <div class="d-flex align-items-center justify-content-center col-12 col-lg-8 mx-auto">
+          <div className="d-flex align-items-center justify-content-center col-12 col-lg-8 mx-auto">
             <img
               src={file.webUrl}
               alt={file.name}

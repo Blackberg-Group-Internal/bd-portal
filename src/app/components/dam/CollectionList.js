@@ -11,6 +11,7 @@ import Link from 'next/link';
 import { useFolder } from '@/app/context/FolderContext';
 import { useRouter, usePathname } from 'next/navigation';
 import { format } from 'date-fns'; 
+import { useToast } from '@/app/context/ToastContext';
 
 const CollectionList = ({ collections }) => {
   const router = useRouter();
@@ -19,6 +20,7 @@ const CollectionList = ({ collections }) => {
   const [selectAll, setSelectAll] = useState(false);
   const [activeActionPanel, setActiveActionPanel] = useState(null);
   const listViewRef = useRef(null); 
+  const { addToast } = useToast();
   const { updateFolderId, updateFolderMapping } = useFolder(); 
 
   const handleItemSelect = (id) => {
@@ -98,6 +100,41 @@ const CollectionList = ({ collections }) => {
     }
 }, []);
 
+const handleFavoriteFile = async (fileId) => {
+  if (!fileId) {
+    alert('File ID is missing');
+    return;
+  }
+
+  try {
+    const userId = session.user.id;
+    
+    const response = await axios.post('/api/graph/library/file/favorite', {
+      fileId,
+      userId
+    });
+
+    if (response.status === 201) {
+      addToast('File favorited successfully.', 'success');
+    } else {
+      throw new Error('Error favoriting file');
+    }
+  } catch (error) {
+    console.error('Error favoriting file:', error);
+  addToast('Failed to favorite file.', 'danger');
+  } finally {;
+  }
+};
+
+const handleShareFolder = (folder) => {
+  updateFolderId(folder.id); 
+  updateFolderMapping(folder, folder.id);
+  const url = createDynamicUrl(folder);
+  navigator.clipboard.writeText("https://bd.blackberggroup.com" + url)
+  .then(() => addToast('Share link copied to clipboard.', 'success'))
+  .catch(error => addToast('Failed to create link.', 'danger'));
+};
+
   return (
     <div className="list-view text-figtree container mt-4" ref={listViewRef}>
       <div className="row px-3 py-3 list-view-header border">
@@ -142,11 +179,11 @@ const CollectionList = ({ collections }) => {
           </div>
           {activeActionPanel === item.id && (
               <div className="action-panel position-absolute top-0 mt-8 end-0 bg-white text-left d-flex flex-column align-items-stretch w-auto">
-                <button className="btn-text px-3 py-2 border-0 text-left" onClick={() => alert('Share & Get Link')}>
+                <button className="btn-text px-3 py-2 border-0 text-left" onClick={() => handleShareFolder(item)}>
                   <ShareIcon className="icon me-2" />
                   Share & Get Link
                 </button>
-                <button className="btn-text px-3 py-2 border-0 text-left" onClick={() => alert('Add to Favorites')}>
+                <button className="btn-text px-3 py-2 border-0 text-left" onClick={() => handleFavoriteFile(item.id)}>
                   <FavoritesIcon className="icon me-2" />
                   Add to Favorites
                 </button>

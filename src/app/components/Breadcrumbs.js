@@ -15,11 +15,11 @@ const Breadcrumbs = () => {
       <Link href="/dam"><HomeIcon /></Link>
       <ChevronIcon />
       <Link href="/dam/" className="text-decoration-none overflow-hidden">
-        <span class="text-nowrap d-block text-truncate">Digital Asset Manager</span>
+        <span className="text-nowrap d-block text-truncate">Digital Asset Manager</span>
       </Link>
       <ChevronIcon />
       <Link href="/dam/" className="text-decoration-none overflow-hidden">
-        <span class="text-nowrap d-block text-truncate">Collections</span>
+        <span className="text-nowrap d-block text-truncate">Collections</span>
       </Link>
       {pathSegments.map((segment, index) => {
         const href = `/dam/collections/${pathSegments.slice(0, index + 1).join('/')}`;
@@ -29,7 +29,7 @@ const Breadcrumbs = () => {
           <React.Fragment key={index}>
             <ChevronIcon />
             <Link href={href} className="text-decoration-none overflow-hidden">
-              <span class="text-nowrap d-block text-truncate">{formattedSegment}</span>
+              <span className="text-nowrap d-block text-truncate">{formattedSegment}</span>
             </Link>
           </React.Fragment>
         );
