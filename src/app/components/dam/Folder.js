@@ -30,6 +30,15 @@ const Folder = ({ folder, viewMode }) => {
       router.push(url);
   };
 
+  const handleShareFolder = (folder) => {
+    updateFolderId(folder.id); 
+    updateFolderMapping(folder, folder.id);
+    const url = createDynamicUrl(folder);
+    navigator.clipboard.writeText("https://bd.blackberggroup.com" + url)
+    .then(() => addToast('Share link copied to clipboard.', 'success'))
+    .catch(error => addToast('Failed to create link.', 'danger'));
+  };
+
   const createDynamicUrl = (folder) => {
     let newPath = folder.name.toLowerCase().replace(/\s+/g, '-');
     let parent = folder.parentReference;
@@ -96,8 +105,8 @@ const Folder = ({ folder, viewMode }) => {
       </button>
 
       {showActions && (
-        <div className="action-panel position-absolute top-0 mt-6 end-0 bg-white text-left d-flex flex-column align-items-stretch">
-          <button className="btn-text px-3 py-2 border-0 text-left" onClick={() => alert('Share & Get Link')}>
+        <div className="action-panel position-absolute top-0 mt-6 end-0 bg-white text-left d-flex flex-column align-items-stretch text-nowrap">
+          <button className="btn-text px-3 py-2 border-0 text-left" onClick={() => handleShareFolder(folder)}>
             <ShareIcon className="icon me-2" />
             Share & Get Link
           </button>

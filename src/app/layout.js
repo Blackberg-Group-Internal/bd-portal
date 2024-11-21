@@ -13,6 +13,7 @@ import ChatBot from "./components/Chat";
 import { FolderProvider } from "./context/FolderContext";
 import { ToastProvider } from "./context/ToastContext";
 import { QueryClient, QueryClientProvider, useQuery } from 'react-query';
+import { Analytics } from '@vercel/analytics/next';
 
 export const FileViewerContext = createContext();
 
@@ -74,6 +75,7 @@ export default function RootLayout({ children }) {
             </ToastProvider>
             </QueryClientProvider>
         </SessionProvider>
+        <Analytics />
       </body>
     </html>
   );
