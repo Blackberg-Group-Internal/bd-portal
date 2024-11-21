@@ -217,7 +217,7 @@ const CollectionDetailPage = ({ params }) => {
           <div className="col-12">
             <div className="border-bottom d-flex justify-content-between align-items-center page-info">
               <h1 className="fw-bold-500 my-4">{collectionTitle}</h1>
-              <div class="d-flex text-nowrap">
+              <div className="d-flex text-nowrap">
                 <button className="border-0 bg-transparent" onClick={handleShow}>
                   <SearchIcon className="icon" />
                 </button>
