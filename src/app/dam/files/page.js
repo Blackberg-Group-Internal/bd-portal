@@ -102,7 +102,7 @@ const FileListPage = () => {
         <div className="row">
           <div className="col-12">
             <div className="d-flex justify-content-between align-items-center py-2 border-bottom">
-              <h2 className="h5 fw-bold-600 m-0">Files</h2>
+              <h2 className="h5 fw-bold-600 m-0">{filesData?.length} Files</h2>
               <div className="view-toggle d-flex">
                 <button
                   className={`btn btn--layout btn-text bg-white d-flex align-items-center ${
