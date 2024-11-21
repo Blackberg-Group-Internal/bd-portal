@@ -207,6 +207,7 @@ const FileUpload = ({ show, handleClose, onFilesUploaded }) => {
                 <Form.Label>Collection</Form.Label>
                 <Form.Control
                   as="select"
+                  className="form-select"
                   value={selectedFolder}
                   onChange={(e) => setSelectedFolder(e.target.value)}
                 >

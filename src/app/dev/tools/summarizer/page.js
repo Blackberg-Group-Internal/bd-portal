@@ -11,7 +11,7 @@ import SearchIcon from '../../../../../public/images/icons/search.svg';
 import CopyIcon from '../../../../../public/images/icons/copy.svg';
 import SummaryIcon from '../../../../../public/images/icons/summary.svg';
 
-function CoverLetterPage() {
+function RfpSummarizer() {
   const { data } = useSession();
   const searchRef = useRef(null);
   const cardsRef = useRef([]); 
@@ -19,12 +19,12 @@ function CoverLetterPage() {
   const handleShow = () => setShowModal(true);
   const handleClose = () => setShowModal(false);
   const [rfpText, setRfpText] = useState('');
+  const [selectedFile, setSelectedFile] = useState(null);
   const [loading, setLoading] = useState(false);
   const [analysisResult, setAnalysisResult] = useState('');
 
   const copyToClipboard = () => {
     navigator.clipboard.writeText(analysisResult).then(() => {
-
     }).catch(err => {
       console.error('Error copying text: ', err);
     });
@@ -34,61 +34,86 @@ function CoverLetterPage() {
     setLoading(true);
     setAnalysisResult(''); 
   
-    const response = await fetch('/api/rfp-summarizer', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ description: rfpText }),
-    });
-  
-    const reader = response.body.getReader();
-    const decoder = new TextDecoder();
-    let done = false;
-  
-    let fullText = '';
-    let firstResponseReceived = false; 
-  
-    while (!done) {
-      const { value, done: readerDone } = await reader.read();
-      done = readerDone;
-  
-      const decodedChunk = decoder.decode(value, { stream: true });
-      const lines = decodedChunk
-        .split('\n')
-        .filter(line => line.trim() !== ''); 
+    let response;
+    if (selectedFile) {
+      const formData = new FormData();
+      formData.append('file', selectedFile);
 
-      for (const line of lines) {
-        if (line === 'data: [DONE]') {
-          done = true; 
-          break;
-        }
-  
-        if (line.startsWith('data:')) {
-          try {
-            const jsonResponse = JSON.parse(line.substring(5));
-
-            if (jsonResponse.choices && jsonResponse.choices[0].delta.content) {
-              const newText = jsonResponse.choices[0].delta.content;
-              fullText += newText;
-  
-              if (!firstResponseReceived) {
-                firstResponseReceived = true;
-                setTimeout(() => {
-                  setAnalysisResult(prev => prev + newText);
-                }, 1500);
-              } else {
-                setAnalysisResult(prev => prev + newText);
-              }
-            }
-          } catch (error) {
-            console.warn('Skipping invalid JSON chunk:', line);
-          }
-        }
-      }
+      response = await fetch('/api/rfp-summarizer-file', {
+        method: 'POST',
+        body: formData,
+      });
+    } else {
+      response = await fetch('/api/rfp-summarizer', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ description: rfpText }),
+      });
     }
+
+
+    console.log('API Response: ', response);
+
+    if (response.ok) {
+      const result = await response.json();
+      console.log('API Response:', result);
+      setAnalysisResult(result.messages[0][0].text.value); // Set the messages to state
+    } else {
+      console.error('Error from API:', await response.json());
+    }
+  
+    // const reader = response.body.getReader();
+    // const decoder = new TextDecoder();
+    // let done = false;
+  
+    // let fullText = '';
+    // let firstResponseReceived = false; 
+  
+    // while (!done) {
+    //   const { value, done: readerDone } = await reader.read();
+    //   done = readerDone;
+  
+    //   const decodedChunk = decoder.decode(value, { stream: true });
+    //   const lines = decodedChunk
+    //     .split('\n')
+    //     .filter(line => line.trim() !== ''); 
+
+    //   for (const line of lines) {
+    //     if (line === 'data: [DONE]') {
+    //       done = true; 
+    //       break;
+    //     }
+  
+    //     if (line.startsWith('data:')) {
+    //       try {
+    //         const jsonResponse = JSON.parse(line.substring(5));
+
+    //         if (jsonResponse.choices && jsonResponse.choices[0].delta.content) {
+    //           const newText = jsonResponse.choices[0].delta.content;
+    //           fullText += newText;
+  
+    //           if (!firstResponseReceived) {
+    //             firstResponseReceived = true;
+    //             setTimeout(() => {
+    //               setAnalysisResult(prev => prev + newText);
+    //             }, 1500);
+    //           } else {
+    //             setAnalysisResult(prev => prev + newText);
+    //           }
+    //         }
+    //       } catch (error) {
+    //         console.warn('Skipping invalid JSON chunk:', line);
+    //       }
+    //     }
+    //   }
+    // }
   
     setLoading(false);
   };
 
+  const handleFileChange = (e) => {
+    setSelectedFile(e.target.files[0]);
+  };
 
   return (
     <>
@@ -96,7 +121,7 @@ function CoverLetterPage() {
         <div className="container position-relative">
             <div className="row">
               <div className="col-12">
-                <Breadcrumbs first="SamSmart" second="Tools" third="Cover Letter Generator" />
+                <Breadcrumbs first="SamSmart" second="Tools" third="RFP Summarizer" />
               </div>
               <div className="col-12 d-flex justify-content-between align-items-center page-info">
                 <h1 className="fw-bold-500 my-4">RFP Summarizer</h1>
@@ -122,8 +147,16 @@ function CoverLetterPage() {
                     rows="6"
                     value={rfpText}
                     onChange={(e) => setRfpText(e.target.value)}
+                    disabled={!!selectedFile}
                   />
-                  <button className="btn btn-primary d-flex align-items-center align-self-start ms-auto" onClick={handleGenerateClick}>
+                  <input
+                    type="file"
+                    className="form-control my-3"
+                    onChange={handleFileChange}
+                    accept=".pdf,.doc,.docx,.txt"
+                    disabled={!!rfpText}
+                  />
+                  <button className="btn btn-primary d-flex align-items-center align-self-start ms-auto" onClick={handleGenerateClick} disabled={!(rfpText || selectedFile)}>
                     Generate
                     <MagicWandIcon className="ms-2 icon icon-white" />
                   </button>
@@ -168,4 +201,4 @@ function CoverLetterPage() {
   );
 }
 
-export default CoverLetterPage;
+export default RfpSummarizer;

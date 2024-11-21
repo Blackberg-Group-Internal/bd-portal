@@ -35,6 +35,7 @@ export async function POST(req) {
       responseType: 'stream',
     });
 
+    
     return new Response(response.data, {
       status: 200,
       headers: { 'Content-Type': 'text/event-stream' },

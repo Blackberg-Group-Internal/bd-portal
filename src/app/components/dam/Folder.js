@@ -7,12 +7,17 @@ import DownloadIcon from '../../../../public/images/icons/download.svg';
 import Link from 'next/link';
 import { useFolder } from '@/app/context/FolderContext'; 
 import { useRouter, usePathname } from 'next/navigation';
+import { useToast } from '@/app/context/ToastContext';
+import { useSession } from 'next-auth/react';
+import axios from 'axios';
 
 const Folder = ({ folder, viewMode }) => {
   const { updateFolderId, updateFolderMapping } = useFolder(); 
   const [showActions, setShowActions] = useState(false);
   const router = useRouter();
-  const pathname = usePathname().toLowerCase(); ;
+  const pathname = usePathname().toLowerCase();
+  const { addToast } = useToast();
+  const { data: session, status } = useSession();
 
   const toggleActions = () => {
     setShowActions((prevState) => !prevState);
@@ -25,27 +30,12 @@ const Folder = ({ folder, viewMode }) => {
       router.push(url);
   };
 
-  // const createDynamicUrl = (folder) => {
-  //   let urlPath = folder.name.toLowerCase().replace(/\s+/g, '-');
-  //   let parent = folder.parentReference;
-
-  //   while (parent && parent.id !== "01MODA5PF6Y2GOVW7725BZO354PWSELRRZ") {
-  //     const parentName = parent.name.toLowerCase().replace(/\s+/g, '-');
-  //     urlPath = `${parentName}/${urlPath}`;
-  //     parent = parent.parentReference;
-  //   }
-
-  //   return `/dam/collections/${urlPath}`;
-  // };
-
   const createDynamicUrl = (folder) => {
     let newPath = folder.name.toLowerCase().replace(/\s+/g, '-');
     let parent = folder.parentReference;
   
-    // Get the current path after "/dam/collections/" part
     let currentUrlParts = pathname.replace(/^\/|\/$/g, '').split('/').slice(2);
-    
-    // Traverse up the parent chain and build the path for the new folder
+
     let constructedPath = [];
     while (parent && parent.id !== "01MODA5PF6Y2GOVW7725BZO354PWSELRRZ") {
       const parentName = parent.name.toLowerCase().replace(/\s+/g, '-');
@@ -53,7 +43,6 @@ const Folder = ({ folder, viewMode }) => {
       parent = parent.parentReference;
     }
   
-    // If the last part of the current URL matches the last part of constructed path, retain existing path and append the new folder
     if (currentUrlParts.length > 0 && constructedPath.length > 0 && currentUrlParts[currentUrlParts.length - 1] === constructedPath[constructedPath.length - 1]) {
       currentUrlParts = currentUrlParts.concat(newPath);
     } else {
@@ -63,7 +52,31 @@ const Folder = ({ folder, viewMode }) => {
     return `/dam/collections/${currentUrlParts.join('/')}`;
   };
   
+  const handleFavoriteFile = async (fileId) => {
+    if (!fileId) {
+      alert('File ID is missing');
+      return;
+    }
   
+    try {
+      const userId = session.user.id;
+      
+      const response = await axios.post('/api/graph/library/file/favorite', {
+        fileId,
+        userId
+      });
+  
+      if (response.status === 201) {
+        addToast('File favorited successfully.', 'success');
+      } else {
+        throw new Error('Error favoriting file');
+      }
+    } catch (error) {
+      console.error('Error favoriting file:', error);
+    addToast('Failed to favorite file.', 'danger');
+    } finally {;
+    }
+  };
 
   return (
     <div
@@ -88,14 +101,14 @@ const Folder = ({ folder, viewMode }) => {
             <ShareIcon className="icon me-2" />
             Share & Get Link
           </button>
-          <button className="btn-text px-3 py-2 border-0 text-left" onClick={() => alert('Add to Favorites')}>
+          <button className="btn-text px-3 py-2 border-0 text-left" onClick={() => handleFavoriteFile(folder.id)}>
             <FavoritesIcon className="icon me-2" />
             Add to Favorites
           </button>
-          <button className="btn-text px-3 py-2 border-0 text-left" onClick={() => alert('Download')}>
+          {/* <button className="btn-text px-3 py-2 border-0 text-left" onClick={() => alert('Download')}>
             <DownloadIcon className="icon me-2" />
             Download
-          </button>
+          </button> */}
         </div>
       )} 
     </div>

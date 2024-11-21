@@ -108,6 +108,7 @@ function DevPage() {
           });
 
           localStorage.setItem('allOpportunities', JSON.stringify(transformedItems));
+          console.log('All Opportunities: ', transformedItems);
     
         setOpportunities(transformedItems);
       } catch (error) {
