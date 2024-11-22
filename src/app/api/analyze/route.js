@@ -52,12 +52,13 @@ export async function POST(req) {
         messages: [
           { role: 'system', content: agentPrompt },
         ],
-        max_tokens: 3000,
+        max_tokens: 3000
       },
       {
         headers: {
           Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
           'Content-Type': 'application/json',
+          'Accept': 'application/json',   
         },
         timeout: 30000 
       },

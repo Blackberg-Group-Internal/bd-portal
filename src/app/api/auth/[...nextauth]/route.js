@@ -1,6 +1,7 @@
 import { fetchEmployeeHygraph } from '@/app/lib/hygraph/employees';
 import NextAuth from 'next-auth';
 import AzureADProvider from 'next-auth/providers/azure-ad';
+import { track } from '@vercel/analytics/server';
 
 export const authOptions = {
   providers: [
@@ -39,7 +40,8 @@ export const authOptions = {
       session.user = token.user;
       session.accessToken = token.accessToken;
       session.error = token.error;
-
+      console.log('Session user: ', session.user);
+      track('Login', { user: session.user.id, name: session.user.name });
 
       // try {
       // const firstName = session.user.name.split(' ')[0];

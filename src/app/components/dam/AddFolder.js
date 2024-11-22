@@ -6,6 +6,8 @@ import axios from 'axios';
 import { useToast } from '@/app/context/ToastContext';
 import { useRouter, usePathname } from 'next/navigation';
 import { buildVanityName } from '@/app/context/FolderContext'; 
+import { track } from '@vercel/analytics';
+import { useSession } from 'next-auth/react';
 
 const AddFolder = ({ show, handleClose, parentFolderId, onFolderAdded }) => {
   const [folderName, setFolderName] = useState('');
@@ -13,7 +15,7 @@ const AddFolder = ({ show, handleClose, parentFolderId, onFolderAdded }) => {
   const { addToast } = useToast();
   const router = useRouter();
   const pathname = usePathname();
-
+  const { data: session, status } = useSession();
 
   const handleCreateFolder = async () => {
     if (!folderName.trim()) {
@@ -35,6 +37,8 @@ const AddFolder = ({ show, handleClose, parentFolderId, onFolderAdded }) => {
 
       if (response.status === 201) {
         addToast('Folder created successfully.', 'success');
+        console.log('User Client Session: ', session.user);
+        track('Folder Created', { user: session.user.id, name: session.user.name, app: "DAM", folderName: folderName});
         if (onFolderAdded) {
           onFolderAdded(response.data);
         }

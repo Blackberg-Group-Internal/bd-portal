@@ -76,8 +76,7 @@ const FileUpload = ({ show, handleClose, onFilesUploaded }) => {
   
         const uploadUrl = response.data.uploadUrl;
   
-        // Upload file in chunks
-        const chunkSize = 5 * 1024 * 1024; // 5MB chunks
+        const chunkSize = 5 * 1024 * 1024; 
         let start = 0;
         let end = Math.min(chunkSize, file.size) - 1;
         let totalUploaded = 0;
@@ -93,11 +92,9 @@ const FileUpload = ({ show, handleClose, onFilesUploaded }) => {
               'Content-Range': `bytes ${start}-${end}/${file.size}`,
             },
             onUploadProgress: (progressEvent) => {
-              // Calculate the progress for the current chunk
               const uploadedBytes = progressEvent.loaded;
               totalUploaded += uploadedBytes;
   
-              // Update the total progress for the current file
               const progressValue = Math.min((totalUploaded / file.size) * 100, 99);
               setProgress((prevProgress) => ({
                 ...prevProgress,
@@ -109,8 +106,6 @@ const FileUpload = ({ show, handleClose, onFilesUploaded }) => {
           start = end + 1;
           end = Math.min(start + chunkSize - 1, file.size - 1);
         }
-  
-        // Mark the progress as complete for this file
         setProgress((prevProgress) => ({
           ...prevProgress,
           [i]: 100,
