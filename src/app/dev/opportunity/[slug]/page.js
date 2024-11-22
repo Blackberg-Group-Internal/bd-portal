@@ -222,20 +222,13 @@ function OpportunityPage() {
                   ) : (
                     analysis && (
                       <>
-                                    <span className="card-text fw-bold h2">{analysis.NAICS|| "N/A"}</span>
+                      <span className="card-text fw-bold h2">{analysis.NAICS|| "N/A"}</span>
                     </>
-                        )
+                    )
                   )}
-
                 </div>
               </div>
-
-        
-
-
             </div>
-
-
           </div>
         </div>
       </section>

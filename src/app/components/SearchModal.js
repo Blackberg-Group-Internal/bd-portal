@@ -11,6 +11,8 @@ import CornerDownLeftIcon from '../../../public/images/icons/corner-down-left.sv
 import ShortcutIcon from '../../../public/images/icons/command-shortcut.svg';
 import FilesIcon from '../../../public/images/icons/files.svg';
 import { FileViewerContext } from '@/app/layout';
+import { track } from '@vercel/analytics';
+import { useSession } from 'next-auth/react';
 
 const SearchModal = ({ show, handleClose }) => {
   const usersRef = useRef(null);
@@ -18,6 +20,7 @@ const SearchModal = ({ show, handleClose }) => {
   const proposalsRef = useRef(null);
   const previousResultsRef = useRef({ users: [], resumes: [], proposals: [] });
   const [searchInput, setSearchInput] = useState('');
+  const { data: session, status } = useSession();
   const [results, setResults] = useState({
     users: [],
     resumes: [],
@@ -56,6 +59,7 @@ const SearchModal = ({ show, handleClose }) => {
       setResults({ users: [], resumes: [], proposals: [] });
     }
   }, [debouncedSearchInput]);
+
 
   useEffect(() => {
     if (debouncedSearchInput.length > 1) {
@@ -138,6 +142,9 @@ const SearchModal = ({ show, handleClose }) => {
       resumes: results.resumes,
       proposals: results.proposals,
     };
+
+    track('Search', { user: session.user.id, name: session.user.name, app: "Search", search: debouncedSearchInput});
+
   }, [results]);
 
   const showModal = (file) => {
