@@ -602,7 +602,7 @@ function RfpSummarizer() {
                         <SummaryIcon />
                     </div>
                     <div className="mt-4">
-                      <ReactMarkdown>{analysisResult}</ReactMarkdown>
+                      {typeof window !== 'undefined' && <ReactMarkdown>{analysisResult}</ReactMarkdown>}
                     </div>
                   </div>
                 </div>
@@ -788,7 +788,9 @@ function RfpSummarizer() {
                     </div>
                     <div className="d-flex flex-column">
                     <span className="card-title small m-0">Requirements</span>
+                    {typeof window !== 'undefined' && 
                     <div className="card-text m-0"><ReactMarkdown>{rfpDetails.requirements}</ReactMarkdown></div>
+                    } 
                     </div>
                   </div>
                 </div>
