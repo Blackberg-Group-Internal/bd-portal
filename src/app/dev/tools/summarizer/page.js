@@ -1,12 +1,16 @@
 'use client';
 
-export const dynamic = 'force-dynamic';
+//export const dynamic = 'force-dynamic';
 
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import { useSession } from 'next-auth/react';
 import MagicWandIcon from '../../../../../public/images/icons/magic-wand.svg';
 import SummaryIcon from '../../../../../public/images/icons/summary.svg';
-import ReactMarkdown from 'react-markdown';
+import dynamic from 'next/dynamic';
+
+const ReactMarkdown = dynamic(() => import('react-markdown'), { ssr: false });
+
+// import ReactMarkdown from 'react-markdown';
 import ChatBot from '@/app/components/dev/ChatRfp';
 import FeedbackButtonsRfp from '@/app/components/dev/FeedbackButtonsRfp';
 import { track } from '@vercel/analytics';
