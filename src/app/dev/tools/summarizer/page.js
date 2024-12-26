@@ -1,5 +1,7 @@
 'use client';
 
+export const dynamic = 'force-dynamic';
+
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import { useSession } from 'next-auth/react';
 import MagicWandIcon from '../../../../../public/images/icons/magic-wand.svg';
@@ -25,8 +27,6 @@ import { useRouter, usePathname } from 'next/navigation';
 import { useSearchParams } from 'next/navigation';
 import { format } from 'date-fns'; 
 import { useToast } from '@/app/context/ToastContext';
-
-export const dynamic = 'force-dynamic';
 
 function RfpSummarizer() {
   const { data: session, status } = useSession();
@@ -72,7 +72,9 @@ function RfpSummarizer() {
   
     try {
       if (selectedFile) {
-        track('RFP Summarizer', { file: selectedFile.name, user: session.user.id });
+        if (typeof window !== 'undefined') {
+          track('RFP Summarizer', { file: selectedFile.name, user: session.user.id });
+        }
         startGraphUpload();
         const formData = new FormData();
         formData.append('file', selectedFile);
