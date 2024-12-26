@@ -48,6 +48,10 @@ const DevSubMenu = () => {
             <OpportunitiesIcon />
             <span className="d-none d-lg-flex ms-2 ps-1">Opportunities</span>
         </Link>
+        <Link href="/dev/summaries" className={`d-flex ${pathname === '/dev/summaries' ? 'active' : ''}`}>
+            <SummaryIcon />
+            <span className="d-none d-lg-flex ms-2 ps-1">Summaries</span>
+        </Link>
         <Link href="/dev/tools" className={`d-flex ${pathname === '/dev/tools' ? 'active' : ''}`}>
             <NaicsIcon />
             <span className="d-none d-lg-flex ms-2 ps-1">Tools</span>

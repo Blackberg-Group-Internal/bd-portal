@@ -1,3 +1,4 @@
+
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
@@ -13,7 +14,7 @@ model Favorite {
   fileId    String
   createdAt DateTime @default(now())
 
-  @@unique([userId, fileId]) // A user can only favorite a specific file once
+  @@unique([userId, fileId])
 }
 
 model Tag {
@@ -22,5 +23,61 @@ model Tag {
   tag       String
   createdAt DateTime @default(now())
 
-  @@unique([fileId, tag]) // Ensures a tag is unique for each file
+  @@unique([fileId, tag]) 
+}
+
+
+model RfpSummarizerRecord {
+  id                   Int       @id @default(autoincrement())
+  slug                 String    @unique // Unique identifier for the RFP summary
+  title                String    @default("")
+  userId               String    // Refers to the user who submitted the RFP
+  createdAt            DateTime  @default(now())
+  filename             String
+  threadId             String    // The thread ID used by OpenAI
+  assistantId          String    // The assistant ID used by OpenAI
+  documentLink         String    // URL link to the uploaded document
+  summary              String    @db.Text // The summary of the RFP document
+  deadline             DateTime? // Optional deadline parsed from the RFP
+  naics                String?   // Optional NAICS code for categorizing the RFP
+  matchScore           Int?      // Optional rating of the RFP match for the company, value between 1 and 100
+  issuingOrganization  String?   // The organization issuing the RFP
+  state                String?   // The state where the RFP is issued
+  contactName          String?   // Name of the contact person
+  contactEmail         String?   // Email of the contact person
+  contactPhone         String?   // Phone number of the contact person
+  requirements         String?   @db.Text // Requirements of the RFP
+  likes                Int       @default(0) // Count of likes
+  dislikes             Int       @default(0) // Count of dislikes
+  updatedAt            DateTime  @updatedAt
+}
+
+
+model Employee {
+  id              Int       @id @default(autoincrement())
+  firstName       String
+  lastName        String
+  position        String?
+  profileImageUrl String?
+  education       Json?     // Stores multiple degrees as JSON
+  experienceYears Int?
+  skillsets       String[]  // Array of text for skills
+  certifications  String[]  // Array of text for certifications
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+}
+
+model Employee {
+  id             Int      @id @default(autoincrement())
+  firstName      String
+  lastName       String
+  slug           String   @unique
+  position       String?
+  experience     Int?     // Years of experience
+  skills         String?  // Comma-separated list of skills
+  certifications String?  // Comma-separated list of certifications
+  education      String?  // JSON string for degrees (array of objects with level and name)
+  image          String?  // URL for the employee's profile image
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
 }

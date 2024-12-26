@@ -40,6 +40,7 @@ const Header = () => {
 
                     setProfile(userProfile);
                     setUserPhoto(hygraphUser[0].image.url);
+                    localStorage.setItem('userProfilePhoto', hygraphUser[0].image.url)
                 } catch (error) {
                     console.error("Failed to fetch user data:", error);
                 }
@@ -109,11 +110,11 @@ const Header = () => {
                     <DamIcon className="icon" />
                 </Link> 
             </li>
-            {/* <li className={`nav-item ${activeLink.startsWith('/org') ? 'active' : ''}`}>
-                <Link href="/org" className="nav-link" data-bs-toggle="tooltip" data-bs-placement="right" title="Organization">
+            <li className={`nav-item ${activeLink.startsWith('/directory') ? 'active' : ''}`}>
+                <Link href="/directory" className="nav-link" data-bs-toggle="tooltip" data-bs-placement="right" title="Directory">
                     <OrgIcon className="icon" />
                 </Link> 
-            </li> */}
+            </li>
         </ul>
         <div className="highlight"></div>
         <UserMenu photo={userPhoto} />
@@ -129,7 +130,7 @@ const Header = () => {
             {activeLink.startsWith('/dam') && (
             <DamSubMenu />
             )}
-            {activeLink.startsWith('/org') && (
+            {activeLink.startsWith('/directory') && (
             <OrgSubMenu />
             )}
             {activeLink.startsWith('/dev') && (

@@ -74,7 +74,18 @@ const FileViewerModal = ({ show, handleClose, fileData }) => {
     if (!hasFetched.current) { 
       hasFetched.current = true; 
 
-      if (fileData) {
+      if (typeof fileData === 'string') {
+
+        setFileUrl(fileData);
+        const fileName = fileData.split('/').pop();
+        const fileExtension = fileName.split('.').pop().toLowerCase();
+  
+        if (fileExtension === 'pdf') {
+          setPdfUrl(fileData);
+        } else if (['doc', 'docx', 'ppt', 'pptx', 'xls', 'xlsx'].includes(fileExtension)) {
+          convertToPdfAndFetchBlob(); 
+        }
+      } else if (fileData) {
         const fileExtension = fileData.name.split('.').pop().toLowerCase();
 
         if (fileExtension === 'pdf') {
@@ -168,7 +179,8 @@ const FileViewerModal = ({ show, handleClose, fileData }) => {
   const fetchPdfBlob = async () => {
     if (fileData) {
       try {
-        const response = await axios.get(fileData['@microsoft.graph.downloadUrl'], {
+        let downloadUrl = fileData['@microsoft.graph.downloadUrl'] || fileData['@content.downloadUrl'];
+        const response = await axios.get(downloadUrl, {
           responseType: 'blob',
         });
         const blob = new Blob([response.data], { type: 'application/pdf' });
@@ -183,8 +195,14 @@ const FileViewerModal = ({ show, handleClose, fileData }) => {
   };
 
   const renderFilePreviewModal = () => {
-    const file = fileData;
-    const fileExtension = file.name.split('.').pop().toLowerCase(); 
+    let fileExtension = '';
+
+    if (typeof fileData === 'string') {
+      const fileName = fileData.split('/').pop(); 
+      fileExtension = fileName.split('.').pop().toLowerCase();
+    } else if (fileData) {
+      fileExtension = fileData.name.split('.').pop().toLowerCase();
+    }
   
     switch (fileExtension) {
       case 'jpg':
@@ -263,8 +281,8 @@ const FileViewerModal = ({ show, handleClose, fileData }) => {
     setShowInfoPanel(!showInfoPanel);
   };
 
-  const fileName = fileData.name.split('.')[0];
-  const fileType = fileData.name.split('.').pop().toLowerCase(); 
+  //const fileName = fileData.name.split('.')[0];
+  //const fileType = fileData.name.split('.').pop().toLowerCase(); 
   
 
   useEffect(() => {

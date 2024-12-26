@@ -1,0 +1,16 @@
+.dev-list-item {
+    opacity: 0;
+    transform: translateY(20px);
+    
+    &.danger {
+        background: #fff1f1;
+    }
+
+    &.warning {
+        background:#fff7ea
+    }
+
+    &.safe {
+        background: #eaffeb;
+    }
+}
