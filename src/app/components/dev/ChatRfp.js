@@ -11,7 +11,6 @@ import AlignIcon from '../../../../public/images/icons/align.svg';
 import UniqueIcon from '../../../../public/images/icons/lightbulb.svg';
 import ExpandIcon from '../../../../public/images/icons/plus.svg';
 import ReactMarkdown from 'react-markdown';
-import { Alert } from 'bootstrap';
 
 const ChatBot = ({ threadId, assistantId }) => {
   const { data: session } = useSession();
@@ -27,7 +26,12 @@ const ChatBot = ({ threadId, assistantId }) => {
   const chatContainerRef = useRef(null); 
 
   useEffect(() => {
-    setUserProfilePhoto(localStorage.getItem('userProfilePhoto'));
+    if (typeof window !== 'undefined') {
+      setUserProfilePhoto(localStorage.getItem('userProfilePhoto'));
+    }
+  }, []);
+  
+  useEffect(() => {
     if (chatOpen && chatBodyRef.current) {
       setTimeout(() => {
         chatBodyRef.current.scrollTo({

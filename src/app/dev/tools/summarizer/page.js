@@ -1,16 +1,10 @@
 'use client';
 
-//export const dynamic = 'force-dynamic';
-
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import { useSession } from 'next-auth/react';
 import MagicWandIcon from '../../../../../public/images/icons/magic-wand.svg';
 import SummaryIcon from '../../../../../public/images/icons/summary.svg';
-import dynamic from 'next/dynamic';
-
-const ReactMarkdown = dynamic(() => import('react-markdown'), { ssr: false });
-
-// import ReactMarkdown from 'react-markdown';
+import ReactMarkdown from 'react-markdown';
 import ChatBot from '@/app/components/dev/ChatRfp';
 import FeedbackButtonsRfp from '@/app/components/dev/FeedbackButtonsRfp';
 import { track } from '@vercel/analytics';
@@ -32,6 +26,7 @@ import { useSearchParams } from 'next/navigation';
 import { format } from 'date-fns'; 
 import { useToast } from '@/app/context/ToastContext';
 
+
 function RfpSummarizer() {
   const { data: session, status } = useSession();
   const [selectedFile, setSelectedFile] = useState(null);
@@ -47,18 +42,11 @@ function RfpSummarizer() {
   const [countdown, setCountdown] = useState(null);
   const graphFile = useRef(null);
   const { openModal } = useContext(FileViewerContext);
-  //const searchParams = useSearchParams();
-  //const slug = searchParams.get('slug');
+  const searchParams = useSearchParams();
+  const slug = searchParams.get('slug');
   const router = useRouter();
   const { addToast } = useToast();
-  const [slug, setSlug] = useState(null);
-
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const params = new URLSearchParams(window.location.search);
-      setSlug(params.get('slug'));
-    }
-  }, []);
+  
 
   const formatModifiedDate = (dateString) => {
     const date = new Date(dateString);
@@ -76,9 +64,7 @@ function RfpSummarizer() {
   
     try {
       if (selectedFile) {
-        if (typeof window !== 'undefined') {
-          track('RFP Summarizer', { file: selectedFile.name, user: session.user.id });
-        }
+        track('RFP Summarizer', { file: selectedFile.name, user: session.user.id });
         startGraphUpload();
         const formData = new FormData();
         formData.append('file', selectedFile);
@@ -412,7 +398,6 @@ function RfpSummarizer() {
                       console.log(parsedJson);
                         // Generate a slug from the RFP title and date-time
                       parsedJson.slug = generateSlug(parsedJson.title);
-                      
                       const url = new URL(window.location);
                       url.searchParams.set('slug', parsedJson.slug);
                       window.history.replaceState({}, '', url);
@@ -474,7 +459,6 @@ function RfpSummarizer() {
       console.error('Error getting analysis:', error);
     }
   };
-
 
   const startGraphUpload = async () => {
     if (!selectedFile) {
@@ -608,7 +592,7 @@ function RfpSummarizer() {
                         <SummaryIcon />
                     </div>
                     <div className="mt-4">
-                      {typeof window !== 'undefined' && <ReactMarkdown>{analysisResult}</ReactMarkdown>}
+                      <ReactMarkdown>{analysisResult}</ReactMarkdown>
                     </div>
                   </div>
                 </div>
@@ -630,7 +614,7 @@ function RfpSummarizer() {
 
               {!loading && rfpDetails && (
                 <>
-              <div className="col-12 d-flex gap-2">
+            <div className="col-12 d-flex gap-2">
               {rfpDetails.matchScore && (
                 <div className="card  card-tool card-tool--no-hover rounded shadow-sm bg-white py-3 pointer mb-2 w-50">
                   <div className="card-body text-left d-flex flex-column flex-sm-row py-0 align-items-start">
@@ -794,9 +778,7 @@ function RfpSummarizer() {
                     </div>
                     <div className="d-flex flex-column">
                     <span className="card-title small m-0">Requirements</span>
-                    {typeof window !== 'undefined' && 
                     <div className="card-text m-0"><ReactMarkdown>{rfpDetails.requirements}</ReactMarkdown></div>
-                    } 
                     </div>
                   </div>
                 </div>
