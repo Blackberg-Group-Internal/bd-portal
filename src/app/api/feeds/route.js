@@ -1,6 +1,8 @@
 import axios from 'axios';
 import xml2js from 'xml2js';
 
+export const dynamic = 'force-dynamic';
+
 export async function GET(req) {
   try {
     const { searchParams } = new URL(req.url);
