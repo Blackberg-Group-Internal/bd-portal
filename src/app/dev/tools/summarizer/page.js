@@ -44,10 +44,17 @@ function RfpSummarizer() {
   const graphFile = useRef(null);
   const { openModal } = useContext(FileViewerContext);
   const searchParams = useSearchParams();
-  const slug = searchParams.get('slug');
+  //const slug = searchParams.get('slug');
   const router = useRouter();
   const { addToast } = useToast();
-  
+  const [slug, setSlug] = useState(null);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search);
+      setSlug(params.get('slug'));
+    }
+  }, []);
 
   const formatModifiedDate = (dateString) => {
     const date = new Date(dateString);
