@@ -398,9 +398,12 @@ function RfpSummarizer() {
                       console.log(parsedJson);
                         // Generate a slug from the RFP title and date-time
                       parsedJson.slug = generateSlug(parsedJson.title);
-                      const url = new URL(window.location);
-                      url.searchParams.set('slug', parsedJson.slug);
-                      window.history.replaceState({}, '', url);
+
+                      if (typeof window !== 'undefined') {
+                        const url = new URL(window.location);
+                        url.searchParams.set('slug', parsedJson.slug);
+                        window.history.replaceState({}, '', url);
+                      }
 
                       if (parsedJson.deadline) {
                         const currentDate = new Date();
