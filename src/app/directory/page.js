@@ -72,9 +72,9 @@ const Page = () => {
       </section>
       {!loading && employeeData ? (
         <section className="container px-4 px-lg-5 mb-6">
-             <div className="row d-flex align-items-stretch gx-6 member-row">
+             <div className="row d-flex align-items-stretch gx-4 member-row">
                     {employeeData.map((employee, index) => (
-                        <div className="member-col col-12 col-sm-6 col-lg-4 col-xl-3 mb-5 mb-md-8" key={index}>
+                        <div className="member-col col-12 col-sm-6 col-lg-4 col-xl-3 mb-4" key={index}>
                             <div className="member-card d-flex flex-column align-items-center h-100 bg-white p-4 rounded-3">
                               <Link href={`/directory/${employee.firstName.toLowerCase()}-${employee.lastName.toLowerCase()}`} className="text-decoration-none d-flex flex-column text-dark align-items-center">
                                 <div className="member-image w-50 mb-4 d-flex justify-content-center position-relative z-1">

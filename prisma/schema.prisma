@@ -52,21 +52,6 @@ model RfpSummarizerRecord {
   updatedAt            DateTime  @updatedAt
 }
 
-
-model Employee {
-  id              Int       @id @default(autoincrement())
-  firstName       String
-  lastName        String
-  position        String?
-  profileImageUrl String?
-  education       Json?     // Stores multiple degrees as JSON
-  experienceYears Int?
-  skillsets       String[]  // Array of text for skills
-  certifications  String[]  // Array of text for certifications
-  createdAt       DateTime  @default(now())
-  updatedAt       DateTime  @updatedAt
-}
-
 model Employee {
   id             Int      @id @default(autoincrement())
   firstName      String
