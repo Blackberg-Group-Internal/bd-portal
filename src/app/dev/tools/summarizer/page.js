@@ -43,7 +43,7 @@ function RfpSummarizer() {
   const [countdown, setCountdown] = useState(null);
   const graphFile = useRef(null);
   const { openModal } = useContext(FileViewerContext);
-  const searchParams = useSearchParams();
+  //const searchParams = useSearchParams();
   //const slug = searchParams.get('slug');
   const router = useRouter();
   const { addToast } = useToast();
