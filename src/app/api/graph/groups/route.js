@@ -1,5 +1,7 @@
 import { getGroupMemberships } from '@/app/lib/microsoft/graphHelper';
 
+export const dynamic = 'force-dynamic';
+
 export async function GET(req) {
     try {
         const userId = req.nextUrl.searchParams.get('userId');
