@@ -26,6 +26,7 @@ import { useSearchParams } from 'next/navigation';
 import { format } from 'date-fns'; 
 import { useToast } from '@/app/context/ToastContext';
 
+export const dynamic = 'force-dynamic';
 
 function RfpSummarizer() {
   const { data: session, status } = useSession();
@@ -398,12 +399,10 @@ function RfpSummarizer() {
                       console.log(parsedJson);
                         // Generate a slug from the RFP title and date-time
                       parsedJson.slug = generateSlug(parsedJson.title);
-
-                      if (typeof window !== 'undefined') {
-                        const url = new URL(window.location);
-                        url.searchParams.set('slug', parsedJson.slug);
-                        window.history.replaceState({}, '', url);
-                      }
+                      
+                      const url = new URL(window.location);
+                      url.searchParams.set('slug', parsedJson.slug);
+                      window.history.replaceState({}, '', url);
 
                       if (parsedJson.deadline) {
                         const currentDate = new Date();
