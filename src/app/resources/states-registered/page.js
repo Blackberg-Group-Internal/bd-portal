@@ -22,13 +22,11 @@ function StatesRegisteredPage() {
   const { addToast } = useToast();
 
   useEffect(() => {
-    // Load from localStorage
     const localData = localStorage.getItem("registeredStates");
     if (localData) {
       setRegisteredStates(JSON.parse(localData));
     }
 
-    // Fetch from API and update localStorage
     const fetchStates = async () => {
       try {
         const response = await fetch("/api/states");
@@ -59,7 +57,7 @@ function StatesRegisteredPage() {
       (state) => state.code.toLowerCase() === stateAbbreviation.toLowerCase()
     );
     if (selectedState) {
-      router.push(`/resources/states-registered/${selectedState.code.toLowerCase()}`);
+      router.push(`/resources/states-registered/${selectedState.name}`);
     } else {
       addToast("This state is not registered.", "warning");
     }

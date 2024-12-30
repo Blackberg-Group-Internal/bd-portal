@@ -4,37 +4,34 @@ import React from 'react';
 import HomeIcon from '../../../public/images/icons/home.svg';
 import ChevronIcon from '../../../public/images/icons/chevron.svg';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 
-const BreadcrumbsDynamic = ({ first, firstHref = '/', second, secondHref, third, thirdHref }) => {
+const Breadcrumbs = () => {
+  const pathname = usePathname();
+  const pathSegments = pathname.split('/').filter(segment => segment);
+
   return (
-    <>
     <div className="breadcrumbs d-flex align-items-center text-figtree">
-    <Link href="/"><HomeIcon /></Link>
-    <ChevronIcon />
-      {first && (
-        <>
-          <Link href={firstHref} className="text-decoration-none">
-            {first === 'Home' ? <HomeIcon /> : <span className="text-nowrap">{first}</span>}
-          </Link>
-          {second && <ChevronIcon />}
-        </>
-      )}
-      {second && (
-        <>
-          <Link href={secondHref || '#'} className="text-decoration-none">
-            <span className="text-nowrap">{second}</span>
-          </Link>
-          {third && <ChevronIcon />}
-        </>
-      )}
-      {third && (
-        <Link href={thirdHref || '#'} className="text-decoration-none">
-          <span className="text-nowrap">{third}</span>
-        </Link>
-      )}
+      <Link href="/" className="text-decoration-none">
+        <HomeIcon />
+      </Link>
+      {pathSegments.map((segment, index) => {
+        const href = `/${pathSegments.slice(0, index + 1).join('/')}`;
+        const formattedSegment = segment
+          .replace(/-/g, ' ')
+          .replace(/\b\w/g, char => char.toUpperCase()); 
+
+        return (
+          <React.Fragment key={index}>
+            <ChevronIcon />
+            <Link href={href} className="text-decoration-none">
+              <span className="text-nowrap">{formattedSegment}</span>
+            </Link>
+          </React.Fragment>
+        );
+      })}
     </div>
-    </>
   );
 };
 
-export default BreadcrumbsDynamic;
+export default Breadcrumbs;

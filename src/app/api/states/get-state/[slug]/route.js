@@ -8,8 +8,8 @@ export async function GET(req, { params }) {
   console.log('Slug: ' + slug);
 
   try {
-    const state = await prisma.state.findUnique({
-      where: { code: slug.toUpperCase() },
+    const state = await prisma.state.findFirst({
+      where: { name: slug },
     });
 
     if (!state) {

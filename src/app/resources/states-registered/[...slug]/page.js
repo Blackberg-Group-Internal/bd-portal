@@ -61,14 +61,7 @@ const StateRegisteredPage = ({ params }) => {
       <section className="container p-4 pt-lg-5 px-lg-5 pb-0 position-absolute start-4 top-4 z-2">
         <div className="row">
           <div className="col-12">
-              <BreadcrumbsDynamic
-                first="Resources" 
-                firstHref="/resources" 
-                second="States Registered" 
-                secondHref="/resources/states-registered" 
-                third={`${state.code}`}
-                thirdHref="#"
-              />
+              <BreadcrumbsDynamic />
           </div>
         </div>
       </section>
