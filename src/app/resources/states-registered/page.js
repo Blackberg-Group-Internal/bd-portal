@@ -1,20 +1,60 @@
 "use client";
 
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 import SearchModal from "@/app/components/SearchModal";
-import gsap from "gsap";
 import Breadcrumbs from "@/app/components/Breadcrumbs";
-import { useToast } from '@/app/context/ToastContext';
+import { useToast } from "@/app/context/ToastContext";
 import AddStateButton from "@/app/components/resources/AddStateButton";
+import USAMap from "react-usa-map";
 
 function StatesRegisteredPage() {
   const { data } = useSession();
+  const router = useRouter();
   const searchRef = useRef(null);
   const [showModal, setShowModal] = useState(false);
+  const [registeredStates, setRegisteredStates] = useState([]);
   const handleShow = () => setShowModal(true);
   const handleClose = () => setShowModal(false);
   const { addToast } = useToast();
+
+  useEffect(() => {
+    // Fetch states from API
+    const fetchStates = async () => {
+      try {
+        const response = await fetch("/api/states");
+        const data = await response.json();
+        setRegisteredStates(data);
+      } catch (error) {
+        console.error("Error fetching registered states:", error);
+        addToast("Error fetching states.", "danger");
+      }
+    };
+
+    fetchStates();
+  }, [addToast]);
+
+  const mapCustomization = () => {
+    const states = {};
+    registeredStates.forEach((state) => {
+      states[state.code] = { fill: "#006154" }; 
+    });
+    return states;
+  };
+
+  const handleStateClick = (stateAbbreviation) => {
+    const selectedState = registeredStates.find(
+      (state) => state.code.toUpperCase() === stateAbbreviation.toUpperCase()
+    );
+  
+    if (selectedState) {
+      router.push(`/states/${selectedState.code.toLowerCase()}`);
+    } else {
+      addToast("This state is not registered.", "warning");
+    }
+  };
+  
 
   return (
     <>
@@ -54,9 +94,13 @@ function StatesRegisteredPage() {
           </div>
 
           <div className="row">
-            <div className="col-12 map-container">
-              {/* Add US Map Here */}
-              <AddStateButton />
+            <div className="col-12 map-container d-flex flex-column">
+              <div className="ms-auto">
+                <AddStateButton />
+              </div>
+              <div className="ratio ratio-16x9">
+                <USAMap customize={mapCustomization()} onClick={handleStateClick} />
+              </div>
             </div>
           </div>
 
