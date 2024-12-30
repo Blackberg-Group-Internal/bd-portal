@@ -8,6 +8,7 @@ import Breadcrumbs from "@/app/components/Breadcrumbs";
 import AddCodeButton from "@/app/components/resources/AddCodeButton";
 import CopyIcon from '../../../../public/images/icons/copy.svg';
 import { useToast } from '@/app/context/ToastContext';
+import BreadcrumbsDynamic from "@/app/components/BreadcrumbsDynamic";
 
 function NaicsSinsPage() {
   const { data } = useSession();
@@ -66,7 +67,7 @@ function NaicsSinsPage() {
         duration: 0.25,
       }
     );
-  }, [view, naicsCodes, sinsCodes]);
+  }, [view]);
 
   const handleCopyToClipboard = (code) => {
     navigator.clipboard.writeText(code).then(() => {
@@ -101,7 +102,12 @@ function NaicsSinsPage() {
         <div className="container position-relative">
           <div className="row border-bottom mb-5">
             <div className="col-12">
-              <Breadcrumbs first="SamSmart" second="Dashboard" third="Tools" />
+              <BreadcrumbsDynamic
+                first="Resources" 
+                firstHref="/resources" 
+                second="NAICS & SINs" 
+                secondHref="#" 
+              />
             </div>
             <div className="col-12 d-flex justify-content-between align-items-center page-info">
               <h1 className="fw-bold-500 my-4">NAICS & SINs</h1>

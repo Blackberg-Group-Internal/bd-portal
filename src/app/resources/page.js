@@ -7,6 +7,7 @@ import gsap from 'gsap';
 import Breadcrumbs from '@/app/components/Breadcrumbs';
 import Link from 'next/link';
 import SearchIcon from '../../../public/images/icons/search.svg';
+import BreadcrumbsDynamic from '../components/BreadcrumbsDynamic';
 
 function ResourcesPage() {
   const { data } = useSession();
@@ -38,7 +39,12 @@ function ResourcesPage() {
         <div className="container position-relative">
             <div className="row">
               <div className="col-12">
-                <Breadcrumbs first="SamSmart" second="Dashboard" third="Tools" />
+                <BreadcrumbsDynamic
+                  first="Resources" 
+                  firstHref="/resources" 
+                  second="Overview" 
+                  secondHref="#" 
+                />
               </div>
               <div className="col-12 d-flex justify-content-between align-items-center page-info">
                 <h1 className="fw-bold-500 my-4">Tools</h1>

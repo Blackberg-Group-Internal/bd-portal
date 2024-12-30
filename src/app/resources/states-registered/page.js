@@ -9,6 +9,7 @@ import { useToast } from "@/app/context/ToastContext";
 import AddStateButton from "@/app/components/resources/AddStateButton";
 import USAMap from "react-usa-map";
 import CopyIcon from '../../../../public/images/icons/copy.svg';
+import BreadcrumbsDynamic from "@/app/components/BreadcrumbsDynamic";
 
 function StatesRegisteredPage() {
   const { data } = useSession();
@@ -21,11 +22,19 @@ function StatesRegisteredPage() {
   const { addToast } = useToast();
 
   useEffect(() => {
+    // Load from localStorage
+    const localData = localStorage.getItem("registeredStates");
+    if (localData) {
+      setRegisteredStates(JSON.parse(localData));
+    }
+
+    // Fetch from API and update localStorage
     const fetchStates = async () => {
       try {
         const response = await fetch("/api/states");
         const data = await response.json();
         setRegisteredStates(data);
+        localStorage.setItem("registeredStates", JSON.stringify(data));
       } catch (error) {
         console.error("Error fetching registered states:", error);
         addToast("Error fetching states.", "danger");
@@ -37,9 +46,9 @@ function StatesRegisteredPage() {
 
   const mapCustomization = () => {
     const states = {};
-    if(registeredStates){
+    if (registeredStates) {
       registeredStates.forEach((state) => {
-        states[state.code] = { fill: "#006154" }; 
+        states[state.code] = { fill: "#006154" };
       });
     }
     return states;
@@ -68,7 +77,12 @@ function StatesRegisteredPage() {
         <div className="container position-relative">
           <div className="row border-bottom mb-5">
             <div className="col-12">
-              <Breadcrumbs first="SamSmart" second="Dashboard" third="Tools" />
+              <BreadcrumbsDynamic
+                first="Resources" 
+                firstHref="/resources" 
+                second="States Registered" 
+                secondHref="#" 
+              />
             </div>
             <div className="col-12 d-flex justify-content-between align-items-center page-info">
               <h1 className="fw-bold-500 my-4">States Registered</h1>
@@ -121,7 +135,7 @@ function StatesRegisteredPage() {
             </div>
 
             {registeredStates.map((state) => (
-              <div className="col-12 px-0 code-row" key={state.id}>
+              <div className="col-12 px-0 code-row pointer" key={state.id} onClick={(event) => handleStateClick(state.code)}>
                 <div className="d-flex align-items-center code-card p-3 border-top">
                   <span className="col-1 small">
                     {state.name}

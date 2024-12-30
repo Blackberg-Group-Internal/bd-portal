@@ -8,6 +8,7 @@ import axios from "axios";
 import { useSession } from "next-auth/react";
 import CopyIcon from '../../../../../public/images/icons/copy.svg';
 import { useToast } from '@/app/context/ToastContext';
+import BreadcrumbsDynamic from "@/app/components/BreadcrumbsDynamic";
 
 const StateRegisteredPage = ({ params }) => {
   const slug = Array.isArray(params.slug) ? params.slug.join("-") : params.slug;
@@ -60,11 +61,14 @@ const StateRegisteredPage = ({ params }) => {
       <section className="container p-4 pt-lg-5 px-lg-5 pb-0 position-absolute start-4 top-4 z-2">
         <div className="row">
           <div className="col-12">
-            <Breadcrumbs
-              className="breadcrumbs-light"
-              first="States Registered"
-              second={`${state.name}`}
-            />
+              <BreadcrumbsDynamic
+                first="Resources" 
+                firstHref="/resources" 
+                second="States Registered" 
+                secondHref="/resources/states-registered" 
+                third={`${state.code}`}
+                thirdHref="#"
+              />
           </div>
         </div>
       </section>
