@@ -5,9 +5,62 @@ import { Modal, Form, Button } from 'react-bootstrap';
 import axios from 'axios';
 import { useToast } from '@/app/context/ToastContext';
 
+const STATES = [
+  { name: "Alabama", code: "AL" },
+  { name: "Alaska", code: "AK" },
+  { name: "Arizona", code: "AZ" },
+  { name: "Arkansas", code: "AR" },
+  { name: "California", code: "CA" },
+  { name: "Colorado", code: "CO" },
+  { name: "Connecticut", code: "CT" },
+  { name: "Delaware", code: "DE" },
+  { name: "Florida", code: "FL" },
+  { name: "Georgia", code: "GA" },
+  { name: "Hawaii", code: "HI" },
+  { name: "Idaho", code: "ID" },
+  { name: "Illinois", code: "IL" },
+  { name: "Indiana", code: "IN" },
+  { name: "Iowa", code: "IA" },
+  { name: "Kansas", code: "KS" },
+  { name: "Kentucky", code: "KY" },
+  { name: "Louisiana", code: "LA" },
+  { name: "Maine", code: "ME" },
+  { name: "Maryland", code: "MD" },
+  { name: "Massachusetts", code: "MA" },
+  { name: "Michigan", code: "MI" },
+  { name: "Minnesota", code: "MN" },
+  { name: "Mississippi", code: "MS" },
+  { name: "Missouri", code: "MO" },
+  { name: "Montana", code: "MT" },
+  { name: "Nebraska", code: "NE" },
+  { name: "Nevada", code: "NV" },
+  { name: "New Hampshire", code: "NH" },
+  { name: "New Jersey", code: "NJ" },
+  { name: "New Mexico", code: "NM" },
+  { name: "New York", code: "NY" },
+  { name: "North Carolina", code: "NC" },
+  { name: "North Dakota", code: "ND" },
+  { name: "Ohio", code: "OH" },
+  { name: "Oklahoma", code: "OK" },
+  { name: "Oregon", code: "OR" },
+  { name: "Pennsylvania", code: "PA" },
+  { name: "Rhode Island", code: "RI" },
+  { name: "South Carolina", code: "SC" },
+  { name: "South Dakota", code: "SD" },
+  { name: "Tennessee", code: "TN" },
+  { name: "Texas", code: "TX" },
+  { name: "Utah", code: "UT" },
+  { name: "Vermont", code: "VT" },
+  { name: "Virginia", code: "VA" },
+  { name: "Washington", code: "WA" },
+  { name: "West Virginia", code: "WV" },
+  { name: "Wisconsin", code: "WI" },
+  { name: "Wyoming", code: "WY" },
+];
+
 const AddState = ({ show, handleClose, onStateAdded }) => {
-  const [code, setCode] = useState('');
   const [name, setName] = useState('');
+  const [code, setCode] = useState('');
   const [businessLicense, setBusinessLicense] = useState('');
   const [bidWebsite, setBidWebsite] = useState('');
   const [creating, setCreating] = useState(false);
@@ -15,7 +68,7 @@ const AddState = ({ show, handleClose, onStateAdded }) => {
 
   const handleCreateState = async () => {
     if (!code.trim() || !name.trim()) {
-      alert('State Code and Name cannot be empty');
+      alert('State Name and Code cannot be empty');
       return;
     }
 
@@ -46,6 +99,16 @@ const AddState = ({ show, handleClose, onStateAdded }) => {
     }
   };
 
+  const handleStateSelection = (e) => {
+    const selectedName = e.target.value;
+    setName(selectedName);
+
+    const selectedState = STATES.find(state => state.name === selectedName);
+    if (selectedState) {
+      setCode(selectedState.code);
+    }
+  };
+
   useEffect(() => {
     if (!show) {
       setCode('');
@@ -65,23 +128,20 @@ const AddState = ({ show, handleClose, onStateAdded }) => {
         <span className="small">Add a new state to the registry.</span>
       </Modal.Header>
       <Modal.Body className="px-4">
-        <Form.Group controlId="stateCode" className="mb-3">
-          <Form.Label>State Code</Form.Label>
-          <Form.Control
-            type="text"
-            placeholder="Enter state code"
-            value={code}
-            onChange={(e) => setCode(e.target.value)}
-          />
-        </Form.Group>
         <Form.Group controlId="stateName" className="mb-3">
           <Form.Label>State Name</Form.Label>
-          <Form.Control
-            type="text"
-            placeholder="Enter state name"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-          />
+          <Form.Select value={name} onChange={handleStateSelection}>
+            <option value="">Select a state</option>
+            {STATES.map((state) => (
+              <option key={state.code} value={state.name}>
+                {state.name}
+              </option>
+            ))}
+          </Form.Select>
+        </Form.Group>
+        <Form.Group controlId="stateCode" className="mb-3 d-none">
+          <Form.Label>State Code</Form.Label>
+          <Form.Control type="text" value={code} readOnly />
         </Form.Group>
         <Form.Group controlId="businessLicense" className="mb-3">
           <Form.Label>Business License Number</Form.Label>
