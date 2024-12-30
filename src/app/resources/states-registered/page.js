@@ -92,7 +92,6 @@ function StatesRegisteredPage() {
               </div>
             </div>
           </div>
-
           <div className="row">
             <div className="col-12 map-container d-flex flex-column">
               <div className="ms-auto">
