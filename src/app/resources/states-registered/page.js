@@ -8,6 +8,7 @@ import Breadcrumbs from "@/app/components/Breadcrumbs";
 import { useToast } from "@/app/context/ToastContext";
 import AddStateButton from "@/app/components/resources/AddStateButton";
 import USAMap from "react-usa-map";
+import CopyIcon from '../../../../public/images/icons/copy.svg';
 
 function StatesRegisteredPage() {
   const { data } = useSession();
@@ -53,6 +54,12 @@ function StatesRegisteredPage() {
     } else {
       addToast("This state is not registered.", "warning");
     }
+  };
+
+  const handleCopyToClipboard = (code) => {
+    navigator.clipboard.writeText(code).then(() => {
+      addToast(`Copied "${code}" to clipboard!`, "success");
+    });
   };
 
   return (
@@ -101,6 +108,34 @@ function StatesRegisteredPage() {
                 <USAMap customize={mapCustomization()} onClick={(event) => handleStateClick(event.currentTarget.dataset.name)} />
               </div>
             </div>
+          </div>
+
+          <div className="row mb-4 bg-white border code-table mt-7">
+
+            <div className="col-12 px-0 code-header">
+              <div className="d-flex align-items-start code-card p-3 border-top">
+                <span className="col-1">State</span>
+                <span className="">License</span>
+                <span className="ms-auto">Action</span>
+              </div>
+            </div>
+
+            {registeredStates.map((state) => (
+              <div className="col-12 px-0 code-row" key={state.id}>
+                <div className="d-flex align-items-center code-card p-3 border-top">
+                  <span className="col-1 small">
+                    {state.name}
+                  </span>
+                  <span className="text-muted small" onDoubleClick={() => handleCopyToClipboard(state.businessLicense)}>{state.businessLicense}</span>
+                  <button
+                    className="btn btn-sm ms-auto"
+                    onClick={() => handleCopyToClipboard(state.businessLicense)}
+                  >
+                    <CopyIcon />
+                  </button>
+                </div>
+              </div>
+            ))}
           </div>
 
           <SearchModal show={showModal} handleClose={handleClose} />
