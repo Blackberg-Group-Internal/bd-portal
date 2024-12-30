@@ -20,7 +20,6 @@ function StatesRegisteredPage() {
   const { addToast } = useToast();
 
   useEffect(() => {
-    // Fetch states from API
     const fetchStates = async () => {
       try {
         const response = await fetch("/api/states");
@@ -35,21 +34,22 @@ function StatesRegisteredPage() {
     fetchStates();
   }, [addToast]);
 
-  // Define state customization for the map
   const mapCustomization = () => {
     const states = {};
-    registeredStates.forEach((state) => {
-      states[state.code] = { fill: "#1e7a56" }; // Registered states in green
-    });
+    if(registeredStates){
+      registeredStates.forEach((state) => {
+        states[state.code] = { fill: "#006154" }; 
+      });
+    }
     return states;
   };
 
   const handleStateClick = (stateAbbreviation) => {
     const selectedState = registeredStates.find(
-      (state) => state.code === stateAbbreviation
+      (state) => state.code.toLowerCase() === stateAbbreviation.toLowerCase()
     );
     if (selectedState) {
-      router.push(`/states/${selectedState.code.toLowerCase()}`);
+      router.push(`/resources/states-registered/${selectedState.code.toLowerCase()}`);
     } else {
       addToast("This state is not registered.", "warning");
     }
@@ -98,7 +98,7 @@ function StatesRegisteredPage() {
                 <AddStateButton />
               </div>
               <div className="ratio ratio-16x9">
-                <USAMap customize={mapCustomization()} onClick={handleStateClick} />
+                <USAMap customize={mapCustomization()} onClick={(event) => handleStateClick(event.currentTarget.dataset.name)} />
               </div>
             </div>
           </div>

@@ -4,6 +4,26 @@ const prisma = new PrismaClient();
 
 export async function GET(req) {
   try {
+    const url = new URL(req.url);
+    const slug = url.searchParams.get("slug");
+
+    if (slug) {
+      // Fetch specific state by slug
+      const state = await prisma.state.findUnique({
+        where: { code: slug.toUpperCase() },
+      });
+
+      if (!state) {
+        return new Response(
+          JSON.stringify({ error: "State not found." }),
+          { status: 404 }
+        );
+      }
+
+      return new Response(JSON.stringify(state), { status: 200 });
+    }
+
+    // Fetch all states if no slug is provided
     const states = await prisma.state.findMany();
     return new Response(JSON.stringify(states), { status: 200 });
   } catch (error) {
@@ -19,8 +39,6 @@ export async function POST(req) {
   try {
     const body = await req.json();
     const { code, name, businessLicense, bidWebsite } = body;
-
-    console.log('BODY: ', body);
 
     if (!code || !name) {
       return new Response(
