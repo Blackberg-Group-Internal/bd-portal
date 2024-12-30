@@ -66,3 +66,29 @@ model Employee {
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
 }
+
+model NAICSCode {
+  id          Int      @id @default(autoincrement())
+  code        String   @unique
+  title       String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model SINCode {
+  id          Int      @id @default(autoincrement())
+  code        String   @unique
+  title       String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model State {
+  id                Int      @id @default(autoincrement())
+  code              String   @unique 
+  name              String  
+  businessLicense   String?  
+  bidWebsite        String?  
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+}

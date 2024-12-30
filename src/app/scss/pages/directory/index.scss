@@ -1,0 +1,32 @@
+.profile-header {
+    height: 240px;
+    background: url('/images/directory-bg.jpg') center center no-repeat;
+    background-size: cover;
+}
+
+.profile-container {
+    margin-top: -64px;
+}
+
+body[class^="directory-"] {
+    background-color: #fff;
+
+    hr {
+        border-top-color: #EAECF0;
+        opacity: 1;
+    }
+
+    .breadcrumbs {
+        svg {
+            filter: brightness(2) invert(0) saturate(0);
+        }
+
+        *, a {
+            color: #fff;
+        }
+
+        a:last-child span {
+            color: #fff;
+        }
+    }
+  }

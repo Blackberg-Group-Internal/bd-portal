@@ -1,0 +1,10 @@
+.code-table {
+    border-radius: 12px;
+
+    .code-header {
+        font-size: 12px;
+    }
+    .code-row:nth-child(odd){
+        background: #F9FAFB;
+    }
+}

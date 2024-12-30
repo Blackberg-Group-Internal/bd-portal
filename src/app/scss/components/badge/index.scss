@@ -1,0 +1,9 @@
+.badge {
+    border: 1px solid;
+    border-radius: 6px;
+    font-size: 14px;
+    
+    &.badge-light {
+        border-color: #D0D5DD;
+    }
+}

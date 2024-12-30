@@ -9,6 +9,8 @@ import axios from 'axios';
 import Loader from '../components/Loader';
 import Image from 'next/image';
 import Link from 'next/link';
+import gsap from 'gsap';
+import MemberCards from '@/app/components/directory/MemberCards';
 
 const Page = () => {
   
@@ -41,6 +43,29 @@ const Page = () => {
 
         localStorage.setItem('employeeData', JSON.stringify(data));
         setLoading(false);
+
+        // const hygraphEmployees = response.data;
+
+        // for (const employee of hygraphEmployees) {
+        //   try {
+        //     await axios.post('/api/directory/add-employee', {
+        //       firstName: employee.firstName,
+        //       lastName: employee.lastName,
+        //       position: employee.position,
+        //       experience: employee.experience || 0,
+        //       skills: employee.skills || [],
+        //       certifications: employee.certifications || [],
+        //       education: employee.education || [],
+        //       image: employee.image?.url || "",
+        //     });
+        //   } catch (error) {
+        //     console.error(
+        //       `Error adding employee ${employee.firstName} ${employee.lastName}:`,
+        //       error.response?.data || error.message
+        //     );
+        //   }
+        // }
+
       } catch (error) {
         console.error('Error fetching employees:', error);
         setLoading(false);
@@ -49,6 +74,24 @@ const Page = () => {
 
     fetchEmployees();
   }, []);
+
+  useEffect(() => {
+
+    const memberCards = document.querySelectorAll(".member-card");
+
+    gsap.fromTo(memberCards, 
+        { y: 60, opacity: 0 }, 
+        {
+            y: 0,
+            opacity: 1,
+            ease: 'Power1.easeOut',
+            stagger: 0.25,
+            duration: .4
+        }
+    );
+
+}, []);  
+
 
   return (
     <>
@@ -72,25 +115,7 @@ const Page = () => {
       </section>
       {!loading && employeeData ? (
         <section className="container px-4 px-lg-5 mb-6">
-             <div className="row d-flex align-items-stretch gx-4 member-row">
-                    {employeeData.map((employee, index) => (
-                        <div className="member-col col-12 col-sm-6 col-lg-4 col-xl-3 mb-4" key={index}>
-                            <div className="member-card d-flex flex-column align-items-center h-100 bg-white p-4 rounded-3">
-                              <Link href={`/directory/${employee.firstName.toLowerCase()}-${employee.lastName.toLowerCase()}`} className="text-decoration-none d-flex flex-column text-dark align-items-center">
-                                <div className="member-image w-50 mb-4 d-flex justify-content-center position-relative z-1">
-                                    <Image src={employee.image.url}
-                                    className="img-fluid w-100 h-auto position-relative" 
-                                    alt={`${employee.firstName} ${employee.lastName}`}
-                                    fill={true}
-                                    loading="lazy" />
-                                </div>
-                                <span className="member-name mt-auto text-figtree fw-bold">{employee.firstName} {employee.lastName}</span>
-                                <span className="member-position text-figtree text-center">{employee.position}</span>
-                              </Link>
-                            </div>
-                        </div>
-                    ))}
-                </div>
+          <MemberCards employeeData={employeeData} />
         </section>
       ) : (
         <Loader />

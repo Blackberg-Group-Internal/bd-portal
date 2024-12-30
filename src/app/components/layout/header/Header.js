@@ -10,14 +10,15 @@ import gsap from 'gsap';
 import DamSubMenu from '@/app/components/layout/header/DamSubMenu';
 import DashboardIcon from '../../../../../public/images/icons/dashboard.svg';
 import DamIcon from '../../../../../public/images/icons/dam.svg';
-import PipelineIcon from '../../../../../public/images/icons/pipeline.svg';
-import OrgIcon from '../../../../../public/images/icons/org.svg';
+import ResourcesIcon from '../../../../../public/images/icons/resources.svg';
+import OrgIcon from '../../../../../public/images/icons/directory.svg';
 import DashboardSubMenu from './DashboardSubMenu';
 import PipelineSubMenu from './PipelineSubMenu';
 import OrgSubMenu from './OrgSubMenu';
 import UserLogout from './UserLogout';
 import UserMenu from './UserMenu';
 import DevSubMenu from './DevSubMenu';
+import ResourcesSubMenu from './ResourcesSubMenu';
 
 const Header = () => {
 
@@ -115,6 +116,11 @@ const Header = () => {
                     <OrgIcon className="icon" />
                 </Link> 
             </li>
+            <li className={`nav-item ${activeLink.startsWith('/resources') ? 'active' : ''}`}>
+                <Link href="/resources" className="nav-link" data-bs-toggle="tooltip" data-bs-placement="right" title="Directory">
+                    <ResourcesIcon className="icon" />
+                </Link> 
+            </li>
         </ul>
         <div className="highlight"></div>
         <UserMenu photo={userPhoto} />
@@ -132,6 +138,9 @@ const Header = () => {
             )}
             {activeLink.startsWith('/directory') && (
             <OrgSubMenu />
+            )}
+            {activeLink.startsWith('/resources') && (
+            <ResourcesSubMenu />
             )}
             {activeLink.startsWith('/dev') && (
             <DevSubMenu />

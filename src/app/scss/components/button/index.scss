@@ -46,6 +46,11 @@
             background: $gray-100; 
         }
     }
+
+    &--jade-green {
+        background: $jade-green-50;
+        color: $jade-green-700;
+    }
 }
 
 .btn-chat {
