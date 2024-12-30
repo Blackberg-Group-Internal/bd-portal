@@ -35,26 +35,25 @@ function StatesRegisteredPage() {
     fetchStates();
   }, [addToast]);
 
+  // Define state customization for the map
   const mapCustomization = () => {
     const states = {};
     registeredStates.forEach((state) => {
-      states[state.code] = { fill: "#006154" }; 
+      states[state.code] = { fill: "#1e7a56" }; // Registered states in green
     });
     return states;
   };
 
   const handleStateClick = (stateAbbreviation) => {
     const selectedState = registeredStates.find(
-      (state) => state.code.toUpperCase() === stateAbbreviation.toUpperCase()
+      (state) => state.code === stateAbbreviation
     );
-  
     if (selectedState) {
       router.push(`/states/${selectedState.code.toLowerCase()}`);
     } else {
       addToast("This state is not registered.", "warning");
     }
   };
-  
 
   return (
     <>
@@ -92,8 +91,9 @@ function StatesRegisteredPage() {
               </div>
             </div>
           </div>
+
           <div className="row">
-            <div className="col-12 map-container d-flex flex-column">
+            <div className="col-12 map-container d-flex flex-column align-items-center">
               <div className="ms-auto">
                 <AddStateButton />
               </div>
