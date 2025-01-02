@@ -13,6 +13,7 @@ import FilesIcon from '../../../public/images/icons/files.svg';
 import { FileViewerContext } from '@/app/layout';
 import { track } from '@vercel/analytics';
 import { useSession } from 'next-auth/react';
+import Link from 'next/link';
 
 const SearchModal = ({ show, handleClose }) => {
   const usersRef = useRef(null);
@@ -177,11 +178,13 @@ const SearchModal = ({ show, handleClose }) => {
                 {results.users.length > 0 ? (
                   results.users.map((user, index) => (
                     <div key={index} className="search-item search-item-user d-flex align-items-center p-2">
-                      <img src={user.image.url} alt="avatar" width="30" height="30" className="me-2" />
-                      <span>
-                        {user.firstName} {user.lastName}
-                      </span>
-                      <span className="ms-2 text-lowercase user-handle">@{user.firstName.trim()}.{user.lastName.trim()}</span>
+                      <Link href={`/directory/${user.firstName.trim().toLowerCase()}-${user.lastName.trim().toLowerCase()}`} className="text-decoration-none text-dark">
+                        <img src={user.image.url} alt="avatar" width="30" height="30" className="me-2" />
+                        <span>
+                          {user.firstName} {user.lastName}
+                        </span>
+                        <span className="ms-2 text-lowercase user-handle">@{user.firstName.trim()}.{user.lastName.trim()}</span>
+                      </Link>
                     </div>
                   ))
                 ) : (

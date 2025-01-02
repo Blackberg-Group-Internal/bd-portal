@@ -81,7 +81,7 @@ export async function POST(req) {
           'Content-Type': 'application/json',
         },
         data: {
-          model: 'gpt-4-turbo',
+          model: 'gpt-4o',
           messages: [
             { role: 'system', content: agentPrompt },
             ...messages, 

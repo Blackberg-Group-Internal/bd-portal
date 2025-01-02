@@ -1,0 +1,23 @@
+.code-table {
+    border-radius: 12px;
+
+    .code-header {
+        font-size: 12px;
+    }
+    .code-row:nth-child(odd){
+        background: #F9FAFB;
+    }
+}
+
+.profile-image-container {
+    width: 160px;
+    height: 160px;
+    position: relative;
+
+    img {
+        object-fit: cover;
+        position: absolute;
+        width: 100%;
+        height: 100%;
+    }
+}

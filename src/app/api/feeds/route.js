@@ -1,6 +1,8 @@
 import axios from 'axios';
 import xml2js from 'xml2js';
 
+export const dynamic = 'force-dynamic';
+
 export async function GET(req) {
   try {
     const { searchParams } = new URL(req.url);
@@ -9,9 +11,9 @@ export async function GET(req) {
 
     const rssFeedUrls = [
       'https://www.rfpmart.com/web-design-and-development-rfp-bids.xml',
-      'https://www.rfpmart.com/social-media-internet-marketing-and-seo-rfp-bids.xml',
-      'https://www.rfpmart.com/marketing-and-branding-rfp-bids.xml',
-      'https://www.rfpmart.com/software-system-and-application-rfp-bids.xml',
+     // 'https://www.rfpmart.com/social-media-internet-marketing-and-seo-rfp-bids.xml',
+     // 'https://www.rfpmart.com/marketing-and-branding-rfp-bids.xml',
+   //   'https://www.rfpmart.com/software-system-and-application-rfp-bids.xml',
     ];
 
     // const rssFeedUrls = [

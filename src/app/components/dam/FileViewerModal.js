@@ -74,7 +74,9 @@ const FileViewerModal = ({ show, handleClose, fileData }) => {
     if (!hasFetched.current) { 
       hasFetched.current = true; 
 
-      if (fileData) {
+      if (typeof fileData === 'string') {
+        setFileUrl(fileData);
+      } else if (fileData) {
         const fileExtension = fileData.name.split('.').pop().toLowerCase();
 
         if (fileExtension === 'pdf') {
@@ -168,7 +170,8 @@ const FileViewerModal = ({ show, handleClose, fileData }) => {
   const fetchPdfBlob = async () => {
     if (fileData) {
       try {
-        const response = await axios.get(fileData['@microsoft.graph.downloadUrl'], {
+        let downloadUrl = fileData['@microsoft.graph.downloadUrl'] || fileData['@content.downloadUrl'];
+        const response = await axios.get(downloadUrl, {
           responseType: 'blob',
         });
         const blob = new Blob([response.data], { type: 'application/pdf' });

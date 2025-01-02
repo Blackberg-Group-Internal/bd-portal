@@ -17,8 +17,10 @@ const ChatBot = () => {
   const lastMessageRef = useRef(null);
   const [currentMessage, setCurrentMessage] = useState(''); 
   const [userScrolled, setUserScrolled] = useState(false); 
+  const [userProfilePhoto, setUserProfilePhoto] = useState(null);
 
   useEffect(() => {
+    setUserProfilePhoto(localStorage.getItem("userProfilePhoto"));
     const storedMessages = localStorage.getItem('chatMessages');
     if (storedMessages) {
       setMessages(JSON.parse(storedMessages));
@@ -183,7 +185,7 @@ const ChatBot = () => {
                     <div className="sphere"></div>
                   </div>
                 )}
-                <div className={`msg-container rounded p-3 ${msg.role === 'user' ? 'me-3 bg-body-tertiary' : 'ms-3'}`}>
+                <div className={`msg-container rounded p-3 ${msg.role === 'user' ? 'me-2 bg-body-tertiary' : 'ms-2'}`}>
                   {msg.role === 'assistant' ? (
                     <ReactMarkdown>{msg.content}</ReactMarkdown>
                   ) : (
@@ -191,7 +193,7 @@ const ChatBot = () => {
                   )}
                 </div>
                 {msg.role === 'user' && session && session.user && (
-                  <img src={session.user.hygraphImage} alt="user avatar" style={{ width: '45px', height: '100%' }} />
+                  <img src={userProfilePhoto} alt={session.user.name} style={{ width: '40px', height: '100%' }} />
                 )}
               </div>
             ))}

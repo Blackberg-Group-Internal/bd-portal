@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import CollectionsIcon from '../../../../../public/images/icons/collections.svg';
+import OrgIcon from '../../../../../public/images/icons/org.svg';
 import FilesIcon from '../../../../../public/images/icons/files.svg';
 import FavoritesIcon from '../../../../../public/images/icons/favorites.svg';
 import { useEffect, useRef } from 'react';
@@ -31,19 +31,11 @@ const OrgSubMenu = () => {
 
   return (
     <div ref={submenuRef}>
-        <span className="submenu-title mb-3 d-none d-lg-flex">Organization</span>
+        <span className="submenu-title mb-3 d-none d-lg-flex">Directory</span>
         <div className="d-flex flex-column submenu-list">
-            <Link href="#" className={`d-flex ${pathname === '/dam/collections' ? 'active' : ''}`}>
-                <CollectionsIcon />
-                <span className="d-none d-lg-flex ms-2 ps-1">Org Item 1</span>
-            </Link>
-            <Link href="#" className={`d-flex ${pathname === '/dam/files' ? 'active' : ''}`}>
-                <FilesIcon />
-                <span className="d-none d-lg-flex ms-2 ps-1">Org Item 2</span>
-            </Link>
-            <Link href="#" className={`d-flex ${pathname === '/dam/favorites' ? 'active' : ''}`}>
-                <FavoritesIcon />
-                <span className="d-none d-lg-flex ms-2 ps-1">Org Item 3</span>
+            <Link href="/directory" className={`d-flex ${pathname.includes('directory') ? 'active' : ''}`}>
+                <OrgIcon />
+                <span className="d-none d-lg-flex ms-2 ps-1">Team Members</span>
             </Link>
         </div>
     </div>

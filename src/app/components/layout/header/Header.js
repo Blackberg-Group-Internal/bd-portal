@@ -10,14 +10,15 @@ import gsap from 'gsap';
 import DamSubMenu from '@/app/components/layout/header/DamSubMenu';
 import DashboardIcon from '../../../../../public/images/icons/dashboard.svg';
 import DamIcon from '../../../../../public/images/icons/dam.svg';
-import PipelineIcon from '../../../../../public/images/icons/pipeline.svg';
-import OrgIcon from '../../../../../public/images/icons/org.svg';
+import ResourcesIcon from '../../../../../public/images/icons/resources.svg';
+import OrgIcon from '../../../../../public/images/icons/directory.svg';
 import DashboardSubMenu from './DashboardSubMenu';
 import PipelineSubMenu from './PipelineSubMenu';
 import OrgSubMenu from './OrgSubMenu';
 import UserLogout from './UserLogout';
 import UserMenu from './UserMenu';
 import DevSubMenu from './DevSubMenu';
+import ResourcesSubMenu from './ResourcesSubMenu';
 
 const Header = () => {
 
@@ -40,6 +41,7 @@ const Header = () => {
 
                     setProfile(userProfile);
                     setUserPhoto(hygraphUser[0].image.url);
+                    localStorage.setItem('userProfilePhoto', hygraphUser[0].image.url)
                 } catch (error) {
                     console.error("Failed to fetch user data:", error);
                 }
@@ -109,11 +111,16 @@ const Header = () => {
                     <DamIcon className="icon" />
                 </Link> 
             </li>
-            {/* <li className={`nav-item ${activeLink.startsWith('/org') ? 'active' : ''}`}>
-                <Link href="/org" className="nav-link" data-bs-toggle="tooltip" data-bs-placement="right" title="Organization">
+            <li className={`nav-item ${activeLink.startsWith('/directory') ? 'active' : ''}`}>
+                <Link href="/directory" className="nav-link" data-bs-toggle="tooltip" data-bs-placement="right" title="Directory">
                     <OrgIcon className="icon" />
                 </Link> 
-            </li> */}
+            </li>
+            <li className={`nav-item ${activeLink.startsWith('/resources') ? 'active' : ''}`}>
+                <Link href="/resources" className="nav-link" data-bs-toggle="tooltip" data-bs-placement="right" title="Directory">
+                    <ResourcesIcon className="icon" />
+                </Link> 
+            </li>
         </ul>
         <div className="highlight"></div>
         <UserMenu photo={userPhoto} />
@@ -129,8 +136,11 @@ const Header = () => {
             {activeLink.startsWith('/dam') && (
             <DamSubMenu />
             )}
-            {activeLink.startsWith('/org') && (
+            {activeLink.startsWith('/directory') && (
             <OrgSubMenu />
+            )}
+            {activeLink.startsWith('/resources') && (
+            <ResourcesSubMenu />
             )}
             {activeLink.startsWith('/dev') && (
             <DevSubMenu />

@@ -2,7 +2,8 @@
 
 .chat-body {
     max-height: 300px;
-    width: 350px;
+    max-width: 350px;
+    width: 100%;
     overflow-y: scroll;
     -webkit-overflow-scrolling: touch;
 
@@ -36,14 +37,17 @@
 
          h1 {
             font-size: 24px;
+            font-weight: normal;
          }
 
          h2 {
             font-size: 20px;
+            font-weight: normal;
          }
 
          h3, h4, h5 {
             font-size: 18px;
+            font-weight: normal;
          }
     }
 
@@ -60,6 +64,39 @@
             border: 1px solid $jade-green-800;
         }
     }
+
+    &--rfp {
+        .card-body, .card-footer, .card-header .btn  {
+            height: 0;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            padding: 0 !important;
+        }
+
+        .card-header {
+            border-bottom-left-radius: 5px;
+            border-bottom-right-radius: 5px;
+        }
+
+        &.chat-open {
+            .card-body, .card-footer, .card-header .btn  {
+                height: auto;
+                padding: 8px !important;
+            }  
+
+            .card-header {
+                border-bottom-left-radius: 0;
+                border-bottom-right-radius: 0;
+            }
+
+            .card-body {
+                max-height: 300px;
+                min-height: 150px;
+                height: 100%;
+                overflow-y: scroll;
+            }
+        }
+    }
 }
 
 .scroll {
@@ -73,8 +110,8 @@
   }
   
   .sphere {
-    width: 50px;
-    height: 50px;
+    width: 40px;
+    height: 40px;
     border-radius: 50%;
     background: radial-gradient($jade-green-50, $jade-green-200);
     background-size: 200% 200%;
@@ -83,7 +120,7 @@
     position: relative;
 
     &.sphere-animate {
-        animation: turn 4s ease-out 0s infinite;
+        animation: turn 2.5s ease-out 0s infinite;
     }
   }
   
@@ -93,6 +130,13 @@
     }
     50% {
       background-position: 80% 70%;
+    }
+  }
+
+  .dev-layout {
+    .sphere {
+        // width: 150px;
+        // height: 150px;
     }
   }
 

@@ -1,6 +1,8 @@
 import { getGroupOwners } from '@/app/lib/microsoft/graphHelper';
 import { NextResponse } from 'next/server';
 
+export const dynamic = 'force-dynamic';
+
 export async function GET(req) {
   try {
     const groupId = req.nextUrl.searchParams.get('groupId');

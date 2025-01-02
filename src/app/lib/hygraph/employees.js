@@ -15,7 +15,7 @@ export async function fetchEmployeeHygraph(firstName, lastName) {
       const data = await response.json();
       return data;
     } catch (error) {
-      //console.error('Error fetching employee:', error);
+      console.error('Error fetching employee:', error);
       return null;
     }
   }
