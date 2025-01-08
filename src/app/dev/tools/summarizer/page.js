@@ -25,7 +25,10 @@ import { useRouter, usePathname } from 'next/navigation';
 import { useSearchParams } from 'next/navigation';
 import { format } from 'date-fns'; 
 import { useToast } from '@/app/context/ToastContext';
-
+import gsap from 'gsap';
+import Link from 'next/link';
+import HomeIcon from '../../../../../public/images/icons/home.svg';
+import ChevronIcon from '../../../../../public/images/icons/chevron.svg';
 
 function RfpSummarizer() {
   const { data: session, status } = useSession();
@@ -40,12 +43,16 @@ function RfpSummarizer() {
   const [rfpAssistantId, setRfpAssistantId] = useState(null);
   const [rfpDetails, setRfpDetails] = useState(null);
   const [countdown, setCountdown] = useState(null);
+  const [matchScore, setMatchScore] = useState(null);
+  const [matchScoreLoading, setMatchScoreLoading] = useState(true);
+  const [analysisLoading, setAnalysisLoading] = useState(true);
   const graphFile = useRef(null);
   const { openModal } = useContext(FileViewerContext);
   const searchParams = useSearchParams();
   const slug = searchParams.get('slug');
   const router = useRouter();
   const { addToast } = useToast();
+  
   
 
   const formatModifiedDate = (dateString) => {
@@ -56,6 +63,38 @@ function RfpSummarizer() {
   const handleFileChange = (e) => {
     setSelectedFile(e.target.files[0]);
   };
+
+  const cardsContainer1Ref = useRef(null);
+  const cardsContainer2Ref = useRef(null);
+
+// 2) Animate on mount/updates
+useEffect(() => {
+  // Only run GSAP if we're not loading and we have details or cards to animate
+  if (!loading && cardsContainer1Ref.current) {
+    // Animate all `.card` elements inside the container
+    gsap.from(cardsContainer1Ref.current.querySelectorAll('.tile-animate'), {
+      y: 20,        // move 20px up
+      opacity: 0,   // start at 0 opacity
+      duration: 0.6,
+      stagger: 0.1, // delay each card slightly
+      ease: 'power2.out'
+    });
+  }
+}, [loading]); 
+
+useEffect(() => {
+  // Only run GSAP if we're not loading and we have details or cards to animate
+  if (!loading && cardsContainer2Ref.current) {
+    // Animate all `.card` elements inside the container
+    gsap.from(cardsContainer2Ref.current.querySelectorAll('.tile-animate'), {
+      y: 20,        // move 20px up
+      opacity: 0,   // start at 0 opacity
+      duration: 0.6,
+      stagger: 0.1, // delay each card slightly
+      ease: 'power2.out'
+    });
+  }
+}, [rfpDetails]); 
 
   const handleGenerateClick = async () => {
     setLoading(true);
@@ -139,7 +178,7 @@ function RfpSummarizer() {
 
                   if (parsedEvent?.event === 'thread.message.completed') {
                     setLoading(false);
-                    getAnalysis(rfpThreadIdRef.current, rfpAssistantIdRef.current, fullMessage);
+                    getMatchScore(rfpThreadIdRef.current, rfpAssistantIdRef.current, fullMessage);
                   }
 
                 } catch (err) {
@@ -170,6 +209,7 @@ function RfpSummarizer() {
             setRfpAssistantId(response.data.assistantId);
             setRfpDetails(response.data);
             graphFile.current = response.data.documentLink;
+            setMatchScore(response.data.matchScore);
             if (response.data.deadline) {
               const currentDate = new Date();
               const deadlineDate = new Date(response.data.deadline);
@@ -180,11 +220,15 @@ function RfpSummarizer() {
             }
             setShowUpload(false);
             setLoading(false);
+            setAnalysisLoading(false);
+            setMatchScoreLoading(false);
           }
         } catch (error) {
           console.error('Error fetching existing summary:', error);
         } finally {
           setLoading(false);
+          setAnalysisLoading(false);
+          setMatchScoreLoading(false);
         }
       } else {
         setLoading(false); 
@@ -193,44 +237,13 @@ function RfpSummarizer() {
   
     fetchExistingSummary();
   }, [slug]);
-  
 
-  const getAnalysis = async (threadId, assistantId, analysisResult) => {
-    try {
-  
-
-      const userPrompt = `
-      Now, analyze the provided RFP document and extract key details to provide a structured assessment.
-
-      Important Instructions:
-      -Output only properly formatted JSON. No additional text, explanation, or comments should be included.
-      -Your response must be strictly valid JSON, with the fields provided below.
-      -Do not include any human-readable language outside the JSON.
-      -For fields where information is missing or not explicitly stated in the RFP, infer the most likely value based on context. Ensure all inferences are logical and justifiable.
-      
-      Data Extraction and Inference Requirements:
-      Extract the following information from the provided RFP document and return the data in JSON format:
-
-      RFP Title: Provide the title of the RFP document. If not explicitly stated, infer a suitable title based on the content.
-
-      Issuing Organization: Name of the entity issuing the RFP. If not explicitly stated, infer based on available information.
-
-      State: Location of the issuing organization. If not specified, infer from addresses, contact details, or contextual clues.
-
-      RFP Number: Unique identifier or reference number for the RFP. If not provided, generate a plausible identifier based on the document.
-
-      Deadline: Due date for proposal submissions. If not stated, return "N/A".
-
-      Deadline Time: Time with time zone. If not provided, return "N/A".
-
-      Contact Information: Provide the contact name, email, and phone number. If some details are missing, return "N/A".
-
-      Type of Contract: Specify the type of contract being offered (e.g., Fixed Price, Time and Materials). If not stated, infer based on the nature of the work described.
-
-      Key Dates: List important dates such as pre-bid meetings, question submission deadlines, and award announcements. If dates are missing, return "N/A".
-
-      NAICS: Extract the relevant NAICS code that aligns with the opportunity. If not present, determine the best fitting code based on the nature of the opportunity. Only provide the code, not the description. Do not leave empty.
-
+  // 1. Extract the quick info only, leaving out the match score logic
+const getMatchScore = async (threadId, assistantId, analysisResult) => {
+  try {
+    const userPrompt = `
+      Now perform an analysis to generate a Match Score. 
+    
       Match Score: Calculate a match score from 1 to 100, where 100 indicates the highest level of alignment between the RFP and our company's capabilities. Use the following formula:
 
       Match Score Calculation:
@@ -296,6 +309,120 @@ function RfpSummarizer() {
       If the calculated score exceeds 100, cap it at 100.
       If no matches are found, assign a minimum score of 1.
 
+      Do NOT include any other text or fields. 
+      Return the JSON in the exact structure:
+
+      {
+        "matchScore": "",
+      }
+    `;
+
+    // 1. Send prompt to your backend route
+    await axios.post('/api/openai/message', { threadId, userPrompt });
+
+    // 2. Then run the assistant endpoint
+    const response = await fetch('/api/openai/assistant/run', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ threadId, assistantId }),
+    });
+
+    const reader = response.body.getReader();
+    const decoder = new TextDecoder();
+    let done = false;
+    let fullMessage = '';
+    let parsedJson;
+
+    while (!done) {
+      const { value, done: readerDone } = await reader.read();
+      done = readerDone;
+
+      if (value) {
+        const chunk = decoder.decode(value, { stream: true });
+        const lines = chunk.split('\n').filter(line => line.trim() !== '');
+
+        for (const line of lines) {
+          if (line.startsWith('data:')) {
+            const jsonResponse = line.substring(5).trim();
+
+            try {
+              const parsedEvent = JSON.parse(jsonResponse);
+
+              if (parsedEvent?.event === 'thread.message.delta') {
+                const contentDelta = parsedEvent.data?.delta?.content;
+
+                if (Array.isArray(contentDelta)) {
+                  for (const content of contentDelta) {
+                    if (content.type === 'text' && content.text?.value) {
+                      fullMessage += content.text.value;
+                    }
+                  }
+                }
+              }
+
+              if (parsedEvent?.event === 'thread.message.completed') {
+                // Clean up the JSON string
+                const cleanedString = fullMessage.replace(/```json|```/g, '').trim();
+
+                try {
+                  parsedJson = JSON.parse(cleanedString);
+                  console.log('Technical Info JSON:', parsedJson);
+                  setMatchScore(parsedJson.matchScore);
+                  setMatchScoreLoading(false);
+                  getAnalysis(rfpThreadIdRef.current, rfpAssistantIdRef.current, analysisResult, parsedJson.matchScore);
+                  // Example: do something with parsedJson here...
+                  // Possibly store in database or merge it into your app state.
+
+                } catch (error) {
+                  console.error('Failed to parse JSON:', error);
+                }
+              }
+            } catch (err) {
+              console.error('Error parsing JSON:', err);
+            }
+          }
+        }
+      }
+    }
+  } catch (error) {
+    console.error('Error getting technical info:', error);
+  }
+};
+
+  const getAnalysis = async (threadId, assistantId, analysisResult, matchScore) => {
+    try {
+      const userPrompt = `
+      Now, analyze the provided RFP document and extract key details to provide a structured assessment.
+
+      Important Instructions:
+      -Output only properly formatted JSON. No additional text, explanation, or comments should be included.
+      -Your response must be strictly valid JSON, with the fields provided below.
+      -Do not include any human-readable language outside the JSON.
+      -For fields where information is missing or not explicitly stated in the RFP, infer the most likely value based on context. Ensure all inferences are logical and justifiable.
+      
+      Data Extraction and Inference Requirements:
+      Extract the following information from the provided RFP document and return the data in JSON format:
+
+      RFP Title: Provide the title of the RFP document. If not explicitly stated, infer a suitable title based on the content.
+
+      Issuing Organization: Name of the entity issuing the RFP. If not explicitly stated, infer based on available information.
+
+      State: Location of the issuing organization. If not specified, infer from addresses, contact details, or contextual clues.
+
+      RFP Number: Unique identifier or reference number for the RFP. If not provided, generate a plausible identifier based on the document.
+
+      Deadline: Due date for proposal submissions. If not stated, return "N/A".
+
+      Deadline Time: Time with time zone. If not provided, return "N/A".
+
+      Contact Information: Provide the contact name, email, and phone number. If some details are missing, return "N/A".
+
+      Type of Contract: Specify the type of contract being offered (e.g., Fixed Price, Time and Materials). If not stated, infer based on the nature of the work described.
+
+      Key Dates: List important dates such as pre-bid meetings, question submission deadlines, and award announcements. If dates are missing, return "N/A".
+
+      NAICS: Extract the relevant NAICS code that aligns with the opportunity. If not present, determine the best fitting code based on the nature of the opportunity. Only provide the code, not the description. Do not leave empty.    
+
       Guardrails:
       
       Inference Guidelines:
@@ -329,7 +456,6 @@ function RfpSummarizer() {
         "typeOfContract": "",
         "keyDates": [],
         "naics": "",
-        "matchScore": 0,
       }
       `;
 
@@ -413,7 +539,7 @@ function RfpSummarizer() {
 
                       setRfpDetails(parsedJson);
                       //rfpDetails = parsedJson;
-                      setLoading(false);
+                      setAnalysisLoading(false);
                       // You can now access properties like parsedJson.NAICS, parsedJson["Match Score"], parsedJson.Deadline
                     } catch (error) {
                       console.error('Failed to parse JSON:', error);
@@ -443,14 +569,14 @@ function RfpSummarizer() {
         summary: analysisResult,
         deadline: parsedDeadline,
         naics: parsedJson.naics,
-        matchScore: parsedJson.matchScore,
+        matchScore: parseInt(matchScore, 10),
         issuingOrganization: parsedJson.issuingOrganization,
         state: parsedJson.state,
         contactName: parsedJson.contactName,
         contactEmail: parsedJson.contactEmail,
         contactPhone: parsedJson.contactPhone,
         requirements: parsedJson.requirements,
-        documentLink: graphFile.current['@content.downloadUrl'],
+        documentLink: graphFile.current.id,
         slug: parsedJson.slug
       });
 
@@ -541,13 +667,30 @@ function RfpSummarizer() {
       <section className="px-4 px-lg-5 pt-5 pb-6 mb-8">
         <div className="container position-relative">
           <div className="row">
+          <div className="col-12 mb-4">
+              <div className="breadcrumbs d-flex align-items-center text-figtree">
+                <Link href="/dam"><HomeIcon /></Link>
+                <ChevronIcon />
+                <Link href="/dev/" className="text-decoration-none overflow-hidden">
+                  <span className="text-nowrap d-block text-truncate">SamSmart</span>
+                </Link>
+                <ChevronIcon />
+                <Link href="/dev/tools" className="text-decoration-none overflow-hidden">
+                  <span className="text-nowrap d-block text-truncate">Tools</span>
+                </Link>
+                <ChevronIcon />
+                <Link href="/dev/tools/summarizer" className="text-decoration-none overflow-hidden">
+                  <span className="text-nowrap d-block text-truncate">RFP Summarizer</span>
+                </Link>
+              </div>
+              </div>
             <div className="col-12">
               <h1 className="fw-bold-500 mb-4">RFP Summarizer</h1>
             </div>
           </div>
 
             {loading ? (
-              <div className="sphere-container d-flex align-items-center justify-content-center w-100 py-5">
+              <div className="sphere-container sphere-fullscreen d-flex align-items-center justify-content-center w-100 py-5 mt-5">
                 <div className="sphere sphere-animate"></div>
               </div>
             ) : showUpload ? (
@@ -580,7 +723,7 @@ function RfpSummarizer() {
               </div>
             </div>
           ) : loading ? (
-            <div className="sphere-container d-flex align-items-center justify-content-center w-100 py-5">
+            <div className="sphere-container sphere-fullscreen d-flex align-items-center justify-content-center w-100 h-100 py-5 mt-5">
               <div className="sphere sphere-animate"></div>
             </div>
           ) : (
@@ -597,82 +740,123 @@ function RfpSummarizer() {
                   </div>
                 </div>
               </div>
-              <div className="col-12 col-md-6 col-xl-4 mb-4 mt-4 mt-md-0">
+              <div className="col-12 col-md-6 col-xl-4 mb-4 mt-4 mt-md-0" ref={cardsContainer1Ref}>
 
-              {!loading && rfpDetails && (
-                    <FeedbackButtonsRfp
-                    rfpSummaryId={rfpDetails.id}
-                    initialLikes={rfpDetails.likes || 0}
-                    initialDislikes={rfpDetails.dislikes || 0}
-                  />
-              )}
+              <div className="col-12 d-flex flex-column gap-2">
 
-              {!loading && rfpThreadId && rfpAssistantId && rfpDetails &&  (
-                  <ChatBot threadId={rfpThreadId} assistantId={rfpAssistantId} />
-              )}
-                
-
-              {!loading && rfpDetails && (
-                <>
-            <div className="col-12 d-flex gap-2">
-              {rfpDetails.matchScore && (
-                <div className="card  card-tool card-tool--no-hover rounded shadow-sm bg-white py-3 pointer mb-2 w-50">
+                <div className="d-flex gap-2">
+             
+                <div className="card  card-tool card-tool--no-hover rounded shadow-sm bg-white py-3 pointer w-50 tile-animate">
                   <div className="card-body text-left d-flex flex-column flex-sm-row py-0 align-items-start">
                     <div className="tool-icon rounded-3 me-1 align-self-start p-2">
                       <PerformanceIcon />
                     </div>
                     <div className="d-flex flex-column">
-                    <span className="card-title small m-0">Match Score</span>
-                    <span className="card-text fw-bold m-0 lh-1 h4">{rfpDetails.matchScore}</span>
-                    </div>
+                    <span className="card-title small m-0">Match Rating</span>
+                      {matchScoreLoading ? (
+                        <div className="sphere-container sphere-small d-flex align-items-center w-100 p-0 m-0">
+                          <div className="sphere sphere-animate"></div>
+                        </div>
+                      ) : (
+                        <span className="card-text fw-bold m-0 lh-1 h4">{matchScore}</span>
+                      )}
+                   </div>
                   </div>
                 </div>
-                )}
+              
 
-                {countdown !== null && countdown !== undefined && (
-                <div className="card  card-tool card-tool--no-hover rounded shadow-sm bg-white py-3 pointer mb-2 w-50">
+ 
+                <div className="card  card-tool card-tool--no-hover rounded shadow-sm bg-white py-3 pointer w-50 tile-animate">
                   <div className="card-body text-left d-flex flex-column flex-sm-row py-0 align-items-start">
                     <div className="tool-icon rounded-3 me-1 align-self-start p-2">
                       <CountdownIcon />
                     </div>
                     <div className="d-flex flex-column">
-                    <span className="card-title small m-0">Days Left</span>
-                    <span className="card-text fw-bold m-0 lh-1 h4">{countdown}</span>
+                      <span className="card-title small m-0 ps-1">Days Left</span>
+                      {analysisLoading ? (
+                          <div className="sphere-container sphere-small d-flex align-items-center w-100 p-0 m-0">
+                            <div className="sphere sphere-animate"></div>
+                          </div>
+                      ) : (
+                        (countdown !== null && countdown !== undefined) && (
+                          <span className="card-text fw-bold m-0 lh-1 h4 ps-1">{countdown}</span>
+                        )
+                      )}
+                    </div>
+                  </div>
+                </div>
+                </div>
+
+                  {/* {!loading && rfpDetails && ( */}
+                  <div class="tile-animate">
+                    <FeedbackButtonsRfp
+                    rfpSummaryId={rfpDetails?.id || null}
+                    initialLikes={rfpDetails?.likes || 0}
+                    initialDislikes={rfpDetails?.dislikes || 0}
+                  />
+                  </div>
+               {/* )}  */}
+
+              {rfpThreadId && rfpAssistantId &&  (
+                <div class="tile-animate">
+                  <ChatBot threadId={rfpThreadId} assistantId={rfpAssistantId} />
+                </div>
+              )}
+                
+          
+                </div>
+
+
+              {!loading && rfpDetails && (
+                <>
+            <div className="col-12 d-flex flex-column gap-2" ref={cardsContainer2Ref}>
+
+
+              {rfpDetails.deadline && (
+                <div className="card  card-tool card-tool--no-hover rounded shadow-sm bg-white py-3 pointer w-100 tile-animate">
+                  <div className="card-body text-left d-flex flex-column flex-sm-row py-0">
+                    <div className="tool-icon rounded-3 me-1 align-self-start p-2">
+                      <CalendarIcon />
+                    </div>
+                    <div className="d-flex flex-column">
+                    <span className="card-title small m-0 ps-1">Deadline</span>
+                    <span className="card-text fw-bold m-0 lh-1 ps-1">{formatModifiedDate(rfpDetails.deadline)} <span className="fst-italic">{rfpDetails.deadlineTime}</span></span>
                     </div>
                   </div>
                 </div>
                 )}
-                </div>
+             
 
-                <div className="col-12 d-flex gap-2">
-                  
+              
+                  <div class="d-flex gap-2">
                 {rfpDetails.naics && (
-                <div className="card  card-tool card-tool--no-hover rounded shadow-sm bg-white py-3 pointer mb-2 w-50">
+                <div className="card  card-tool card-tool--no-hover rounded shadow-sm bg-white py-3 pointer mb-2 w-50 tile-animate">
                   <div className="card-body text-left d-flex flex-column flex-sm-row py-0">
                     <div className="tool-icon rounded-3 me-1 align-self-start p-2">
                       <NaicsIcon />
                     </div>
                     <div className="d-flex flex-column">
-                    <span className="card-title small m-0">NAICS</span>
-                    <span className="card-text fw-bold m-0 lh-1">{rfpDetails.naics}</span>
+                    <span className="card-title small m-0 ps-1">NAICS</span>
+                    <span className="card-text fw-bold m-0 lh-1 ps-1">{rfpDetails.naics}</span>
                     </div>
                   </div>
                 </div>
                 )}
 
                 {graphFile && (
-                <button onClick={() => showModal(graphFile.current)} className="btn btn--white text-dark mb-2 w-50 pointer">View RFP</button>
+                <button onClick={() => showModal(graphFile.current)} className="btn btn--white text-dark mb-2 w-50 pointer tile-animate">View RFP</button>
                 )}
+                </div>
                 </div>
 
                 {rfpDetails.title && (
-                <div className="card  card-tool card-tool--no-hover rounded shadow-sm bg-white py-3 pointer mb-2">
+                <div className="card  card-tool card-tool--no-hover rounded shadow-sm bg-white py-3 pointer mb-2 tile-animate">
                   <div className="card-body text-left d-flex flex-column flex-sm-row py-0">
                     <div className="tool-icon rounded-3 me-1 align-self-start p-2">
                       <FilesIcon />
                     </div>
                     <div className="d-flex flex-column justify-content-center">
-                    <span className="card-text fw-bold m-0 lh-1">{rfpDetails.title}</span>
+                    <span className="card-text fw-bold m-0 lh-1 ps-1">{rfpDetails.title}</span>
                     {rfpDetails.rfpNumber && (
                         <span className="small">{rfpDetails.rfpNumber}</span>
                       )}
@@ -680,30 +864,17 @@ function RfpSummarizer() {
                   </div>
                 </div>
                 )}
-           
-                {rfpDetails.deadline && (
-                <div className="card  card-tool card-tool--no-hover rounded shadow-sm bg-white py-3 pointer mb-2">
-                  <div className="card-body text-left d-flex flex-column flex-sm-row py-0">
-                    <div className="tool-icon rounded-3 me-1 align-self-start p-2">
-                      <CalendarIcon />
-                    </div>
-                    <div className="d-flex flex-column">
-                    <span className="card-title small m-0">Deadline</span>
-                    <span className="card-text fw-bold m-0 lh-1">{formatModifiedDate(rfpDetails.deadline)} <span className="fst-italic">{rfpDetails.deadlineTime}</span></span>
-                    </div>
-                  </div>
-                </div>
-                )}
+          
 
                 {rfpDetails.issuingOrganization && (
-                <div className="card  card-tool card-tool--no-hover rounded shadow-sm bg-white py-3 pointer mb-2">
+                <div className="card  card-tool card-tool--no-hover rounded shadow-sm bg-white py-3 pointer mb-2 tile-animate">
                 <div className="card-body text-left d-flex flex-column flex-sm-row py-0">
                   <div className="tool-icon rounded-3 me-1 align-self-start p-2">
                     <BuildingIcon />
                   </div>
                   <div className="d-flex flex-column">
-                  <span className="card-title small m-0">Issuing Organization</span>
-                  <span className="card-text fw-bold m-0 lh-1">{rfpDetails.issuingOrganization} 
+                  <span className="card-title small m-0 ps-1">Issuing Organization</span>
+                  <span className="card-text fw-bold m-0 lh-1 ps-1">{rfpDetails.issuingOrganization} 
                     {/* {rfpDetails.state && (
                       <span>| <span className="fst-italic">{rfpDetails.state}</span></span>
                     )} */}
@@ -718,14 +889,14 @@ function RfpSummarizer() {
 
 
               {rfpDetails.typeOfContract && (
-                <div className="card  card-tool card-tool--no-hover rounded shadow-sm bg-white py-3 pointer mb-2">
+                <div className="card  card-tool card-tool--no-hover rounded shadow-sm bg-white py-3 pointer mb-2 tile-animate">
                   <div className="card-body text-left d-flex flex-column flex-sm-row py-0">
                     <div className="tool-icon rounded-3 me-1 align-self-start p-2">
                       <TilesIcon />
                     </div>
                     <div className="d-flex flex-column">
-                    <span className="card-title small m-0">Type</span>
-                    <span className="card-text fw-bold m-0 lh-1">{rfpDetails.typeOfContract}</span>
+                    <span className="card-title small m-0 ps-1">Type</span>
+                    <span className="card-text fw-bold m-0 lh-1 ps-1">{rfpDetails.typeOfContract}</span>
                     </div>
                   </div>
                 </div>
@@ -733,21 +904,21 @@ function RfpSummarizer() {
 
 
                 {rfpDetails.contactName && (
-                <div className="card  card-tool card-tool--no-hover rounded shadow-sm bg-white py-3 pointer mb-2">
+                <div className="card  card-tool card-tool--no-hover rounded shadow-sm bg-white py-3 pointer mb-2 tile-animate">
                   <div className="card-body text-left d-flex flex-column flex-sm-row py-0">
                     <div className="tool-icon rounded-3 me-1 align-self-start p-2">
                       <OrgIcon />
                     </div>
                     <div className="d-flex flex-column text-truncate">
-                    <span className="card-title small m-0">Contact</span>
+                    <span className="card-title small m-0 ps-1">Contact</span>
                       {rfpDetails.contactName && (
-                        <span className="card-text fw-bold m-0 lh-1 d-block text-truncate">{rfpDetails.contactName}</span>
+                        <span className="card-text fw-bold m-0 lh-1 d-block text-truncate ps-1">{rfpDetails.contactName}</span>
                       )}
                       {rfpDetails.contactEmail && (
-                        <span className="d-block text-truncate">{rfpDetails.contactEmail}</span>
+                        <span className="d-block text-truncate ps-1">{rfpDetails.contactEmail}</span>
                       )}
                       {rfpDetails.contactPhone && (
-                        <span className="d-block text-truncate">{rfpDetails.contactPhone}</span>
+                        <span className="d-block text-truncate ps-1">{rfpDetails.contactPhone}</span>
                       )}
                     </div>
                   </div>
@@ -755,15 +926,15 @@ function RfpSummarizer() {
                 )}
 
               {rfpDetails.keyDates && rfpDetails.keyDates.length > 0 && (
-                <div className="card  card-tool card-tool--no-hover rounded shadow-sm bg-white py-3 pointer mb-2">
+                <div className="card  card-tool card-tool--no-hover rounded shadow-sm bg-white py-3 pointer mb-2 tile-animate">
                   <div className="card-body text-left d-flex flex-column flex-sm-row py-0">
                     <div className="tool-icon rounded-3 me-1 align-self-start p-2">
                       <CalendarIcon />
                     </div>
                     <div className="d-flex flex-column">
-                    <span className="card-title small m-0">Key Dates</span>
+                    <span className="card-title small m-0 ps-1">Key Dates</span>
                     {rfpDetails.keyDates.map((date, index) => (
-                      <span className="card-text fw-bold m-0 lh-1" key={index}>{date}</span>
+                      <span className="card-text fw-bold m-0 lh-1 ps-1" key={index}>{date}</span>
                     ))}
                     </div>
                   </div>
@@ -771,14 +942,14 @@ function RfpSummarizer() {
                 )}
 
               {rfpDetails.requirements && (
-                <div className="card  card-tool card-tool--no-hover rounded shadow-sm bg-white py-3 pointer mb-2">
+                <div className="card  card-tool card-tool--no-hover rounded shadow-sm bg-white py-3 pointer mb-2 tile-animate">
                   <div className="card-body text-left d-flex flex-column flex-sm-row py-0">
                     <div className="tool-icon rounded-3 me-1 align-self-start p-2">
                       <ListIcon />
                     </div>
                     <div className="d-flex flex-column">
-                    <span className="card-title small m-0">Requirements</span>
-                    <div className="card-text m-0"><ReactMarkdown>{rfpDetails.requirements}</ReactMarkdown></div>
+                    <span className="card-title small m-0 ps-1">Requirements</span>
+                    <div className="card-text m-0 ps-1"><ReactMarkdown>{rfpDetails.requirements}</ReactMarkdown></div>
                     </div>
                   </div>
                 </div>
@@ -786,6 +957,7 @@ function RfpSummarizer() {
               
                 </>
               )}
+              
               </div>
             </div>
           )}

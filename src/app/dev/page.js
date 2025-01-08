@@ -5,12 +5,14 @@ import { useSession } from 'next-auth/react';
 import SearchModal from '@/app/components/SearchModal';
 import gsap from 'gsap';
 import SearchIcon from '../../../public/images/icons/search.svg';
-import Breadcrumbs from '@/app/components/Breadcrumbs';
+import BreadcrumbsDynamic from '@/app/components/BreadcrumbsDynamic';
 import axios from 'axios';
 import Link from 'next/link';
 import { OpportunityProvider } from '@/app/context/OpportunityContext';
 import SamOpportunitiesList from '../components/dev/SamOpportunitiesList';
 import OpportunitiesList from '../components/dev/OpportunitiesList';
+import HomeIcon from '../../../public/images/icons/home.svg';
+import ChevronIcon from '../../../public/images/icons/chevron.svg';
 
 function DevPage() {
   const { data } = useSession();
@@ -131,13 +133,20 @@ function DevPage() {
         const response = await axios.get(`/api/feedsam`);
         const feedItems = response.data.opportunitiesData;
         console.log('Sam Opportunities: ', feedItems);
+        localStorage.setItem('allSamOpportunities', JSON.stringify(feedItems));
         setSamOpportunities(feedItems);
       } catch (error) {
         console.error('Error fetching opportunities:', error);
       }
     };
-  
-    //fetchSamOpportunities();
+
+    // const storedSamOpportunities = JSON.parse(localStorage.getItem('allSamOpportunities'));
+    // if(storedSamOpportunities) {
+    //   setSamOpportunities(storedSamOpportunities);
+    // } else {
+    //   fetchSamOpportunities();
+    // }
+
 
   }, [count]);
 
@@ -175,9 +184,19 @@ function DevPage() {
     <>
       <section className="px-4 px-lg-5 pt-5 pb-6 mb-8">
         <div className="container position-relative">
-          <div className="row">
-            <div className="col-12">
-              <Breadcrumbs first="SamSmart" second="Dashboard" />
+              <div className="row">
+              <div className="col-12">
+              <div className="breadcrumbs d-flex align-items-center text-figtree">
+                <Link href="/dam"><HomeIcon /></Link>
+                <ChevronIcon />
+                <Link href="/dev/" className="text-decoration-none overflow-hidden">
+                  <span className="text-nowrap d-block text-truncate">SamSmart</span>
+                </Link>
+                <ChevronIcon />
+                <Link href="#" className="text-decoration-none overflow-hidden">
+                  <span className="text-nowrap d-block text-truncate">Opportunities</span>
+                </Link>
+              </div>
             </div>
             <div className="col-12 d-flex justify-content-between align-items-center page-info">
               <h1 className="fw-bold-500 my-4">

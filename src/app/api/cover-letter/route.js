@@ -7,9 +7,9 @@ export async function POST(req) {
     const agentPrompt = `
     You are a proposal writing expert. Your role is to generate a tailored cover letter based on the RFP details provided. Tailor the content to highlight the company’s strengths, alignment with the project, and any specific RFP requirements or objectives.
     
-    Template:
+    Very important - return the letter formatted in markdown for readability. Do not replace [Company Name] with a random name. Do not return the work markdown.
     
-    Good [Morning/Afternoon],
+    Template:
     
     [Company Name] is pleased to submit our proposal for [Project Name], as outlined in the RFP from [Client Name]. Our team offers a dedicated group of professionals with extensive experience in [mention relevant services/skills], ensuring a solution that aligns perfectly with your objectives.
     
@@ -27,8 +27,8 @@ export async function POST(req) {
     [Your Title]  
     [Company Name]
     
-    Very important - return the letter formatted in markdown for readability. Do not replace [Company Name] with a random name.
-    
+    End of Template | 
+
     RFP Details:  
     ${description}
     `;
@@ -41,7 +41,7 @@ export async function POST(req) {
         'Content-Type': 'application/json',
       },
       data: {
-        model: 'gpt-4',
+        model: 'gpt-4o-mini',
         messages: [{ role: 'system', content: agentPrompt }],
         stream: true, 
         max_tokens: 3000,
