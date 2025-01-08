@@ -6,7 +6,7 @@ import ChevronIcon from '../../../public/images/icons/chevron.svg';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
-const Breadcrumbs = () => {
+const BreadcrumbsDynamic = () => {
   const pathname = usePathname();
   const pathSegments = pathname.split('/').filter(segment => segment);
 
@@ -34,4 +34,4 @@ const Breadcrumbs = () => {
   );
 };
 
-export default Breadcrumbs;
+export default BreadcrumbsDynamic;

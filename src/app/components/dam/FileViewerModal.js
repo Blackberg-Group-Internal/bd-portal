@@ -32,6 +32,9 @@ const FileViewerModal = ({ show, handleClose, fileData }) => {
   const [fileUrl, setFileUrl] = useState(null);
   const memoizedFileData = useMemo(() => fileData, [fileData.id]);
   const hasFetched = useRef(false);
+  const [newFileData, setNewFileData] = useState(null);
+  const [loading, setLoading] = useState(true);
+
   
 
   const handleShareFile = () => {
@@ -71,30 +74,64 @@ const FileViewerModal = ({ show, handleClose, fileData }) => {
 
 
   useEffect(() => {
-    if (!hasFetched.current) { 
-      hasFetched.current = true; 
-
+    if (!hasFetched.current) {
+      hasFetched.current = true;
+  
       if (typeof fileData === 'string') {
+        // If fileData contains an id, fetch the file details from the API
+        const fetchFileDetails = async () => {
+          try {
+            const response = await axios.get(`/api/graph/library/file?fileId=${fileData}`);
+            if (response.status === 200) {
+              const fileDetails = response.data;
+              setNewFileData(fileDetails);
+  
+              setFileUrl(fileDetails['@microsoft.graph.downloadUrl'] || fileDetails.webUrl);
+  
+              const fileExtension = fileDetails.name
+                ? fileDetails.name.split('.').pop().toLowerCase()
+                : '';
+              if (fileExtension === 'pdf') {
+                fetchPdfBlob(fileDetails);
+              } else if (['doc', 'docx', 'ppt', 'pptx', 'xls', 'xlsx'].includes(fileExtension)) {
+                convertToPdfAndFetchBlob(fileDetails['@microsoft.graph.downloadUrl']);
+              }
+  
+              fetchTags(); // Fetch tags if applicable
+            } else {
+              console.error('Failed to fetch file details:', response.data.error || 'Unknown error');
+            }
+          } catch (error) {
+            console.error('Error fetching file details:', error.message);
+            addToast('Failed to load file details.', 'danger');
+          }
+        };
+  
+        fetchFileDetails();
+      } else if (typeof fileData === 'string') {
+        // If fileData is a string, assume it's a file URL
         setFileUrl(fileData);
       } else if (fileData) {
+        // Handle fileData directly if it's provided
         const fileExtension = fileData.name.split('.').pop().toLowerCase();
-
+  
         if (fileExtension === 'pdf') {
           fetchPdfBlob();
         } else if (['doc', 'docx', 'ppt', 'pptx', 'xls', 'xlsx'].includes(fileExtension)) {
-          convertToPdfAndFetchBlob(); 
+          convertToPdfAndFetchBlob();
         }
         fetchTags();
       }
     }
   }, [memoizedFileData]);
-
+  
 
   const fetchTags = async () => {
     try {
       const response = await axios.get(`/api/graph/library/file/tag?fileId=${fileData.id}`);
       if (response.status === 200) {
         setTags(response.data);
+        setLoading(false);
       } else {
         throw new Error('Error fetching tags');
       }
@@ -121,6 +158,7 @@ const FileViewerModal = ({ show, handleClose, fileData }) => {
         const url = URL.createObjectURL(blob);
         setPdfUrl(url);
         setFileUrl(url);
+        setLoading(false);
       } catch (error) {
         console.error('Error fetching PDF:', error);
         addToast('Error loading PDF.', 'danger');
@@ -167,7 +205,7 @@ const FileViewerModal = ({ show, handleClose, fileData }) => {
     setIsEditingTags(false);
   };
 
-  const fetchPdfBlob = async () => {
+  const fetchPdfBlob = async (fileData) => {
     if (fileData) {
       try {
         let downloadUrl = fileData['@microsoft.graph.downloadUrl'] || fileData['@content.downloadUrl'];
@@ -178,6 +216,7 @@ const FileViewerModal = ({ show, handleClose, fileData }) => {
         const url = URL.createObjectURL(blob);
         setPdfUrl(url);
         setFileUrl(url);
+        setLoading(false);
       } catch (error) {
         console.error('Error fetching PDF:', error);
         addToast('Error loading PDF.', 'danger');
@@ -186,8 +225,10 @@ const FileViewerModal = ({ show, handleClose, fileData }) => {
   };
 
   const renderFilePreviewModal = () => {
-    const file = fileData;
-    const fileExtension = file.name.split('.').pop().toLowerCase(); 
+    const file = newFileData || fileData;
+    const fileExtension = file?.name 
+      ? file.name.split('.').pop().toLowerCase() 
+      : (typeof file === 'string' ? file.split('.').pop().toLowerCase() : '');    
   
     switch (fileExtension) {
       case 'jpg':
@@ -235,13 +276,17 @@ const FileViewerModal = ({ show, handleClose, fileData }) => {
           />
         );
         
-      default:
-        return (
-          <div className="d-flex flex-column align-items-center justify-content-center py-6 my-6 h-100">
-            <FilesIcon className="mb-3"/>
-            <p>File type not supported for preview.</p>
-          </div>
-        );
+        default:
+          return (
+            loading ? (
+              <Loader />
+            ) : (
+              <div className="d-flex flex-column align-items-center justify-content-center py-6 my-6 h-100">
+                <FilesIcon className="mb-3" />
+                <p>File type not supported for preview.</p>
+              </div>
+            )
+          );
     }
   };
 
@@ -266,9 +311,8 @@ const FileViewerModal = ({ show, handleClose, fileData }) => {
     setShowInfoPanel(!showInfoPanel);
   };
 
-  const fileName = fileData.name.split('.')[0];
-  const fileType = fileData.name.split('.').pop().toLowerCase(); 
-  
+  const fileName = fileData.name ? fileData.name.split('.')[0] : '';
+  const fileType = fileData.name ? fileData.name.split('.').pop().toLowerCase() : '';  
 
   useEffect(() => {
     if (show) {

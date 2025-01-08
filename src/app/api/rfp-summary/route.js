@@ -144,7 +144,7 @@ export async function GET(request) {
           updatedAt: true,
         },
         orderBy: {
-          deadline: 'asc', 
+          deadline: 'desc', 
         },
       });
 

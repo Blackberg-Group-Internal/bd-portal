@@ -6,6 +6,9 @@ import axios from 'axios';
 import Breadcrumbs from '@/app/components/Breadcrumbs';
 import SummaryList from '@/app/components/dev/SummaryList';
 import gsap from 'gsap';
+import Link from 'next/link';
+import HomeIcon from '../../../../public/images/icons/home.svg';
+import ChevronIcon from '../../../../public/images/icons/chevron.svg';
 
 function SummariesPage() {
   const { data } = useSession();
@@ -78,7 +81,17 @@ function SummariesPage() {
         <div className="container position-relative">
           <div className="row">
             <div className="col-12">
-              <Breadcrumbs first="RFP Summarizer" second="All Summaries" />
+            <div className="breadcrumbs d-flex align-items-center text-figtree">
+                <Link href="/dam"><HomeIcon /></Link>
+                <ChevronIcon />
+                <Link href="/dev/" className="text-decoration-none overflow-hidden">
+                  <span className="text-nowrap d-block text-truncate">SamSmart</span>
+                </Link>
+                <ChevronIcon />
+                <Link href="/dev/summaries" className="text-decoration-none overflow-hidden">
+                  <span className="text-nowrap d-block text-truncate">Summaries</span>
+                </Link>
+              </div>
             </div>
             <div className="col-12 d-flex justify-content-between align-items-center page-info">
               <h1 className="fw-bold-500 my-4">

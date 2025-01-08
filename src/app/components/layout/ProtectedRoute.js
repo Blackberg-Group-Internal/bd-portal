@@ -28,12 +28,12 @@ function ProtectedRoute({ children }) {
       // }
       
 
-      const isDevPath = pathname.includes('dev');
-      const allowedUserId= "9gTustM-c-zg6f2vbizsNArFIuiaSJYGRIzORcYCLSY"; 
+      // const isDevPath = pathname.includes('dev');
+      // const allowedUserId= "9gTustM-c-zg6f2vbizsNArFIuiaSJYGRIzORcYCLSY"; 
 
-      if (isDevPath && session?.user?.id !== allowedUserId) {
-        router.push('/404');
-      }
+      // if (isDevPath && session?.user?.id !== allowedUserId) {
+      //   router.push('/404');
+      // }
 
       if (!session && status !== "loading" && pathname !== '/login') {
         router.push('/login');

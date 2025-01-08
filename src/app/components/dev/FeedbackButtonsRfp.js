@@ -78,7 +78,7 @@ const FeedbackButtons = ({ rfpSummaryId, initialLikes, initialDislikes }) => {
   };
 
   return (
-    <div className="feedback-buttons d-flex gap-2 justify-space-between mb-2">
+    <div className="feedback-buttons d-flex gap-2 justify-space-between">
       <button className="btn btn--white text-dark pointer w-25 text-nowrap" onClick={handleLike} disabled={hasLiked}>
         <LikeIcon className="" />
         {likeCount > 0 && <span className="ms-2">{likeCount}</span>}

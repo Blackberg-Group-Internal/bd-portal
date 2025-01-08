@@ -109,9 +109,23 @@ function NaicsSinsPage() {
                 secondHref="#" 
               />
             </div>
-            <div className="col-12 d-flex justify-content-between align-items-center page-info">
+            <div className="col-12 d-flex justify-content-between align-items-start page-info">
+              <div className="d-flex flex-column col-12 col-md-12">
               <h1 className="fw-bold-500 my-4">NAICS & SINs</h1>
-              <div className="d-flex align-items-center">
+              <p>This app provides a centralized repository of NAICS and SINs codes that our organization has already registered and actively uses. These codes help classify the types of goods, services, and industries we target.</p>
+              <p className="">If you do not find the code you're looking for, it doesn’t mean we can’t pursue it. Please reach out to your team lead or manager, as new codes can often be acquired upon request.</p>
+              <p className="fw-bolder">Resources</p>
+              <p>For more information or to find additional codes, you can visit the following official resources:</p>
+              <ul>
+                <li>
+                  <a href="https://www.census.gov/naics/" target="_blank">NAICS Code</a>
+                </li>
+                <li>
+                  <a href="https://gsaschedule.com/what-is-a-gsa-schedule/large-categories-sins-and-naics-codes/" target="_blank">SINs Code</a>
+                </li>
+              </ul>
+              </div>
+              <div className="d-flex align-items-center mt-4">
                 <div className="search">
                   <button
                     className="border-0 bg-transparent"

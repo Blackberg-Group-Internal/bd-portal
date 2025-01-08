@@ -108,6 +108,25 @@
 .sphere-container {
     position: relative;
   }
+
+  .sphere-fullscreen {
+    min-height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    .sphere {
+        width: 125px;
+        height: 125px;
+    }
+  }
+
+  .sphere-small {
+    .sphere {
+        width: 20px;
+        height: 20px;
+    }
+  }
   
   .sphere {
     width: 40px;

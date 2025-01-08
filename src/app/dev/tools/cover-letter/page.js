@@ -9,6 +9,9 @@ import Breadcrumbs from '@/app/components/Breadcrumbs';
 import ReactMarkdown from 'react-markdown';
 import SearchIcon from '../../../../../public/images/icons/search.svg';
 import CopyIcon from '../../../../../public/images/icons/copy.svg';
+import Link from 'next/link';
+import HomeIcon from '../../../../../public/images/icons/home.svg';
+import ChevronIcon from '../../../../../public/images/icons/chevron.svg';
 
 function CoverLetterPage() {
   const { data } = useSession();
@@ -95,8 +98,22 @@ function CoverLetterPage() {
         <section className="px-4 px-lg-5 pt-5 pb-6 mb-8">
         <div className="container position-relative">
             <div className="row">
-              <div className="col-12">
-                <Breadcrumbs first="SamSmart" second="Tools" third="Cover Letter Generator" />
+            <div className="col-12 mb-4">
+              <div className="breadcrumbs d-flex align-items-center text-figtree">
+                <Link href="/dam"><HomeIcon /></Link>
+                <ChevronIcon />
+                <Link href="/dev/" className="text-decoration-none overflow-hidden">
+                  <span className="text-nowrap d-block text-truncate">SamSmart</span>
+                </Link>
+                <ChevronIcon />
+                <Link href="/dev/tools" className="text-decoration-none overflow-hidden">
+                  <span className="text-nowrap d-block text-truncate">Tools</span>
+                </Link>
+                <ChevronIcon />
+                <Link href="/dev/tools/cover-letter" className="text-decoration-none overflow-hidden">
+                  <span className="text-nowrap d-block text-truncate">Cover Letter Generator</span>
+                </Link>
+              </div>
               </div>
               <div className="col-12 d-flex justify-content-between align-items-center page-info">
                 <h1 className="fw-bold-500 my-4">Cover Letter Generator</h1>
