@@ -104,6 +104,41 @@ useEffect(() => {
     try {
       if (selectedFile) {
         track('RFP Summarizer', { file: selectedFile.name, user: session.user.id });
+
+
+        // Anaylze with API while assistant loads
+        // const response = await fetch('/api/rfp-analyzer', {
+        //   method: 'POST',
+        //   headers: { 'Content-Type': 'application/json' },
+        //   body: JSON.stringify({ description: sanitizedRfpText }),
+        // });
+
+        const fileReader = new FileReader();
+
+        fileReader.onload = async (e) => {
+          const fileContent = e.target.result;
+
+          // 2. Sanitize or preprocess text as needed
+          const sanitizedRfpText = fileContent?.toString() ?? '';
+
+          // 3. POST the text to your /api/rfp-analyzer endpoint
+          const analyzeResponse = await fetch('/api/rfp-analyzer', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ description: sanitizedRfpText }),
+          });
+
+          if (!analyzeResponse.ok) {
+            throw new Error('Error analyzing RFP text');
+          }
+          
+          // Optionally, grab the response data
+          const result = await analyzeResponse.json();
+          console.log('RFP Analyzer response:', result);
+        };
+
+        fileReader.readAsText(selectedFile);
+
         startGraphUpload();
         const formData = new FormData();
         formData.append('file', selectedFile);

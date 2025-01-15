@@ -39,8 +39,6 @@ export async function POST(req) {
 
     Added Value: Mention any additional capabilities or value-added services your company can provide beyond the basic requirements outlined in the RFP. These could include:
 
-    Offering an extended warranty on services.
-    Utilizing innovative technologies or solutions to provide a competitive edge.
     Including personnel with specialized certifications that go above the requirements.
 
     Risk Analysis: Assess potential risks or challenges associated with this RFP. This could include tight deadlines, ambiguous requirements, unusual conditions, or any elements that may lead to higher costs or project complications.
@@ -128,10 +126,6 @@ export async function POST(req) {
 
     - Personnel cost estimate: [Calculated cost]
     - Other cost considerations: [Additional notes]
-
-
-    RFP Details:  
-    ${description}
     `;
 
     const response = await axios({
@@ -143,7 +137,10 @@ export async function POST(req) {
       },
       data: {
         model: 'gpt-4o-mini',
-        messages: [{ role: 'system', content: agentPrompt }],
+        messages: [
+          { role: 'system', content: agentPrompt },
+          { role: 'user', content: description },
+        ],
         stream: true, 
         max_tokens: 10000,
       },

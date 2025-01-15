@@ -11,7 +11,7 @@ export const authOptions = {
       tenantId: process.env.AZURE_AD_TENANT_ID,
       authorization: {
         params: {
-          scope: 'openid email profile User.Read Files.ReadWrite.All Sites.ReadWrite.All offline_access',
+          scope: 'openid email profile User.Read Files.ReadWrite.All Sites.Manage.All offline_access',
         },
       },
       httpOptions: { timeout: 10000 },
