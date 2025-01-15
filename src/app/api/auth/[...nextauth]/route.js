@@ -88,7 +88,7 @@ async function refreshAccessToken(token) {
         client_secret: process.env.AZURE_AD_CLIENT_SECRET,
         grant_type: 'refresh_token',
         refresh_token: token.refreshToken,
-        scope: 'openid email profile User.Read Files.ReadWrite.All Sites.ReadWrite.All offline_access',
+        scope: 'openid email profile User.Read Files.ReadWrite.All Sites.Manage.All offline_access',
       }),
       method: 'POST',
     });
