@@ -13,7 +13,7 @@ import Link from 'next/link';
 import HomeIcon from '../../../../../public/images/icons/home.svg';
 import ChevronIcon from '../../../../../public/images/icons/chevron.svg';
 
-function CoverLetterPage() {
+function CoverLetterGeneratorPage() {
   const { data } = useSession();
   const searchRef = useRef(null);
   const cardsRef = useRef([]); 
@@ -185,4 +185,4 @@ function CoverLetterPage() {
   );
 }
 
-export default CoverLetterPage;
+export default CoverLetterGeneratorPage;
