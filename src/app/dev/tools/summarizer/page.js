@@ -23,7 +23,7 @@ import FilesIcon from '../../../../../public/images/icons/files.svg';
 import CountdownIcon from '../../../../../public/images/icons/hourglass.svg';
 import { useRouter, usePathname } from 'next/navigation';
 import { useSearchParams } from 'next/navigation';
-import { format } from 'date-fns'; 
+import { format, isValid } from 'date-fns'; 
 import { useToast } from '@/app/context/ToastContext';
 import gsap from 'gsap';
 import Link from 'next/link';
@@ -56,8 +56,16 @@ function RfpSummarizer() {
   
 
   const formatModifiedDate = (dateString) => {
-    const date = new Date(dateString);
-    return format(date, 'MMM d, yyyy');
+    try {
+      const date = new Date(dateString);
+      if (!isValid(date)) {
+        throw new Error('Invalid date');
+      }
+      return format(date, 'MMM d, yyyy');
+    } catch (error) {
+      console.warn('Invalid date provided:', dateString);
+      return 'N/A';
+    }
   };
 
   const handleFileChange = (e) => {
@@ -113,31 +121,31 @@ useEffect(() => {
         //   body: JSON.stringify({ description: sanitizedRfpText }),
         // });
 
-        const fileReader = new FileReader();
+        // const fileReader = new FileReader();
 
-        fileReader.onload = async (e) => {
-          const fileContent = e.target.result;
+        // fileReader.onload = async (e) => {
+        //   const fileContent = e.target.result;
 
-          // 2. Sanitize or preprocess text as needed
-          const sanitizedRfpText = fileContent?.toString() ?? '';
+        //   // 2. Sanitize or preprocess text as needed
+        //   const sanitizedRfpText = fileContent?.toString() ?? '';
 
-          // 3. POST the text to your /api/rfp-analyzer endpoint
-          const analyzeResponse = await fetch('/api/rfp-analyzer', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ description: sanitizedRfpText }),
-          });
+        //   // 3. POST the text to your /api/rfp-analyzer endpoint
+        //   const analyzeResponse = await fetch('/api/rfp-analyzer', {
+        //     method: 'POST',
+        //     headers: { 'Content-Type': 'application/json' },
+        //     body: JSON.stringify({ description: sanitizedRfpText }),
+        //   });
 
-          if (!analyzeResponse.ok) {
-            throw new Error('Error analyzing RFP text');
-          }
+        //   if (!analyzeResponse.ok) {
+        //     throw new Error('Error analyzing RFP text');
+        //   }
           
-          // Optionally, grab the response data
-          const result = await analyzeResponse.json();
-          console.log('RFP Analyzer response:', result);
-        };
+        //   // Optionally, grab the response data
+        //   const result = await analyzeResponse.json();
+        //   console.log('RFP Analyzer response:', result);
+        // };
 
-        fileReader.readAsText(selectedFile);
+        //fileReader.readAsText(selectedFile);
 
         startGraphUpload();
         const formData = new FormData();
