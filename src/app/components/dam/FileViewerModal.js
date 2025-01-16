@@ -116,7 +116,11 @@ const FileViewerModal = ({ show, handleClose, fileData }) => {
         const fileExtension = fileData.name.split('.').pop().toLowerCase();
   
         if (fileExtension === 'pdf') {
-          fetchPdfBlob();
+          if(fileData){
+            fetchPdfBlob(fileData);
+          }else {
+            fetchPdfBlob();
+          }
         } else if (['doc', 'docx', 'ppt', 'pptx', 'xls', 'xlsx'].includes(fileExtension)) {
           convertToPdfAndFetchBlob();
         }
