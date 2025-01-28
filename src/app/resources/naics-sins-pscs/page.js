@@ -24,6 +24,9 @@ function NaicsSinsPage() {
   const [sinsCodes, setSinsCodes] = useState(
     () => JSON.parse(localStorage.getItem("sinsCodes")) || []
   );
+  const [pscsCodes, setPscsCodes] = useState(
+    () => JSON.parse(localStorage.getItem("pscsCodes")) || []
+  );
   const { addToast } = useToast();
 
   useEffect(() => {
@@ -51,6 +54,18 @@ function NaicsSinsPage() {
       }
     };
 
+    const fetchPscsCodes = async () => {
+      try {
+        const response = await fetch("/api/pscs");
+        const data = await response.json();
+        setPscsCodes(data);
+        localStorage.setItem("pscsCodes", JSON.stringify(data));
+      } catch (error) {
+        console.error("Error fetching PSCs codes:", error);
+      }
+    };
+  
+    fetchPscsCodes();
     fetchNaicsCodes();
     fetchSinsCodes();
   }, []);
@@ -75,24 +90,44 @@ function NaicsSinsPage() {
     });
   };
 
-  const handleCodeAdded = async () => {
+  // const handleCodeAdded = async () => {
+  //   try {
+  //     const [naicsResponse, sinsResponse] = await Promise.all([
+  //       fetch("/api/naics"),
+  //       fetch("/api/sin"),
+  //       fetch("/api/pscs"),
+  //     ]);
+
+  //     const [naicsData, sinsData, pscsData] = await Promise.all([
+  //       naicsResponse.json(),
+  //       sinsResponse.json(),
+  //       pscsResponse.json(),
+  //     ]);
+  
+
+  //     setNaicsCodes(naicsData);
+  //     setSinsCodes(sinsData);
+  //     setPscsCodes(pscsData);
+
+  //     localStorage.setItem("naicsCodes", JSON.stringify(naicsData));
+  //     localStorage.setItem("sinsCodes", JSON.stringify(sinsData));
+  //     localStorage.setItem("pscsCodes", JSON.stringify(pscsData));
+  //   } catch (error) {
+  //     console.error("Error updating codes:", error);
+  //   }
+  // };
+
+  const handleCodeAdded = async (newCode, type) => {
     try {
-      const [naicsResponse, sinsResponse] = await Promise.all([
-        fetch("/api/naics"),
-        fetch("/api/sin"),
-      ]);
-
-      const [naicsData, sinsData] = await Promise.all([
-        naicsResponse.json(),
-        sinsResponse.json(),
-      ]);
-
-      setNaicsCodes(naicsData);
-      setSinsCodes(sinsData);
-      localStorage.setItem("naicsCodes", JSON.stringify(naicsData));
-      localStorage.setItem("sinsCodes", JSON.stringify(sinsData));
+      if (type === "NAICS") {
+        setNaicsCodes((prev) => [...prev, newCode]);
+      } else if (type === "SINs") {
+        setSinsCodes((prev) => [...prev, newCode]);
+      } else if (type === "PSCs") {
+        setPscsCodes((prev) => [...prev, newCode]);
+      }
     } catch (error) {
-      console.error("Error updating codes:", error);
+      console.error("Error adding code:", error);
     }
   };
 
@@ -105,25 +140,20 @@ function NaicsSinsPage() {
               <BreadcrumbsDynamic
                 first="Resources" 
                 firstHref="/resources" 
-                second="NAICS & SINs" 
+                second="NAICS, SINs, & PSCs" 
                 secondHref="#" 
               />
             </div>
             <div className="col-12 d-flex justify-content-between align-items-start page-info">
-              <div className="d-flex flex-column col-12 col-md-12">
-              <h1 className="fw-bold-500 my-4">NAICS & SINs</h1>
-              <p>This app provides a centralized repository of NAICS and SINs codes that our organization has already registered and actively uses. These codes help classify the types of goods, services, and industries we target.</p>
-              <p className="">If you do not find the code you're looking for, it doesn’t mean we can’t pursue it. Please reach out to your team lead or manager, as new codes can often be acquired upon request.</p>
-              <p className="fw-bolder">Resources</p>
-              <p>For more information or to find additional codes, you can visit the following official resources:</p>
+              <div className="d-flex flex-column col-12 col-md-9">
+              <h1 className="fw-bold-500 my-4">NAICS, SINs, & PSCs</h1>
+              <p class="small">The NAICS, SINs, and PSCs Management Tool provides a centralized repository to store and manage the classification codes our organization actively uses to target opportunities across various industries and government contracts.</p>
               <ul>
-                <li>
-                  <a href="https://www.census.gov/naics/" target="_blank">NAICS Code</a>
-                </li>
-                <li>
-                  <a href="https://gsaschedule.com/what-is-a-gsa-schedule/large-categories-sins-and-naics-codes/" target="_blank">SINs Code</a>
-                </li>
+                <li class="small"><span class="fw-bold">NAICS Codes:</span> A universally recognized standard used across industries to classify business activities and determine eligibility for federal contracts.</li>
+                <li class="small"><span class="fw-bold">SINs Codes:</span> Specialized identifiers tied to the GSA MAS (Multiple Award Schedule) contract, helping streamline opportunities under specific categories.</li>
+                <li class="small"><span class="fw-bold">PSCs Codes:</span> Product and Service Codes primarily used on SAM.gov to classify goods and services for federal procurement.</li>
               </ul>
+              <p className="small">If you do not find the code you're looking for, it doesn’t mean we can’t pursue it. Please reach out to your team lead or manager, as new codes can often be acquired upon request.</p>
               </div>
               <div className="d-flex align-items-center mt-4">
                 <div className="search">
@@ -166,6 +196,12 @@ function NaicsSinsPage() {
               >
                 SINs
               </button>
+              <button
+                className={`btn ${view === "PSCs" ? "btn--jade-green" : "btn-white"}`}
+                onClick={() => setView("PSCs")}
+              >
+                PSCs
+              </button>
               <div className="ms-auto">
                 <AddCodeButton onCodeAdded={handleCodeAdded} />
               </div>
@@ -178,7 +214,7 @@ function NaicsSinsPage() {
               </div>
             </div>
 
-            {(view === "NAICS" ? naicsCodes : sinsCodes).map((code) => (
+            {(view === "NAICS" ? naicsCodes : view === "SINs" ? sinsCodes : pscsCodes).map((code) => (
               <div className="col-12 px-0 code-row" key={code.id}>
                 <div className="d-flex align-items-center code-card p-3 border-top">
                   <span

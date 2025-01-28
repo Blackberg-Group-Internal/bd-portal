@@ -1,11 +1,10 @@
+generator client {
+  provider = "prisma-client-js"
+}
 
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
-}
-
-generator client {
-  provider = "prisma-client-js"
 }
 
 model Favorite {
@@ -23,72 +22,80 @@ model Tag {
   tag       String
   createdAt DateTime @default(now())
 
-  @@unique([fileId, tag]) 
+  @@unique([fileId, tag])
 }
 
-
 model RfpSummarizerRecord {
-  id                   Int       @id @default(autoincrement())
-  slug                 String    @unique // Unique identifier for the RFP summary
-  title                String    @default("")
-  userId               String    // Refers to the user who submitted the RFP
-  createdAt            DateTime  @default(now())
-  filename             String
-  threadId             String    // The thread ID used by OpenAI
-  assistantId          String    // The assistant ID used by OpenAI
-  documentLink         String    // URL link to the uploaded document
-  summary              String    @db.Text // The summary of the RFP document
-  deadline             DateTime? // Optional deadline parsed from the RFP
-  naics                String?   // Optional NAICS code for categorizing the RFP
-  matchScore           Int?      // Optional rating of the RFP match for the company, value between 1 and 100
-  issuingOrganization  String?   // The organization issuing the RFP
-  state                String?   // The state where the RFP is issued
-  contactName          String?   // Name of the contact person
-  contactEmail         String?   // Email of the contact person
-  contactPhone         String?   // Phone number of the contact person
-  requirements         String?   @db.Text // Requirements of the RFP
-  likes                Int       @default(0) // Count of likes
-  dislikes             Int       @default(0) // Count of dislikes
-  updatedAt            DateTime  @updatedAt
+  id                  Int       @id @default(autoincrement())
+  userId              String
+  createdAt           DateTime  @default(now())
+  filename            String
+  threadId            String
+  assistantId         String
+  documentLink        String
+  summary             String
+  deadline            DateTime?
+  naics               String?
+  likes               Int       @default(0)
+  dislikes            Int       @default(0)
+  updatedAt           DateTime  @updatedAt
+  slug                String    @unique
+  contactEmail        String?
+  contactName         String?
+  contactPhone        String?
+  issuingOrganization String?
+  matchScore          Int?
+  requirements        String?
+  state               String?
+  title               String    @default("")
 }
 
 model Employee {
   id             Int      @id @default(autoincrement())
   firstName      String
   lastName       String
-  slug           String   @unique
   position       String?
-  experience     Int?     // Years of experience
-  skills         String?  // Comma-separated list of skills
-  certifications String?  // Comma-separated list of certifications
-  education      String?  // JSON string for degrees (array of objects with level and name)
-  image          String?  // URL for the employee's profile image
+  education      String?
+  certifications String?
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
+  experience     Int?
+  image          String?
+  skills         String?
+  slug           String   @unique
 }
 
 model NAICSCode {
-  id          Int      @id @default(autoincrement())
-  code        String   @unique
-  title       String
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id        Int      @id @default(autoincrement())
+  code      String   @unique
+  title     String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model SINCode {
+  id        Int      @id @default(autoincrement())
+  code      String   @unique
+  title     String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model State {
+  id              Int      @id @default(autoincrement())
+  code            String   @unique
+  name            String
+  businessLicense String?
+  bidWebsite      String?
+  flagUrl         String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+model PSCCode {
   id          Int      @id @default(autoincrement())
   code        String   @unique
   title       String
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
-}
-
-model State {
-  id                Int      @id @default(autoincrement())
-  code              String   @unique 
-  name              String  
-  businessLicense   String?  
-  bidWebsite        String?  
-  createdAt         DateTime @default(now())
-  updatedAt         DateTime @updatedAt
 }
