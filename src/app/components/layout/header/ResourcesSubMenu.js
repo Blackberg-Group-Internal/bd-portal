@@ -42,9 +42,9 @@ const ResourcesSubMenu = () => {
                 <CompassIcon />
                 <span className="d-none d-lg-flex ms-2 ps-1">States Registered</span>
             </Link>
-            <Link href="/resources/naics-sins" className={`d-flex ${pathname.includes('naics-sins') ? 'active' : ''}`}>
+            <Link href="/resources/naics-sins-pscs" className={`d-flex ${pathname.includes('naics-sins-pscs') ? 'active' : ''}`}>
                 <MessageIcon />
-                <span className="d-none d-lg-flex ms-2 ps-1">NAICS & SINs</span>
+                <span className="d-none d-lg-flex ms-2 ps-1">NAICS, SINs, & PSCs</span>
             </Link>
         </div>
     </div>

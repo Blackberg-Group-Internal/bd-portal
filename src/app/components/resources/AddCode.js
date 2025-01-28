@@ -21,7 +21,7 @@ const AddCode = ({ show, handleClose, onCodeAdded }) => {
     setCreating(true);
 
     try {
-      const endpoint = type === 'NAICS' ? '/api/naics' : '/api/sins';
+      const endpoint = type === "NAICS" ? "/api/naics" : type === "SINs" ? "/api/sin" : "/api/pscs";
       const response = await axios.post(endpoint, {
         code,
         title,
@@ -30,7 +30,7 @@ const AddCode = ({ show, handleClose, onCodeAdded }) => {
       if (response.status === 201) {
         addToast('Code created successfully.', 'success');
         if (onCodeAdded) {
-          onCodeAdded(response.data); // Notify parent of the new code
+          onCodeAdded(response.data, type); // Notify parent of the new code
         }
         handleClose();
       } else {
@@ -67,6 +67,7 @@ const AddCode = ({ show, handleClose, onCodeAdded }) => {
           <Form.Select value={type} onChange={(e) => setType(e.target.value)}>
             <option value="NAICS">NAICS</option>
             <option value="SINs">SINs</option>
+            <option value="PSCs">PSCs</option>
           </Form.Select>
         </Form.Group>
         <Form.Group controlId="code" className="mb-3">

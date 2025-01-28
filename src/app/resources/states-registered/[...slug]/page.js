@@ -68,15 +68,15 @@ const StateRegisteredPage = ({ params }) => {
       <section className="container pb-5">
         <div className="row">
           <div className="col-12 mb-0 px-0">
-            <div className="profile-header p-4 position-relative"></div>
-            <div className="profile-container d-flex px-4 position-relative z-2">
-              <div className="profile-image-container d-inline-block mb-0">
+            <div className="state-header p-4 position-relative"></div>
+            <div className="state-container d-flex px-4 position-relative z-2">
+              <div className="state-image-container d-inline-block mb-0">
                 <Image
                   src={`/images/state-flags/${state.code.toLowerCase()}.svg`}
                   alt={`${state.name} Flag`}
                   width={160}
                   height={160}
-                  className="img-fluid rounded-circle"
+                  className="rounded-circle"
                 />
               </div>
               <div className="profile-name-title d-flex flex-column mt-auto ps-4">
@@ -95,22 +95,27 @@ const StateRegisteredPage = ({ params }) => {
           <div className="col-12 px-4 mt-4">
             <div className="row">
               <div className="col-12 col-md-4 mb-4">
-                <label className="form-label fw-bold">Business License Number</label>
-                <div className="input-group">
-                  <input
-                    type="text"
-                    className="form-control"
-                    value={state.businessLicense}
-                    readOnly
-                  />
-                  <button
-                    className="btn btn--white"
-                    onClick={() => handleCopyToClipboard(state)}
-                  >
-                    <CopyIcon className="icon me-2" />
-                    Copy
-                  </button>
-                </div>
+                
+              {state.businessLicense && (
+                  <>
+                    <label className="form-label fw-bold">Business License Number</label>
+                    <div className="input-group">
+                      <input
+                        type="text"
+                        className="form-control"
+                        value={state.businessLicense}
+                        readOnly
+                      />
+                      <button
+                        className="btn btn--white"
+                        onClick={() => handleCopyToClipboard(state)}
+                      >
+                        <CopyIcon className="icon me-2" />
+                        Copy
+                      </button>
+                    </div>
+                  </>
+                )}
               </div>
             </div>
           </div>

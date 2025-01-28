@@ -111,7 +111,7 @@ const Header = () => {
                     <DamIcon className="icon" />
                 </Link> 
             </li>
-            {/* <li className={`nav-item ${activeLink.startsWith('/directory') ? 'active' : ''}`}>
+            <li className={`nav-item ${activeLink.startsWith('/directory') ? 'active' : ''}`}>
                 <Link href="/directory" className="nav-link" data-bs-toggle="tooltip" data-bs-placement="right" title="Directory">
                     <OrgIcon className="icon" />
                 </Link> 
@@ -120,7 +120,7 @@ const Header = () => {
                 <Link href="/resources" className="nav-link" data-bs-toggle="tooltip" data-bs-placement="right" title="Directory">
                     <ResourcesIcon className="icon" />
                 </Link> 
-            </li> */}
+            </li>
         </ul>
         <div className="highlight"></div>
         <UserMenu photo={userPhoto} />
