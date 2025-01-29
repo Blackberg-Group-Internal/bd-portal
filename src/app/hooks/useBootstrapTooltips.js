@@ -11,6 +11,7 @@ export default function useBootstrapTooltips(deps = []) {
     const tooltipTriggerList = Array.from(
       document.querySelectorAll("[data-bs-toggle='tooltip']")
     );
+    
     const tooltips = tooltipTriggerList.map(
       (tooltipTriggerEl) =>
         new bootstrap.Tooltip(tooltipTriggerEl, {
@@ -29,5 +30,5 @@ export default function useBootstrapTooltips(deps = []) {
       tooltips.forEach((tooltip) => tooltip.dispose());
       router.events?.off("routeChangeStart", handleRouteChange);
     };
-  }, [router, ...deps]); 
+  }, deps ? [router, ...deps] : [router]); 
 }
