@@ -43,3 +43,23 @@ body[class^="resources-states-registered-"] {
     min-width: 120px;
 }
 
+.us-state-map {
+
+    * {
+        fill: #EAECF0;
+        stroke: #101828;
+        stroke-width: 0.818px;
+        vector-effect: non-scaling-stroke; 
+        transition: all 0.3s ease;
+    }
+
+    .active-state {
+        fill: $jade-green-800;
+        cursor: pointer;
+
+        &:hover, &:focus, &:active {
+            fill: $jade-green-600;
+        }
+      }
+}
+

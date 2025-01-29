@@ -49,7 +49,7 @@ function StatesRegisteredPage() {
     const states = {};
     if (registeredStates) {
       registeredStates.forEach((state) => {
-        states[state.code] = { fill: "#006154" };
+        states[state.code] = { className: "custom-state" }; 
       });
     }
     return states;
@@ -72,6 +72,20 @@ function StatesRegisteredPage() {
       addToast(`Copied "${code}" to clipboard!`, "success");
     });
   };
+
+  useEffect(() => {
+    if (!registeredStates.length) return; // Avoid running if no states
+  
+    // Wait for the map to render
+    setTimeout(() => {
+      registeredStates.forEach((state) => {
+        const stateElement = document.querySelector(`.${state.code}`);
+        if (stateElement) {
+          stateElement.classList.add("active-state");
+        }
+      });
+    }, 100); // Small delay to ensure elements exist
+  }, [registeredStates]);
 
   return (
     <>
