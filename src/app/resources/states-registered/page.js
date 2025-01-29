@@ -10,6 +10,7 @@ import AddStateButton from "@/app/components/resources/AddStateButton";
 import USAMap from "react-usa-map";
 import CopyIcon from '../../../../public/images/icons/copy.svg';
 import BreadcrumbsDynamic from "@/app/components/BreadcrumbsDynamic";
+import useBootstrapTooltips from "@/app/hooks/useBootstrapTooltips";
 
 function StatesRegisteredPage() {
   const { data } = useSession();
@@ -20,21 +21,8 @@ function StatesRegisteredPage() {
   const handleShow = () => setShowModal(true);
   const handleClose = () => setShowModal(false);
   const { addToast } = useToast();
-  const [hoveredState, setHoveredState] = useState(null);
-  const [tooltipPosition, setTooltipPosition] = useState({ top: 0, left: 0 });
 
-  const handleMouseEnter = (event, stateAbbreviation) => {
-    const rect = event.target.getBoundingClientRect();
-    setHoveredState(stateAbbreviation);
-    setTooltipPosition({
-      top: rect.top + window.scrollY - 30, // Adjust tooltip above the state
-      left: rect.left + rect.width / 2,   // Center tooltip horizontally
-    });
-  };
-
-  const handleMouseLeave = () => {
-    setHoveredState(null);
-  };
+  useBootstrapTooltips([registeredStates]);
 
   useEffect(() => {
     const localData = localStorage.getItem("registeredStates");
@@ -78,7 +66,8 @@ function StatesRegisteredPage() {
     }
   };
 
-  const handleCopyToClipboard = (code) => {
+  const handleCopyToClipboard = (event, code) => {
+    event.stopPropagation();
     navigator.clipboard.writeText(code).then(() => {
       addToast(`Copied "${code}" to clipboard!`, "success");
     });
@@ -101,7 +90,7 @@ function StatesRegisteredPage() {
             <div className="d-flex flex-column col-12 col-md-9">
                 <h1 className="fw-bold-500 my-4">States Registered</h1>
                 <p class="small">This tool provides an overview of the states where we are officially registered to conduct business, presented through an interactive map and a detailed table. Users can explore specific state information by navigating to individual state detail pages.</p>
-                <p className="small">It is important to note that this list is not restrictive and should not limit the scope of opportunities we pursue, as registering in additional states is a streamlined and efficient process.</p>
+                <p className="small pb-1">It is important to note that this list is not restrictive and should not limit the scope of opportunities we pursue, as registering in additional states is a streamlined and efficient process.</p>
               </div>
               <div className="d-flex align-items-center">
                 <div className="search">
@@ -137,27 +126,7 @@ function StatesRegisteredPage() {
               </div>
               <div className="ratio ratio-16x9 position-relative">
                 <USAMap customize={mapCustomization()} 
-                  onClick={(event) => handleStateClick(event.currentTarget.dataset.name)}
-                  onMouseOver={(event) => handleMouseEnter(event, event.currentTarget.dataset.name)}
-                  onMouseOut={handleMouseLeave} />
-                  {hoveredState && (
-                  <div
-                    style={{
-                      position: "absolute",
-                      top: tooltipPosition.top,
-                      left: tooltipPosition.left,
-                      backgroundColor: "rgba(0, 0, 0, 0.7)",
-                      color: "white",
-                      padding: "5px 10px",
-                      borderRadius: "4px",
-                      fontSize: "12px",
-                      pointerEvents: "none",
-                      transform: "translateX(-50%)",
-                    }}
-                  >
-                    {hoveredState}
-                  </div>
-                )}
+                  onClick={(event) => handleStateClick(event.currentTarget.dataset.name)} />
               </div>
             </div>
           </div>
@@ -165,8 +134,8 @@ function StatesRegisteredPage() {
           <div className="row mb-4 bg-white border code-table mt-7">
 
             <div className="col-12 px-0 code-header">
-              <div className="d-flex align-items-start code-card p-3 border-top">
-                <span className="col-2">State</span>
+              <div className="d-flex align-items-start code-card p-3 border-top gap-4">
+                <span className="col-auto col-state-name">State</span>
                 <span className="">License</span>
                 <span className="ms-auto">Action</span>
               </div>
@@ -174,14 +143,14 @@ function StatesRegisteredPage() {
 
             {registeredStates.map((state) => (
               <div className="col-12 px-0 code-row pointer" key={state.id} onClick={(event) => handleStateClick(state.code)}>
-                <div className="d-flex align-items-center code-card p-3 border-top">
-                  <span className="col-2 small">
+                <div className="d-flex align-items-center code-card p-3 border-top gap-4">
+                  <span className="col-auto col-state-name small text-nowrap text-truncate" data-bs-toggle="tooltip" data-bs-placement="right" title={state.name}>
                     {state.name}
                   </span>
-                  <span className="text-muted small" onDoubleClick={() => handleCopyToClipboard(state.businessLicense)}>{state.businessLicense}</span>
+                  <span className="text-muted small text-nowrap text-truncate" data-bs-toggle="tooltip" data-bs-placement="right" title={state.businessLicense}>{state.businessLicense}</span>
                   <button
                     className="btn btn-sm ms-auto"
-                    onClick={() => handleCopyToClipboard(state.businessLicense)}
+                    onClick={(event) => handleCopyToClipboard(event, state.businessLicense)}
                   >
                     <CopyIcon />
                   </button>

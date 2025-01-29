@@ -6,10 +6,13 @@ import MessageIcon from '../../../../../public/images/icons/message.svg';
 import { useEffect, useRef } from 'react';
 import gsap from 'gsap';
 import { usePathname } from 'next/navigation';
+import useBootstrapTooltips from "@/app/hooks/useBootstrapTooltips";
 
 const ResourcesSubMenu = () => {
     const submenuRef = useRef(null); 
     const pathname = usePathname(); 
+
+    useBootstrapTooltips();
     
     useEffect(() => {
 
@@ -27,22 +30,21 @@ const ResourcesSubMenu = () => {
                 }
             );
         }
-        
     }, []);
 
   return (
     <div ref={submenuRef}>
         <span className="submenu-title mb-3 d-none d-lg-flex">Resources</span>
         <div className="d-flex flex-column submenu-list">
-            <Link href="/resources" className={`d-flex ${pathname === 'resources' ? 'active' : ''}`}>
+            <Link href="/resources" className={`d-flex ${pathname === 'resources' ? 'active' : ''}`} prefetch={true} data-bs-toggle="tooltip" data-bs-placement="right" title="Overview">
                 <ListIcon />
                 <span className="d-none d-lg-flex ms-2 ps-1">Overview</span>
             </Link>
-            <Link href="/resources/states-registered" className={`d-flex ${pathname.includes('states') ? 'active' : ''}`}>
+            <Link href="/resources/states-registered" className={`d-flex ${pathname.includes('states') ? 'active' : ''}`} prefetch={true} data-bs-toggle="tooltip" data-bs-placement="right" title="States Registered">
                 <CompassIcon />
                 <span className="d-none d-lg-flex ms-2 ps-1">States Registered</span>
             </Link>
-            <Link href="/resources/naics-sins-pscs" className={`d-flex ${pathname.includes('naics-sins-pscs') ? 'active' : ''}`}>
+            <Link href="/resources/naics-sins-pscs" className={`d-flex ${pathname.includes('naics-sins-pscs') ? 'active' : ''}`} prefetch={true} data-bs-toggle="tooltip" data-bs-placement="right" title="NAICS, SINs, & PSCs">
                 <MessageIcon />
                 <span className="d-none d-lg-flex ms-2 ps-1">NAICS, SINs, & PSCs</span>
             </Link>

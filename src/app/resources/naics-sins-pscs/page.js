@@ -4,11 +4,11 @@ import React, { useState, useRef, useEffect } from "react";
 import { useSession } from "next-auth/react";
 import SearchModal from "@/app/components/SearchModal";
 import gsap from "gsap";
-import Breadcrumbs from "@/app/components/Breadcrumbs";
 import AddCodeButton from "@/app/components/resources/AddCodeButton";
 import CopyIcon from '../../../../public/images/icons/copy.svg';
 import { useToast } from '@/app/context/ToastContext';
 import BreadcrumbsDynamic from "@/app/components/BreadcrumbsDynamic";
+import useBootstrapTooltips from "@/app/hooks/useBootstrapTooltips";
 
 function NaicsSinsPage() {
   const { data } = useSession();
@@ -29,8 +29,12 @@ function NaicsSinsPage() {
   );
   const { addToast } = useToast();
 
+  useBootstrapTooltips(naicsCodes);
+  useBootstrapTooltips(sinsCodes);
+  useBootstrapTooltips(pscsCodes);
+
   useEffect(() => {
-    // Fetch NAICS codes
+
     const fetchNaicsCodes = async () => {
       try {
         const response = await fetch("/api/naics");
@@ -42,7 +46,6 @@ function NaicsSinsPage() {
       }
     };
 
-    // Fetch SINs codes
     const fetchSinsCodes = async () => {
       try {
         const response = await fetch("/api/sin");
@@ -90,33 +93,6 @@ function NaicsSinsPage() {
     });
   };
 
-  // const handleCodeAdded = async () => {
-  //   try {
-  //     const [naicsResponse, sinsResponse] = await Promise.all([
-  //       fetch("/api/naics"),
-  //       fetch("/api/sin"),
-  //       fetch("/api/pscs"),
-  //     ]);
-
-  //     const [naicsData, sinsData, pscsData] = await Promise.all([
-  //       naicsResponse.json(),
-  //       sinsResponse.json(),
-  //       pscsResponse.json(),
-  //     ]);
-  
-
-  //     setNaicsCodes(naicsData);
-  //     setSinsCodes(sinsData);
-  //     setPscsCodes(pscsData);
-
-  //     localStorage.setItem("naicsCodes", JSON.stringify(naicsData));
-  //     localStorage.setItem("sinsCodes", JSON.stringify(sinsData));
-  //     localStorage.setItem("pscsCodes", JSON.stringify(pscsData));
-  //   } catch (error) {
-  //     console.error("Error updating codes:", error);
-  //   }
-  // };
-
   const handleCodeAdded = async (newCode, type) => {
     try {
       if (type === "NAICS") {
@@ -153,7 +129,7 @@ function NaicsSinsPage() {
                 <li class="small"><span class="fw-bold">SINs Codes:</span> Specialized identifiers tied to the GSA MAS (Multiple Award Schedule) contract, helping streamline opportunities under specific categories.</li>
                 <li class="small"><span class="fw-bold">PSCs Codes:</span> Product and Service Codes primarily used on SAM.gov to classify goods and services for federal procurement.</li>
               </ul>
-              <p className="small">If you do not find the code you're looking for, it doesn’t mean we can’t pursue it. Please reach out to your team lead or manager, as new codes can often be acquired upon request.</p>
+              <p className="small pb-1">If you do not find the code you're looking for, it doesn’t mean we can’t pursue it. Please reach out to your team lead or manager, as new codes can often be acquired upon request.</p>
               </div>
               <div className="d-flex align-items-center mt-4">
                 <div className="search">
@@ -183,7 +159,7 @@ function NaicsSinsPage() {
           </div>
 
           <div className="row mb-4 bg-white border code-table mt-7">
-            <div className="col-12 d-flex gap-3 py-4">
+            <div className="col-12 d-flex flex-column flex-md-row gap-3 py-4">
               <button
                 className={`btn ${view === "NAICS" ? "btn--jade-green" : "btn-white"}`}
                 onClick={() => setView("NAICS")}
@@ -202,13 +178,13 @@ function NaicsSinsPage() {
               >
                 PSCs
               </button>
-              <div className="ms-auto">
+              <div className="mx-auto ms-md-auto me-md-0">
                 <AddCodeButton onCodeAdded={handleCodeAdded} />
               </div>
             </div>
             <div className="col-12 px-0 code-header">
-              <div className="d-flex align-items-start code-card p-3 border-top">
-                <span className="col-1">Code</span>
+              <div className="d-flex align-items-start code-card p-3 border-top gap-4">
+                <span className="col-2 col-xl-1">Code</span>
                 <span className="">Title</span>
                 <span className="ms-auto">Action</span>
               </div>
@@ -216,14 +192,14 @@ function NaicsSinsPage() {
 
             {(view === "NAICS" ? naicsCodes : view === "SINs" ? sinsCodes : pscsCodes).map((code) => (
               <div className="col-12 px-0 code-row" key={code.id}>
-                <div className="d-flex align-items-center code-card p-3 border-top">
+                <div className="d-flex align-items-center code-card p-3 border-top gap-4">
                   <span
-                    className="col-1 small"
+                    className="col-2 col-xl-1 small"
                     onDoubleClick={() => handleCopyToClipboard(code.code)}
                   >
                     {code.code}
                   </span>
-                  <span className="text-muted small">{code.title}</span>
+                  <span className="text-muted small text-nowrap text-truncate" data-bs-toggle="tooltip" data-bs-placement="right" title={code.title}>{code.title}</span>
                   <button
                     className="btn btn-sm ms-auto"
                     onClick={() => handleCopyToClipboard(code.code)}

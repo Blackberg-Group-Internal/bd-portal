@@ -19,13 +19,13 @@ function ProtectedRoute({ children }) {
       const elapsedTime = Date.now() - startTime;
       const remainingTime = minLoaderTime - elapsedTime;
 
-      // if (remainingTime > 0) {
-      //   setTimeout(() => {
-           setShowLoader(false);
-      //   }, remainingTime);
-      // } else {
-      //   setShowLoader(false);
-      // }
+       if (remainingTime > 0) {
+        setTimeout(() => {
+           setShowLoader(true);
+         }, remainingTime);
+       } else {
+         setShowLoader(false);
+       }
       
 
       // const isDevPath = pathname.includes('dev');

@@ -19,6 +19,7 @@ import UserLogout from './UserLogout';
 import UserMenu from './UserMenu';
 import DevSubMenu from './DevSubMenu';
 import ResourcesSubMenu from './ResourcesSubMenu';
+import useBootstrapTooltips from "@/app/hooks/useBootstrapTooltips";
 
 const Header = () => {
 
@@ -29,7 +30,8 @@ const Header = () => {
     const [activeSubLink, setActiveSubLink] = useState('/');
     const pathname = usePathname();
 
-    //console.log('Session: ', session);
+    useBootstrapTooltips();
+
     useEffect(() => {
         if (status === "authenticated" && session?.accessToken) {
             const fetchData = async () => {
@@ -75,17 +77,6 @@ const Header = () => {
         }
     }, [pathname]);    
 
-    useEffect(() => {
-        const bootstrap = require('bootstrap');
-        const tooltipTriggerList = Array.from(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
-        tooltipTriggerList.forEach(tooltipTriggerEl => {
-            new bootstrap.Tooltip(tooltipTriggerEl, {
-                trigger: "hover",
-                delay: { show: 1000, hide: 100 }, 
-            });
-        });
-    }, []);
-
   return (
     <header>
         <div className="d-flex flex-column flex-shrink-0 align-items-center py-5 h-100 position-relative z-2 bg-white">
@@ -107,17 +98,17 @@ const Header = () => {
                 </Link> 
             </li> */}
             <li>
-                <Link href="/dam" className={`nav-link ${activeLink.startsWith('/dam') ? 'active' : ''}`} data-bs-toggle="tooltip" data-bs-placement="right" title="Digital Asset Manager">
+                <Link href="/dam" className={`nav-link ${activeLink.startsWith('/dam') ? 'active' : ''}`} data-bs-toggle="tooltip" data-bs-placement="right" title="Digital Asset Manager" prefetch={true}>
                     <DamIcon className="icon" />
                 </Link> 
             </li>
             <li className={`nav-item ${activeLink.startsWith('/directory') ? 'active' : ''}`}>
-                <Link href="/directory" className="nav-link" data-bs-toggle="tooltip" data-bs-placement="right" title="Directory">
+                <Link href="/directory" className="nav-link" data-bs-toggle="tooltip" data-bs-placement="right" title="Directory" prefetch={true}>
                     <OrgIcon className="icon" />
                 </Link> 
             </li>
             <li className={`nav-item ${activeLink.startsWith('/resources') ? 'active' : ''}`}>
-                <Link href="/resources" className="nav-link" data-bs-toggle="tooltip" data-bs-placement="right" title="Directory">
+                <Link href="/resources" className="nav-link" data-bs-toggle="tooltip" data-bs-placement="right" title="Resources" prefetch={true}>
                     <ResourcesIcon className="icon" />
                 </Link> 
             </li>
