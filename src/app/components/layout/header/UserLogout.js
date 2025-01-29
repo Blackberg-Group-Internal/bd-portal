@@ -1,7 +1,10 @@
 import { signOut } from 'next-auth/react';
 import LogoutIcon from '../../../../../public/images/icons/logout.svg';
+import useBootstrapTooltips from "@/app/hooks/useBootstrapTooltips";
 
 const UserLogout = ({ profile }) => {
+
+    useBootstrapTooltips();
 
   const handleLogout = () => {
     signOut();
@@ -15,7 +18,7 @@ const UserLogout = ({ profile }) => {
               <span className="fw-bold">{profile.displayName}</span>
               <span className="email text-lowercase">{profile.mail}</span>
             </div>
-            <button className="d-flex border-0 bg-transparent ms-lg-auto" onClick={handleLogout}>
+            <button className="d-flex border-0 bg-transparent ms-lg-auto" onClick={handleLogout} data-bs-toggle="tooltip" data-bs-placement="right" title="Logout">
               <LogoutIcon className="icon" />
             </button>
           </div>

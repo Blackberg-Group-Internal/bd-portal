@@ -60,7 +60,7 @@ function ResourcesPage() {
 
             <div className="col-12 col-md-6 col-lg-6 mb-4">
             <div className="card card-tool h-100 rounded shadow-sm bg-white  pointer">
-                    <Link href="/resources/states-registered" className="text-decoration-none text-black">
+                    <Link href="/resources/states-registered" className="text-decoration-none text-black" prefetch={true}>
                         <div className="card-body text-left d-flex flex-column px-0">
                             <h5 className="card-title pt-2 pt-2 px-4 fw-normal mb-4">States Registered</h5>
                             <p className="card-text px-4">View where Blackberg Group is registered to do work in.</p>
@@ -73,9 +73,9 @@ function ResourcesPage() {
 
             <div className="col-12 col-md-6 col-lg-6 mb-4">
                 <div className="card card-tool h-100 rounded shadow-sm bg-white  pointer">
-                    <Link href="/resources/naics-sins" className="text-decoration-none text-black">
+                    <Link href="/resources/naics-sins-pscs" className="text-decoration-none text-black" prefetch={true}>
                         <div className="card-body text-left d-flex flex-column px-0">
-                            <h5 className="card-title pt-2 pt-2 px-4 fw-normal mb-4">NAICS & SINs Codes</h5>
+                            <h5 className="card-title pt-2 pt-2 px-4 fw-normal mb-4">NAICS, SINs, & PSCs Codes</h5>
                             <p className="card-text px-4">View NAICS and SINs codes.</p>
                             <hr />
                             <p className="mb-0 text-primary ms-auto px-4">Learn More</p>
