@@ -8,7 +8,7 @@
     margin-top: -64px;
 }
 
-body[class^="directory-"], body[class^="resources-states-registered-"]  {
+body[class^="directory-"]:not(.directory-skills-certifications):not([class*="directory-skills-certifications-"]), body[class^="resources-states-registered-"]  {
     background-color: #fff;
 
     hr {
@@ -27,6 +27,20 @@ body[class^="directory-"], body[class^="resources-states-registered-"]  {
 
         a:last-child span {
             color: #fff;
+        }
+    }
+  }
+
+  .skill-certification-table {
+    .images {
+
+        img {
+            border: 3px solid #fff;
+            margin-left: -16px;
+
+            &:first-child {
+                margin-left: 0;
+            }
         }
     }
   }

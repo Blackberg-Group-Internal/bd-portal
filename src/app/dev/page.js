@@ -121,6 +121,7 @@ function DevPage() {
     const storedOpportunities = JSON.parse(localStorage.getItem('allOpportunities'));
     if(storedOpportunities) {
       setOpportunities(storedOpportunities);
+      fetchOpportunities();
     } else {
       fetchOpportunities();
     }
