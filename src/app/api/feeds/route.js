@@ -11,8 +11,8 @@ export async function GET(req) {
 
     const rssFeedUrls = [
       'https://www.rfpmart.com/web-design-and-development-rfp-bids.xml',
-     // 'https://www.rfpmart.com/social-media-internet-marketing-and-seo-rfp-bids.xml',
-     // 'https://www.rfpmart.com/marketing-and-branding-rfp-bids.xml',
+      'https://www.rfpmart.com/social-media-internet-marketing-and-seo-rfp-bids.xml',
+      'https://www.rfpmart.com/marketing-and-branding-rfp-bids.xml',
    //   'https://www.rfpmart.com/software-system-and-application-rfp-bids.xml',
     ];
 
