@@ -74,18 +74,20 @@ function StatesRegisteredPage() {
   };
 
   useEffect(() => {
-    if (!registeredStates.length) return; // Avoid running if no states
+    if (!registeredStates.length) return;
   
-    // Wait for the map to render
     setTimeout(() => {
-      registeredStates.forEach((state) => {
-        const stateElement = document.querySelector(`.${state.code}`);
-        if (stateElement) {
-          stateElement.classList.add("active-state");
-        }
+      registeredStates.forEach((state, index) => {
+        setTimeout(() => {
+          const stateElement = document.querySelector(`.${state.code}`);
+          if (stateElement) {
+            stateElement.classList.add("active-state");
+          }
+        }, index * 50);
       });
-    }, 100); // Small delay to ensure elements exist
+    }, 100);
   }, [registeredStates]);
+  
 
   return (
     <>
