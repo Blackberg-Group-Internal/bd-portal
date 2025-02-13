@@ -12,7 +12,7 @@ const SkillsCertificationsTable = ({ data }) => {
   const [sortedData, setSortedData] = useState([...data]);
   const [sortConfig, setSortConfig] = useState({ key: null, direction: "asc" });
 
-  const itemsPerPage = 8;
+  const itemsPerPage = 2;
   const totalPages = Math.ceil(sortedData.length / itemsPerPage);
 
   const indexOfLastItem = currentPage * itemsPerPage;
