@@ -65,7 +65,7 @@ const StateRegisteredPage = ({ params }) => {
           </div>
         </div>
       </section>
-      <section className="container pb-5">
+      <section className="container-fluid pb-5">
         <div className="row">
           <div className="col-12 mb-0 px-0">
             <div className="state-header p-4 position-relative"></div>

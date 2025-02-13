@@ -14,13 +14,12 @@ const EmployeeProfile = ({ params }) => {
   const [loading, setLoading] = useState(true);
   const [isEditing, setIsEditing] = useState(false);
 
-  // Make education an array in state so we can safely modify it
   const [formData, setFormData] = useState({
     position: "",
     experience: "",
     skills: "",
     certifications: "",
-    education: [], // default to array
+    education: [], 
   });
 
   useEffect(() => {
@@ -29,7 +28,6 @@ const EmployeeProfile = ({ params }) => {
         const response = await axios.get(`/api/directory/get-employee/${slug}`);
         setEmployee(response.data);
 
-        // Safely parse education into an array
         let parsedEducation = [];
         if (response.data.education) {
           try {
@@ -39,7 +37,6 @@ const EmployeeProfile = ({ params }) => {
           }
         }
 
-        // Set initial form data with parsed education
         setFormData({
           position: response.data.position || "",
           experience: response.data.experience || "",
@@ -70,15 +67,12 @@ const EmployeeProfile = ({ params }) => {
     if (name.startsWith("education[")) {
       const [index, field] = name.match(/education\[(\d+)\]\.(.+)/).slice(1);
 
-      // Since formData.education is guaranteed to be an array, we can copy it
       const updatedEducation = [...formData.education];
 
-      // Ensure the object at the specified index exists
       if (!updatedEducation[index]) {
         updatedEducation[index] = { level: "", name: "" };
       }
 
-      // Update the specific field
       updatedEducation[index][field] = value;
 
       setFormData((prev) => ({
@@ -86,7 +80,7 @@ const EmployeeProfile = ({ params }) => {
         education: updatedEducation,
       }));
     } else {
-      // Handle other fields
+
       setFormData((prev) => ({
         ...prev,
         [name]: value,
@@ -150,11 +144,11 @@ const EmployeeProfile = ({ params }) => {
           </div>
         </div>
       </section>
-      <section className="container pb-5">
+      <section className="container-fluid pb-5">
         <div className="row">
           <div className="col-12 mb-0 px-0">
             <div className="profile-header p-4 position-relative"></div>
-            <div className="profile-container d-flex px-4 position-relative z-2">
+            <div className="profile-container d-flex px-4 position-relative z-2 pt-5 pt-lg-0">
               <div className="profile-image-container d-inline-block mb-0">
                 <Image
                   src={employee.image || "/placeholder-image.jpg"}
@@ -164,7 +158,7 @@ const EmployeeProfile = ({ params }) => {
                   className="img-fluid rounded-circle"
                 />
               </div>
-              <div className="profile-name-title d-flex flex-column mt-auto ps-4">
+              <div className="profile-name-title d-flex flex-column mt-auto ps-4 pt-7 pt-lg-0">
                 <h1 className="fw-bold-500 mb-0">
                   {employee.firstName} {employee.lastName}
                 </h1>
@@ -172,7 +166,7 @@ const EmployeeProfile = ({ params }) => {
               </div>
               {isUserProfile && (
                 <button
-                  className="btn btn--white text-dark mt-3 ms-auto align-self-start mb-5 mt-auto"
+                  className="btn btn--white text-dark mt-3 ms-auto align-self-start mb-5 mt-auto text-nowrap"
                   onClick={handleEditToggle}
                 >
                   {isEditing ? "Cancel" : "Edit Profile"}
@@ -182,7 +176,7 @@ const EmployeeProfile = ({ params }) => {
           </div>
           <div className="col-12 px-4">
             <div className="row">
-              <div className="col-12 mb-5">
+              <div className="col-12 mb-5 mt-0 mt-lg-5 pt-2">
                 <hr />
               </div>
               <div className="col-12 col-lg-6">

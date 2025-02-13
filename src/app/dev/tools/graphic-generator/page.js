@@ -59,25 +59,19 @@ export default function GraphicGeneratorPage() {
       }
   };
 
-  // All created graphics live here
   const [graphics, setGraphics] = useState([
-    // Start with one "userTesting" by default
     { ...graphicTemplates.userTesting }
   ]);
 
-  // Which template is selected in the dropdown
   const [selectedTemplate, setSelectedTemplate] = useState("userTesting");
 
-  // Refs for capturing screenshots
   const previewRefs = React.useRef({});
 
-  // CREATE a new graphic from whichever template is selected
   const handleCreateGraphic = () => {
     const newGraphic = { ...graphicTemplates[selectedTemplate] };
     setGraphics((prev) => [...prev, newGraphic]);
   };
 
-  // DELETE a graphic
   const handleDeleteGraphic = (index) => {
     setGraphics((prev) => prev.filter((_, i) => i !== index));
     addToast(`Graphic has been deleted`, "danger");
@@ -115,7 +109,6 @@ export default function GraphicGeneratorPage() {
     }
   };
 
-  // ============== HANDLERS for userTesting ==============
   const handleChange = (index, field, value) => {
     setGraphics((prev) => {
       const updated = [...prev];
@@ -140,7 +133,6 @@ export default function GraphicGeneratorPage() {
     });
   };
 
-  // ============== HANDLERS for arrowSvg ==============
   const handleStepTextChange = (gIndex, stepIndex, newValue) => {
     setGraphics((prev) => {
       const updated = [...prev];
@@ -176,7 +168,7 @@ export default function GraphicGeneratorPage() {
   return (
     <section className="px-4 px-lg-5 pt-5 pb-6 mb-8">
       <div className="container">
-        {/* === Breadcrumbs & Title === */}
+
         <div className="row mb-4">
           <div className="col-12">
             <div className="breadcrumbs d-flex align-items-center">
@@ -192,7 +184,6 @@ export default function GraphicGeneratorPage() {
           </div>
         </div>
 
-        {/* === SELECT TEMPLATE & CREATE NEW GRAPHIC === */}
         <div className="row mb-3">
           <div className="col-auto">
             <select
@@ -212,22 +203,18 @@ export default function GraphicGeneratorPage() {
           </div>
         </div>
 
-        {/* === RENDER EACH GRAPHIC === */}
         {graphics.map((graphic, gIndex) => {
           const isArrowSvg = graphic.type === "arrowSvg";
           const isThreeBoxes = graphic.type === "threeBoxes";
 
-          // Dynamically build the className string:
             const previewColumnClass = isThreeBoxes
-            ? "col-12 mb-4"    // full width for threeBoxes
-            : "col-12 col-md-9 mb-3 mb-md-0"; // half width for others
+            ? "col-12 mb-4"  
+            : "col-12 col-md-9 mb-3 mb-md-0";
 
-            // Dynamically build the className string:
             const formColumnClass = isThreeBoxes
-            ? "col-12 mb-4"    // full width for threeBoxes
-            : "col-12 col-md-3 d-flex flex-column"; // half width for others
+            ? "col-12 mb-4"   
+            : "col-12 col-md-3 d-flex flex-column";
 
-          // Set up the ref callback
           const setRef = (el) => {
             if (el) {
               previewRefs.current[gIndex] = el;
@@ -268,7 +255,6 @@ export default function GraphicGeneratorPage() {
                           <path d="M 476.171875 76.464844 L 691.464844 76.464844 L 727.5 112.5 L 691.464844 148.535156 L 476.171875 148.535156 L 512.207031 112.5 Z M 476.171875 76.464844 " />
                         </clipPath>
                       </defs>
-                      {/* First arrow */}
                       <g clipPath="url(#a734ebb091)">
                         <g clipPath="url(#d8598c1b6b)">
                           <path

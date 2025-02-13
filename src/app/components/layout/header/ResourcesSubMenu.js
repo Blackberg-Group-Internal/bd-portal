@@ -36,7 +36,7 @@ const ResourcesSubMenu = () => {
     <div ref={submenuRef}>
         <span className="submenu-title mb-3 d-none d-lg-flex">Resources</span>
         <div className="d-flex flex-column submenu-list">
-            <Link href="/resources" className={`d-flex ${pathname === 'resources' ? 'active' : ''}`} prefetch={true} data-bs-toggle="tooltip" data-bs-placement="right" title="Overview">
+            <Link href="/resources" className={`d-flex ${pathname === '/resources' ? 'active' : ''}`} prefetch={true} data-bs-toggle="tooltip" data-bs-placement="right" title="Overview">
                 <ListIcon />
                 <span className="d-none d-lg-flex ms-2 ps-1">Overview</span>
             </Link>

@@ -7,17 +7,17 @@ const HYGRAPH_TOKEN = process.env.HYGRAPH_TOKEN;
 export async function GET() {
   const query = gql`
     query GetAllEmployees {
-      employees {
-        id
-        firstName
-        lastName
-        position
-        image {
-          url
-          altText
-        }
+      employees(orderBy: order_ASC) {
+              id
+              firstName
+              lastName
+              position
+              image {
+                  url
+                  altText
+              }
+          }
       }
-    }
   `;
 
   try {

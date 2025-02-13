@@ -34,13 +34,13 @@ const OrgSubMenu = () => {
     <div ref={submenuRef}>
         <span className="submenu-title mb-3 d-none d-lg-flex">Directory</span>
         <div className="d-flex flex-column submenu-list">
-        <Link href="/directory/skills-certifications" className={`d-flex ${pathname.includes('directory/skills-certifications') ? 'active' : ''}`} prefetch={true}>
-                <ToolsIcon />
-                <span className="d-none d-lg-flex ms-2 ps-1">Skills & Certifications</span>
-            </Link>
         <Link href="/directory" className={`d-flex ${pathname === '/directory' ? 'active' : ''}`} prefetch={true}>
             <OrgIcon />
             <span className="d-none d-lg-flex ms-2 ps-1">Team Members</span>
+        </Link>
+        <Link href="/directory/skills-certifications" className={`d-flex ${pathname.includes('directory/skills-certifications') ? 'active' : ''}`} prefetch={true}>
+            <ToolsIcon />
+            <span className="d-none d-lg-flex ms-2 ps-1">Skills & Certifications</span>
         </Link>
         </div>
     </div>
