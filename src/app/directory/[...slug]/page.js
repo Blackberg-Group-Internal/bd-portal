@@ -6,6 +6,7 @@ import Loader from "@/app/components/Loader";
 import Image from "next/image";
 import axios from "axios";
 import { useSession } from 'next-auth/react';
+import BreadcrumbsDynamic from "@/app/components/BreadcrumbsDynamic";
 
 const EmployeeProfile = ({ params }) => {
   const slug = Array.isArray(params.slug) ? params.slug.join("-") : params.slug;
@@ -137,10 +138,14 @@ const EmployeeProfile = ({ params }) => {
       <section className="container p-4 pt-lg-5 px-lg-5 pb-0 position-absolute start-4 top-4 z-2">
         <div className="row">
           <div className="col-12">
-            <Breadcrumbs className="breadcrumbs-light"
-              first="Directory"
-              second={`${employee.firstName} ${employee.lastName}`}
-            />
+              <BreadcrumbsDynamic
+                first="Directory" 
+                firstHref="/directory" 
+                second="Team Members" 
+                secondHref="/directory" 
+                third={`${employee.firstName} ${employee.lastName}`}
+                thirdHref="#"
+              />
           </div>
         </div>
       </section>
@@ -305,7 +310,7 @@ const EmployeeProfile = ({ params }) => {
             </div>
             {isEditing && (
               <div className="text-end mt-4">
-                <button className="btn btn-success" onClick={handleSaveChanges}>
+                <button className="btn btn-primary" onClick={handleSaveChanges}>
                   Save Changes
                 </button>
               </div>

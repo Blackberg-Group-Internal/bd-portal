@@ -125,19 +125,7 @@ function PlaylistGeneratorPage() {
             }
             {analysisResult && 
                 <div className="col-12 col-md-6 col-xl-7 mt-4 mt-md-0">
-                    <div className="card  card-tool card-tool--no-hover rounded shadow-sm bg-white py-3 pointer">
-                    <div className="card-body text-left d-flex flex-column">
-                        <div className="d-flex justify-content-between w-100">
-                            <div className="tool-icon rounded-3 mb-2 align-self-start p-2">
-                                <CoverLetterIcon />
-                            </div>
-                        </div>
-                        <p className="card-text small mb-1 fw-bold text-uppercase my-2">Playlist</p>                
-                        <div className="mt-4">
-                            <SongList songs={analysisResult} />
-                        </div>
-                    </div>
-                    </div>
+                      <SongList songs={analysisResult} />
                 </div>  
             }
 

@@ -106,7 +106,7 @@ export default function SongList({ songs }) {
   };
 
   return (
-    <div className="container">
+    <div className="container music-player p-3 rounded shadow-sm">
       {/* Controls */}
       <div className="d-flex justify-content-center align-items-center my-3">
         <button className="btn btn-outline-primary px-2 py-1 me-3 rounded-circle" onClick={prevTrack}>⏮</button>
@@ -131,7 +131,7 @@ export default function SongList({ songs }) {
         {songs.map((song, index) => (
           <li
             key={index}
-            className={`list-group-item d-flex justify-content-between align-items-center ${currentIndex === index ? "bg-primary text-white" : ""}`}
+            className={`list-group-item d-flex justify-content-between align-items-center ${currentIndex === index ? "bg-primary active" : ""}`}
             style={{ cursor: "pointer" }}
             onClick={() => playPreview(index)}
           >
