@@ -114,7 +114,7 @@ const Header = () => {
             </li>
         </ul>
         <div className="highlight"></div>
-        <UserMenu photo={userPhoto} />
+        <UserMenu photo={userPhoto} profile={profile} />
        </div>
        <div className="submenu px-lg-3 py-5 position-absolute top-0 d-flex flex-column text-figtree">
             {(activeLink === '/' || activeLink === '/activity' || activeLink === '/submissions') && (
