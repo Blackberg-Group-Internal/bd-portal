@@ -495,6 +495,7 @@ function ProposalGenerator() {
           agent.prompt,
           agent.name
         );
+        await new Promise((r) => setTimeout(r, 300));
         setAnalysisResult((prev) => prev + `\n\n--- ${agent.name} Completed ---\n\n`);
 
         // NEW: Add this agent's final text as soon as it's available
