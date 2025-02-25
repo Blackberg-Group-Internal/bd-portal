@@ -23,6 +23,7 @@ const SkillsCertificationsPage = () => {
     const fetchSkillsCertifications = async () => {
       try {
         const response = await axios.get("/api/directory/skills-certifications");
+        console.log('Skills & Certs: ', response.data);
         setData(response.data);
         setLoading(false);
       } catch (error) {
