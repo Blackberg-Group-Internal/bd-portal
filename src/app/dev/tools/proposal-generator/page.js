@@ -45,61 +45,78 @@ function ProposalGenerator() {
     });
     const reader = response.body.getReader();
     const decoder = new TextDecoder();
+    let buffer = '';
     let done = false;
     let fullText = '';
-
+    
     while (!done) {
       const { value, done: readerDone } = await reader.read();
       done = readerDone;
       
-      if (value) {
-        const decodedChunk = decoder.decode(value, { stream: true });
-        const lines = decodedChunk.split('\n').filter(line => line.trim() !== '');
-      
-        for (const line of lines) {
-          if (line === 'data: [DONE]') {
-            done = true;
-            break;
-          }
-      
-          if (line.startsWith('data:')) {
-            try {
-              const jsonResponse = JSON.parse(line.substring(5));
-      
-              // Use the correct path: jsonResponse.data.delta.content
-              if (jsonResponse.data && jsonResponse.data.delta && jsonResponse.data.delta.content) {
-                let newText = "";
-                const content = jsonResponse.data.delta.content;
-                
-                if (Array.isArray(content)) {
-                  for (const item of content) {
-                    if (item.type === "text" && item.text && item.text.value) {
-                      newText += item.text.value;
-                    }
+      // If there's no chunk to process, just move on
+      if (!value) continue;
+    
+      // Append this chunk’s decoded text to buffer
+      buffer += decoder.decode(value, { stream: true });
+    
+      // Split on newline, but don't assume every split line is complete
+      let lines = buffer.split('\n');
+    
+      // Parse every line *except* possibly incomplete last line
+      for (let i = 0; i < lines.length - 1; i++) {
+        const line = lines[i].trim();
+        // Skip empty lines if any
+        if (!line) continue;
+    
+        // Check for the [DONE] sentinel
+        if (line === 'data: [DONE]') {
+          done = true;
+          break;
+        }
+    
+        // Otherwise, it should be JSON after 'data:'
+        if (line.startsWith('data:')) {
+          try {
+            const jsonResponse = JSON.parse(line.substring(5));
+    
+            // Use the correct path: jsonResponse.data.delta.content
+            if (jsonResponse.data && jsonResponse.data.delta && jsonResponse.data.delta.content) {
+              let newText = '';
+              const content = jsonResponse.data.delta.content;
+    
+              if (Array.isArray(content)) {
+                // If content is an array of text chunks
+                for (const item of content) {
+                  if (item.type === 'text' && item.text && item.text.value) {
+                    newText += item.text.value;
                   }
-                } else if (typeof content === "string") {
-                  newText = content;
                 }
-                
-                fullText += newText;
-                setAnalysisResult(prev => prev + newText);
-
-                 // NEW: Update this agent's content in real-time
-                setAgentResponses(prev =>
-                  prev.map(a =>
-                    a.name === agentName
-                      ? { ...a, content: a.content + newText }
-                      : a
-                  )
-                );
+              } else if (typeof content === 'string') {
+                newText = content;
               }
-            } catch (error) {
-              console.warn('Skipping invalid JSON chunk:', line);
+    
+              fullText += newText;
+              setAnalysisResult((prev) => prev + newText);
+    
+              // Update this agent’s response in real time
+              setAgentResponses((prev) =>
+                prev.map((a) =>
+                  a.name === agentName
+                    ? { ...a, content: a.content + newText }
+                    : a
+                )
+              );
             }
+          } catch (error) {
+            console.warn('Skipping invalid JSON chunk:', line);
           }
         }
       }
+    
+      // The last element in `lines` might be an incomplete line—keep it in buffer
+      buffer = lines[lines.length - 1];
     }
+    
 
     setAgentResponses(prev =>
       prev.map(a =>
