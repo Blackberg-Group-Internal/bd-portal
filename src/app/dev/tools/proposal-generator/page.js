@@ -161,9 +161,9 @@ function ProposalGenerator() {
       setThreadId(currentThreadId);
 
       // 4. Run the initial assistant to generate a summary of the opportunity.
-      await streamAssistantRun(currentThreadId, currentAssistantId);
+      //await streamAssistantRun(currentThreadId, currentAssistantId);
       setLoading(false);
-      setAnalysisResult((prev) => prev + "\n\n--- Summary of Opportunity Completed ---\n\n");
+      //setAnalysisResult((prev) => prev + "\n\n--- Summary of Opportunity Completed ---\n\n");
 
       const agentPrompts = [
       //   {
