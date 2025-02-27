@@ -144,6 +144,7 @@ function DevPage() {
     // const storedSamOpportunities = JSON.parse(localStorage.getItem('allSamOpportunities'));
     // if(storedSamOpportunities) {
     //   setSamOpportunities(storedSamOpportunities);
+    //   fetchSamOpportunities();
     // } else {
     //   fetchSamOpportunities();
     // }

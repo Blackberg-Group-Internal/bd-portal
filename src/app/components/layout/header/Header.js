@@ -12,6 +12,7 @@ import DashboardIcon from '../../../../../public/images/icons/dashboard.svg';
 import DamIcon from '../../../../../public/images/icons/dam.svg';
 import ResourcesIcon from '../../../../../public/images/icons/resources.svg';
 import OrgIcon from '../../../../../public/images/icons/directory.svg';
+import AiIcon from '../../../../../public/images/icons/ai.svg';
 import DashboardSubMenu from './DashboardSubMenu';
 import PipelineSubMenu from './PipelineSubMenu';
 import OrgSubMenu from './OrgSubMenu';
@@ -110,6 +111,11 @@ const Header = () => {
             <li className={`nav-item ${activeLink.startsWith('/resources') ? 'active' : ''}`}>
                 <Link href="/resources" className="nav-link" data-bs-toggle="tooltip" data-bs-placement="right" title="Resources" prefetch={true}>
                     <ResourcesIcon className="icon" />
+                </Link> 
+            </li>
+            <li className={`nav-item ${activeLink.startsWith('/dev') ? 'active' : ''}`}>
+                <Link href="/dev" className="nav-link" data-bs-toggle="tooltip" data-bs-placement="right" title="SamSmart" prefetch={true}>
+                    <AiIcon className="icon" />
                 </Link> 
             </li>
         </ul>
