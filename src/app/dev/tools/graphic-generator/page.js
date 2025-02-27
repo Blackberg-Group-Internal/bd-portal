@@ -60,15 +60,23 @@ export default function GraphicGeneratorPage() {
   };
 
   const [graphics, setGraphics] = useState([
-    { ...graphicTemplates.userTesting }
+    { ...graphicTemplates.userTesting, showSubtitle: true }
   ]);
+
+  const handleToggleSubtitle = (gIndex) => {
+    setGraphics((prev) =>
+      prev.map((graphic, index) =>
+        index === gIndex ? { ...graphic, showSubtitle: !graphic.showSubtitle } : graphic
+      )
+    );
+  };
 
   const [selectedTemplate, setSelectedTemplate] = useState("userTesting");
 
   const previewRefs = React.useRef({});
 
   const handleCreateGraphic = () => {
-    const newGraphic = { ...graphicTemplates[selectedTemplate] };
+    const newGraphic = { ...graphicTemplates[selectedTemplate], showSubtitle: true };
     setGraphics((prev) => [...prev, newGraphic]);
   };
 
@@ -127,11 +135,18 @@ export default function GraphicGeneratorPage() {
 
   const handleAddBullet = (gIndex) => {
     setGraphics((prev) => {
-      const updated = [...prev];
-      updated[gIndex].bullets.push("New bullet item");
-      return updated;
+      return prev.map((graphic, index) => {
+        if (index === gIndex) {
+          return {
+            ...graphic,
+            bullets: [...graphic.bullets, "New bullet item"]
+          };
+        }
+        return graphic;
+      });
     });
   };
+  
 
   const handleStepTextChange = (gIndex, stepIndex, newValue) => {
     setGraphics((prev) => {
@@ -191,8 +206,8 @@ export default function GraphicGeneratorPage() {
               value={selectedTemplate}
               onChange={(e) => setSelectedTemplate(e.target.value)}
             >
-              <option value="userTesting">User Testing & Discovery Tools</option>
-              <option value="arrowSvg">Arrow Steps (SVG)</option>
+              <option value="userTesting">Call Out Box</option>
+              {/* <option value="arrowSvg">Arrow Steps (SVG)</option> */}
               <option value="threeBoxes">Three Boxes Template</option>
             </select>
           </div>
@@ -370,13 +385,19 @@ export default function GraphicGeneratorPage() {
                       borderRadius: "4px"
                     }}
                   >
-                    <h2 className="mb-1">{graphic.title}</h2>
+                    <h2 className="mb-1 fw-bold-600">{graphic.title}</h2>
                     <hr style={{ border: "1px solid rgba(255, 255, 255, 0.3)" }} />
-                    <p>{graphic.subtitle}</p>
-                    <ul>
-                      {graphic.bullets?.map((b, bIndex) => (
-                        <li key={bIndex}>{b}</li>
-                      ))}
+                    {graphic.showSubtitle && <p>{graphic.subtitle}</p>}
+                    <ul class="ps-3">
+                    {graphic.bullets?.map((bullet, bIndex) => {
+                      const parts = bullet.split(":"); 
+                      return (
+                        <li key={bIndex}>
+                          <strong>{parts[0]}</strong>
+                          {parts[1] ? `:${parts[1]}` : ""}
+                        </li>
+                      );
+                    })}
                     </ul>
                   </div>
                 )}
@@ -487,6 +508,16 @@ export default function GraphicGeneratorPage() {
                           }
                         />
                       </div>
+
+                      <div className="mb-3 d-flex align-items-center">
+                          <input
+                            type="checkbox"
+                            className="form-check-input me-2"
+                            checked={graphic.showSubtitle}
+                            onChange={() => handleToggleSubtitle(gIndex)}
+                          />
+                          <label className="form-check-label">Show Subtitle</label>
+                        </div>
 
                       <div className="mb-3 d-flex align-items-center">
                         <label className="form-label fw-bold me-2">Start Color</label>

@@ -103,3 +103,12 @@
         margin-bottom: 8px;
     }
 }
+
+.card-disabled {
+    pointer-events: none !important;
+    opacity: 0.5 !important;
+    
+    &:hover {
+        box-shadow: 3px 1px 2px 0px rgba(16, 24, 40, 0.05) !important;
+    }
+}
