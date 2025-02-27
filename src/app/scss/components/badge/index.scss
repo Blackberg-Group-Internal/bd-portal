@@ -6,4 +6,16 @@
     &.badge-light {
         border-color: #D0D5DD;
     }
+
+    &.badge-count {
+        position: absolute;
+        top: 0;
+        left: 100%;
+        padding: 2px 8px;
+        font-size: 12px;
+        border-radius: 24px;
+        color: $gray-700;
+        border-color: $gray-200;
+        background: $gray-100;
+    }
 }

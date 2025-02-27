@@ -8,7 +8,7 @@ import TransitionComponent from "@/app/components/layout/TransitionComponent";
 import { usePathname } from "next/navigation";
 import ProtectedRoute from "@/app/components/layout/ProtectedRoute";
 import FileViewerModal from "@/app/components/dam/FileViewerModal";
-import { createContext, useState } from "react";
+import { createContext, useEffect, useState } from "react";
 import ChatBot from "./components/Chat";
 import { FolderProvider } from "./context/FolderContext";
 import { ToastProvider } from "./context/ToastContext";
@@ -29,6 +29,7 @@ export default function RootLayout({ children }) {
 
   const [show, setShow] = useState(false);
   const [currentFile, setCurrentFile] = useState(null);
+  const [audioEnabled, setAudioEnabled] = useState(false);
 
   const openModal = (file) => {
     setCurrentFile(file);
@@ -39,6 +40,21 @@ export default function RootLayout({ children }) {
     setShow(false);
     setCurrentFile(null);
   };
+
+    useEffect(() => {
+      if (typeof window !== "undefined" && !window.MusicKit) {
+        const script = document.createElement("script");
+        script.src = "https://js-cdn.music.apple.com/musickit/v3/musickit.js";
+        script.async = true;
+        script.onload = () => {
+          window.MusicKit.configure({
+            developerToken: process.env.NEXT_PUBLIC_APPLE_MUSIC_TOKEN,
+            app: { name: "HoverPlay", build: "1.0.0" },
+          });
+        };
+        document.body.appendChild(script);
+      }
+    }, []);
 
   return (
     <html lang="en">

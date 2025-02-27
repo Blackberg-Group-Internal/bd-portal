@@ -11,6 +11,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import gsap from 'gsap';
 import MemberCards from '@/app/components/directory/MemberCards';
+import BreadcrumbsDynamic from '../components/BreadcrumbsDynamic';
 
 const Page = () => {
   
@@ -98,7 +99,12 @@ const Page = () => {
       <section className="container p-4 pt-lg-5 px-lg-5 pb-0">
         <div className="row">
           <div className="col-12">
-            <Breadcrumbs first="Directory" second="Team Members" />
+          <BreadcrumbsDynamic
+                first="Directory" 
+                firstHref="/directory" 
+                second="Team Members" 
+                secondHref="#" 
+              />
           </div>
           <div className="col-12">
             <div className="border-bottom d-flex justify-content-between align-items-center page-info">

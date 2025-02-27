@@ -37,7 +37,7 @@ const DevSubMenu = () => {
     <div ref={submenuRef}>
         <span className="submenu-title mb-3 d-none d-lg-flex">SamSmart</span>
         <div className="d-flex flex-column submenu-list">
-        <Link href="/dev" className={`d-flex ${pathname === '/dev' ? 'active' : ''}`}>
+        <Link href="/dev" className={`d-flex ${pathname === '/dev' ? 'active' : ''}`} prefetch={true}>
             <QualifiedOpportunities />
             <span className="d-none d-lg-flex ms-2 ps-1">Opportunities</span>
         </Link>
@@ -49,11 +49,11 @@ const DevSubMenu = () => {
             <OpportunitiesIcon />
             <span className="d-none d-lg-flex ms-2 ps-1">Opportunities</span>
         </Link> */}
-        <Link href="/dev/summaries" className={`d-flex ${pathname === '/dev/summaries' ? 'active' : ''}`}>
+        <Link href="/dev/summaries" className={`d-flex ${pathname === '/dev/summaries' ? 'active' : ''}`} prefetch={true}>
             <SummaryIcon />
             <span className="d-none d-lg-flex ms-2 ps-1">Summaries</span>
         </Link>
-        <Link href="/dev/tools" className={`d-flex ${pathname === '/dev/tools' ? 'active' : ''}`}>
+        <Link href="/dev/tools" className={`d-flex ${pathname === '/dev/tools' ? 'active' : ''}`} prefetch={true}>
             <ToolsIcon />
             <span className="d-none d-lg-flex ms-2 ps-1">Tools</span>
         </Link>

@@ -38,7 +38,7 @@ const MemberCards = ({ employeeData }) => {
             >
               <div className="member-image w-50 mb-4 d-flex justify-content-center position-relative z-1">
                 <Image
-                  src={employee.image.url}
+                  src={employee.image?.url || employee.image || ""}
                   className="img-fluid w-100 h-auto position-relative"
                   alt={`${employee.firstName} ${employee.lastName}`}
                   fill={true}

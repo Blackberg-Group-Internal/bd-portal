@@ -10,9 +10,14 @@
 }
 
 .profile-image-container {
-    width: 160px;
-    height: 160px;
+    width: 100px;
+    height: 100px;
     position: relative;
+
+    @include media-breakpoint-up(lg) {
+        width: 160px;
+        height: 160px;
+    }
 
     img {
         object-fit: cover;

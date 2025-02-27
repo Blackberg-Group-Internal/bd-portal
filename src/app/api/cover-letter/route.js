@@ -11,15 +11,16 @@ export async function POST(req) {
     
     Template:
     
-    [Company Name] is pleased to submit our proposal for [Project Name], as outlined in the RFP from [Client Name]. Our team offers a dedicated group of professionals with extensive experience in [mention relevant services/skills], ensuring a solution that aligns perfectly with your objectives.
-    
-    [Company Name] brings a user-centric approach to this project, focusing on [specific requirements like accessibility, scalability, or security]. We aim to deliver a platform that [mention benefits or value-adds specific to the client’s needs].
-    
-    With a proven track record in [mention relevant experience], we ensure seamless integration with essential functionalities such as [mention any requested integrations, systems, or technology]. We are confident that our solution will provide [Client Name] with a [mention benefits like visually appealing, user-friendly, and efficient platform].
-    
-    Our team has carefully reviewed the RFP, including all [documents or amendments], and agrees with all terms, conditions, and provisions. We do not take any exceptions with the terms provided and are fully committed to delivering a solution that exceeds expectations.
-    
-    Thank you for considering our proposal for this project. We look forward to the opportunity to collaborate with [Client Name].
+    Blackberg Group is pleased to submit our proposal for the National Forest Foundation’s website redesign and development project. Our team specializes in providing strategic branding, marketing, web design, and user engagement solutions tailored specifically for public sector organizations. We are committed to enhancing NFF’s mission by creating a dynamic digital presence that not only showcases the importance of healthy forests but also fosters deeper engagement with your community of supporters.
+
+    We understand that the primary objective of this initiative is to communicate NFF’s impactful story effectively while encouraging visitor interaction and support. Leveraging our extensive experience with similar projects, including our work with the Department of Veterans Affairs, we take a purpose-driven approach to branding and digital engagement. Our strategy emphasizes storytelling that resonates with diverse audiences, ensuring that every visitor not only understands the significance of the NFF's mission but also feels empowered to contribute.
+
+    At Blackberg, we prioritize accessibility and inclusivity in our designs, employing user-centered methodologies that facilitate engagement from all individuals, particularly those who may face barriers to access. Our focused and strategic marketing initiatives are designed to reach various communities, effectively promoting awareness and interaction with your invaluable programs.
+
+    Having thoroughly reviewed the RFP and all related materials, we fully agree to all terms, conditions, and provisions set forth. Our team is dedicated to delivering a comprehensive and results-driven digital solution that meets and exceeds the expectations of the National Forest Foundation.
+
+    Thank you for considering our proposal. We are excited about the opportunity to collaborate with NFF in crafting a modern, engaging, and effective outreach platform that supports your mission and empowers your community.
+
     
     Respectfully,
     

@@ -10,8 +10,10 @@ const openai = new OpenAI({
 
 export async function POST(req) {
   try {
+    console.log('OpenAI requrest: ', req);
     const formData = await req.formData();
     const file = formData.get('file');
+    console.log('OpenAI requrest file: ', file);
 
     if (!file) {
       throw new Error('No file uploaded');
@@ -24,6 +26,8 @@ export async function POST(req) {
     const tempFilePath = path.join(tempDir, file.name);
     fs.writeFileSync(tempFilePath, buffer);
 
+    console.log('OpenAI temp file path: ', tempFilePath);
+
     // Create OpenAI file
     const fileStream = fs.createReadStream(tempFilePath);
     const fileResponse = await openai.files.create({
@@ -32,15 +36,21 @@ export async function POST(req) {
     });
     fs.unlinkSync(tempFilePath);
 
+    console.log('OpenAI temp file stream: ', fileStream);
+
     // Create vector store
     const vectorStoreResponse = await openai.beta.vectorStores.create({
       name: 'Knowledge Base Test',
     });
 
+    console.log('OpenAI vector store response: ', vectorStoreResponse);
+
     // Add file to vector store
     await openai.beta.vectorStores.fileBatches.createAndPoll(vectorStoreResponse.id, {
       file_ids: [fileResponse.id],
     });
+
+    console.log('OpenAI vector store file: ', vectorStoreResponse.id);
 
     return new Response(JSON.stringify({ vectorStoreId: vectorStoreResponse.id }), {
       headers: { 'Content-Type': 'application/json' },

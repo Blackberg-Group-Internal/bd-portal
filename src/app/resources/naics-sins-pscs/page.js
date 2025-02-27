@@ -4,11 +4,11 @@ import React, { useState, useRef, useEffect } from "react";
 import { useSession } from "next-auth/react";
 import SearchModal from "@/app/components/SearchModal";
 import gsap from "gsap";
-import Breadcrumbs from "@/app/components/Breadcrumbs";
 import AddCodeButton from "@/app/components/resources/AddCodeButton";
 import CopyIcon from '../../../../public/images/icons/copy.svg';
 import { useToast } from '@/app/context/ToastContext';
 import BreadcrumbsDynamic from "@/app/components/BreadcrumbsDynamic";
+import useBootstrapTooltips from "@/app/hooks/useBootstrapTooltips";
 
 function NaicsSinsPage() {
   const { data } = useSession();
@@ -24,10 +24,17 @@ function NaicsSinsPage() {
   const [sinsCodes, setSinsCodes] = useState(
     () => JSON.parse(localStorage.getItem("sinsCodes")) || []
   );
+  const [pscsCodes, setPscsCodes] = useState(
+    () => JSON.parse(localStorage.getItem("pscsCodes")) || []
+  );
   const { addToast } = useToast();
 
+  useBootstrapTooltips(naicsCodes);
+  useBootstrapTooltips(sinsCodes);
+  useBootstrapTooltips(pscsCodes);
+
   useEffect(() => {
-    // Fetch NAICS codes
+
     const fetchNaicsCodes = async () => {
       try {
         const response = await fetch("/api/naics");
@@ -39,7 +46,6 @@ function NaicsSinsPage() {
       }
     };
 
-    // Fetch SINs codes
     const fetchSinsCodes = async () => {
       try {
         const response = await fetch("/api/sin");
@@ -51,6 +57,18 @@ function NaicsSinsPage() {
       }
     };
 
+    const fetchPscsCodes = async () => {
+      try {
+        const response = await fetch("/api/pscs");
+        const data = await response.json();
+        setPscsCodes(data);
+        localStorage.setItem("pscsCodes", JSON.stringify(data));
+      } catch (error) {
+        console.error("Error fetching PSCs codes:", error);
+      }
+    };
+  
+    fetchPscsCodes();
     fetchNaicsCodes();
     fetchSinsCodes();
   }, []);
@@ -75,24 +93,17 @@ function NaicsSinsPage() {
     });
   };
 
-  const handleCodeAdded = async () => {
+  const handleCodeAdded = async (newCode, type) => {
     try {
-      const [naicsResponse, sinsResponse] = await Promise.all([
-        fetch("/api/naics"),
-        fetch("/api/sin"),
-      ]);
-
-      const [naicsData, sinsData] = await Promise.all([
-        naicsResponse.json(),
-        sinsResponse.json(),
-      ]);
-
-      setNaicsCodes(naicsData);
-      setSinsCodes(sinsData);
-      localStorage.setItem("naicsCodes", JSON.stringify(naicsData));
-      localStorage.setItem("sinsCodes", JSON.stringify(sinsData));
+      if (type === "NAICS") {
+        setNaicsCodes((prev) => [...prev, newCode]);
+      } else if (type === "SINs") {
+        setSinsCodes((prev) => [...prev, newCode]);
+      } else if (type === "PSCs") {
+        setPscsCodes((prev) => [...prev, newCode]);
+      }
     } catch (error) {
-      console.error("Error updating codes:", error);
+      console.error("Error adding code:", error);
     }
   };
 
@@ -105,25 +116,20 @@ function NaicsSinsPage() {
               <BreadcrumbsDynamic
                 first="Resources" 
                 firstHref="/resources" 
-                second="NAICS & SINs" 
+                second="NAICS, SINs, & PSCs" 
                 secondHref="#" 
               />
             </div>
             <div className="col-12 d-flex justify-content-between align-items-start page-info">
-              <div className="d-flex flex-column col-12 col-md-12">
-              <h1 className="fw-bold-500 my-4">NAICS & SINs</h1>
-              <p>This app provides a centralized repository of NAICS and SINs codes that our organization has already registered and actively uses. These codes help classify the types of goods, services, and industries we target.</p>
-              <p className="">If you do not find the code you're looking for, it doesn’t mean we can’t pursue it. Please reach out to your team lead or manager, as new codes can often be acquired upon request.</p>
-              <p className="fw-bolder">Resources</p>
-              <p>For more information or to find additional codes, you can visit the following official resources:</p>
+              <div className="d-flex flex-column col-12 col-md-9">
+              <h1 className="fw-bold-500 my-4">NAICS, SINs, & PSCs</h1>
+              <p class="small">The NAICS, SINs, and PSCs Management Tool provides a centralized repository to store and manage the classification codes our organization actively uses to target opportunities across various industries and government contracts.</p>
               <ul>
-                <li>
-                  <a href="https://www.census.gov/naics/" target="_blank">NAICS Code</a>
-                </li>
-                <li>
-                  <a href="https://gsaschedule.com/what-is-a-gsa-schedule/large-categories-sins-and-naics-codes/" target="_blank">SINs Code</a>
-                </li>
+                <li class="small"><span class="fw-bold">NAICS Codes:</span> A universally recognized standard used across industries to classify business activities and determine eligibility for federal contracts.</li>
+                <li class="small"><span class="fw-bold">SINs Codes:</span> Specialized identifiers tied to the GSA MAS (Multiple Award Schedule) contract, helping streamline opportunities under specific categories.</li>
+                <li class="small"><span class="fw-bold">PSCs Codes:</span> Product and Service Codes primarily used on SAM.gov to classify goods and services for federal procurement.</li>
               </ul>
+              <p className="small pb-1">If you do not find the code you're looking for, it doesn’t mean we can’t pursue it. Please reach out to your team lead or manager, as new codes can often be acquired upon request.</p>
               </div>
               <div className="d-flex align-items-center mt-4">
                 <div className="search">
@@ -153,7 +159,7 @@ function NaicsSinsPage() {
           </div>
 
           <div className="row mb-4 bg-white border code-table mt-7">
-            <div className="col-12 d-flex gap-3 py-4">
+            <div className="col-12 d-flex flex-column flex-md-row gap-3 py-4">
               <button
                 className={`btn ${view === "NAICS" ? "btn--jade-green" : "btn-white"}`}
                 onClick={() => setView("NAICS")}
@@ -166,28 +172,34 @@ function NaicsSinsPage() {
               >
                 SINs
               </button>
-              <div className="ms-auto">
+              <button
+                className={`btn ${view === "PSCs" ? "btn--jade-green" : "btn-white"}`}
+                onClick={() => setView("PSCs")}
+              >
+                PSCs
+              </button>
+              <div className="mx-auto ms-md-auto me-md-0">
                 <AddCodeButton onCodeAdded={handleCodeAdded} />
               </div>
             </div>
             <div className="col-12 px-0 code-header">
-              <div className="d-flex align-items-start code-card p-3 border-top">
-                <span className="col-1">Code</span>
+              <div className="d-flex align-items-start code-card p-3 border-top gap-4">
+                <span className="col-2 col-xl-1">Code</span>
                 <span className="">Title</span>
                 <span className="ms-auto">Action</span>
               </div>
             </div>
 
-            {(view === "NAICS" ? naicsCodes : sinsCodes).map((code) => (
+            {(view === "NAICS" ? naicsCodes : view === "SINs" ? sinsCodes : pscsCodes).map((code) => (
               <div className="col-12 px-0 code-row" key={code.id}>
-                <div className="d-flex align-items-center code-card p-3 border-top">
+                <div className="d-flex align-items-center code-card p-3 border-top gap-4">
                   <span
-                    className="col-1 small"
+                    className="col-2 col-xl-1 small"
                     onDoubleClick={() => handleCopyToClipboard(code.code)}
                   >
                     {code.code}
                   </span>
-                  <span className="text-muted small">{code.title}</span>
+                  <span className="text-muted small text-nowrap text-truncate" data-bs-toggle="tooltip" data-bs-placement="right" title={code.title}>{code.title}</span>
                   <button
                     className="btn btn-sm ms-auto"
                     onClick={() => handleCopyToClipboard(code.code)}

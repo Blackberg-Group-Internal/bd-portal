@@ -1,0 +1,15 @@
+.music-player {
+    background: $jade-green-100;
+
+    .list-group-item {
+        background: $jade-green-100;
+        border-color: $jade-green;
+
+        .active {
+            span {
+                filter: invert(1) brightness(2);
+                color: #fff !important;
+            }
+        }
+    }
+}

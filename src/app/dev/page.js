@@ -121,6 +121,7 @@ function DevPage() {
     const storedOpportunities = JSON.parse(localStorage.getItem('allOpportunities'));
     if(storedOpportunities) {
       setOpportunities(storedOpportunities);
+      fetchOpportunities();
     } else {
       fetchOpportunities();
     }
@@ -143,6 +144,7 @@ function DevPage() {
     // const storedSamOpportunities = JSON.parse(localStorage.getItem('allSamOpportunities'));
     // if(storedSamOpportunities) {
     //   setSamOpportunities(storedSamOpportunities);
+    //   fetchSamOpportunities();
     // } else {
     //   fetchSamOpportunities();
     // }

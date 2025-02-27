@@ -12,6 +12,7 @@ import DashboardIcon from '../../../../../public/images/icons/dashboard.svg';
 import DamIcon from '../../../../../public/images/icons/dam.svg';
 import ResourcesIcon from '../../../../../public/images/icons/resources.svg';
 import OrgIcon from '../../../../../public/images/icons/directory.svg';
+import AiIcon from '../../../../../public/images/icons/ai.svg';
 import DashboardSubMenu from './DashboardSubMenu';
 import PipelineSubMenu from './PipelineSubMenu';
 import OrgSubMenu from './OrgSubMenu';
@@ -19,6 +20,7 @@ import UserLogout from './UserLogout';
 import UserMenu from './UserMenu';
 import DevSubMenu from './DevSubMenu';
 import ResourcesSubMenu from './ResourcesSubMenu';
+import useBootstrapTooltips from "@/app/hooks/useBootstrapTooltips";
 
 const Header = () => {
 
@@ -29,7 +31,8 @@ const Header = () => {
     const [activeSubLink, setActiveSubLink] = useState('/');
     const pathname = usePathname();
 
-    //console.log('Session: ', session);
+    useBootstrapTooltips();
+
     useEffect(() => {
         if (status === "authenticated" && session?.accessToken) {
             const fetchData = async () => {
@@ -75,17 +78,6 @@ const Header = () => {
         }
     }, [pathname]);    
 
-    useEffect(() => {
-        const bootstrap = require('bootstrap');
-        const tooltipTriggerList = Array.from(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
-        tooltipTriggerList.forEach(tooltipTriggerEl => {
-            new bootstrap.Tooltip(tooltipTriggerEl, {
-                trigger: "hover",
-                delay: { show: 1000, hide: 100 }, 
-            });
-        });
-    }, []);
-
   return (
     <header>
         <div className="d-flex flex-column flex-shrink-0 align-items-center py-5 h-100 position-relative z-2 bg-white">
@@ -107,23 +99,28 @@ const Header = () => {
                 </Link> 
             </li> */}
             <li>
-                <Link href="/dam" className={`nav-link ${activeLink.startsWith('/dam') ? 'active' : ''}`} data-bs-toggle="tooltip" data-bs-placement="right" title="Digital Asset Manager">
+                <Link href="/dam" className={`nav-link ${activeLink.startsWith('/dam') ? 'active' : ''}`} data-bs-toggle="tooltip" data-bs-placement="right" title="Digital Asset Manager" prefetch={true}>
                     <DamIcon className="icon" />
                 </Link> 
             </li>
-            {/* <li className={`nav-item ${activeLink.startsWith('/directory') ? 'active' : ''}`}>
-                <Link href="/directory" className="nav-link" data-bs-toggle="tooltip" data-bs-placement="right" title="Directory">
+            <li className={`nav-item ${activeLink.startsWith('/directory') ? 'active' : ''}`}>
+                <Link href="/directory" className="nav-link" data-bs-toggle="tooltip" data-bs-placement="right" title="Directory" prefetch={true}>
                     <OrgIcon className="icon" />
                 </Link> 
             </li>
             <li className={`nav-item ${activeLink.startsWith('/resources') ? 'active' : ''}`}>
-                <Link href="/resources" className="nav-link" data-bs-toggle="tooltip" data-bs-placement="right" title="Directory">
+                <Link href="/resources" className="nav-link" data-bs-toggle="tooltip" data-bs-placement="right" title="Resources" prefetch={true}>
                     <ResourcesIcon className="icon" />
                 </Link> 
-            </li> */}
+            </li>
+            <li className={`nav-item ${activeLink.startsWith('/dev') ? 'active' : ''}`}>
+                <Link href="/dev" className="nav-link" data-bs-toggle="tooltip" data-bs-placement="right" title="SamSmart" prefetch={true}>
+                    <AiIcon className="icon" />
+                </Link> 
+            </li>
         </ul>
         <div className="highlight"></div>
-        <UserMenu photo={userPhoto} />
+        <UserMenu photo={userPhoto} profile={profile} />
        </div>
        <div className="submenu px-lg-3 py-5 position-absolute top-0 d-flex flex-column text-figtree">
             {(activeLink === '/' || activeLink === '/activity' || activeLink === '/submissions') && (

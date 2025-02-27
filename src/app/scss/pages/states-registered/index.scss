@@ -1,0 +1,65 @@
+body[class^="resources-states-registered-"] {
+    background-color: #fff;
+
+    hr {
+        border-top-color: #EAECF0;
+        opacity: 1;
+    }
+
+    .breadcrumbs {
+        svg {
+            filter: brightness(2) invert(0) saturate(0);
+        }
+
+        *, a {
+            color: #fff;
+        }
+
+        a:last-child span {
+            color: #fff;
+        }
+    }
+}
+
+.state-header {
+    height: 240px;
+    background: url('/images/directory-bg.jpg') center center no-repeat;
+    background-size: cover;
+}
+
+.state-container {
+    margin-top: -64px;
+
+    .state-image-container {
+        width: 160px;
+        height: 160px;
+        img {
+            object-fit: cover;
+        }
+    }
+}
+
+.col-state-name {
+    min-width: 120px;
+}
+
+.us-state-map {
+
+    * {
+        fill: #EAECF0;
+        stroke: #101828;
+        stroke-width: 0.818px;
+        vector-effect: non-scaling-stroke; 
+        transition: all 0.3s ease;
+    }
+
+    .active-state {
+        fill: $jade-green-800;
+        cursor: pointer;
+
+        &:hover, &:focus, &:active {
+            fill: $jade-green-600;
+        }
+      }
+}
+

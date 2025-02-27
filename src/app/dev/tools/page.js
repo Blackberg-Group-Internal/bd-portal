@@ -80,8 +80,8 @@ function DevPage() {
                             <div className="tool-icon rounded-3 mb-2 align-self-start p-2">
                                 <SummaryIcon />
                             </div>
-                            <h5 className="card-title pt-2">RFP Summarizer</h5>
-                            <p className="card-text">Get a concise summary of an RFP’s key points like deadlines, required documents, and evaluation criteria.</p>
+                            <h5 className="card-title pt-2 pt-2">RFP Analyzer</h5>
+                            <p className="card-text">Analyze an RFP and receive insights based on our services, NAICS codes, and qualifications.</p>
                         </div>
                     </Link>
                 </div>
@@ -89,13 +89,13 @@ function DevPage() {
 
             <div className="col-12 col-md-6 col-lg-4 mb-4">
                 <div className="card card-tool h-100 rounded shadow-sm bg-white py-3 pointer">
-                    <Link href="/dev/tools/analyzer" className="text-decoration-none text-black">
+                    <Link href="/dev/tools/graphic-generator" className="text-decoration-none text-black">
                         <div className="card-body text-left d-flex flex-column">
                             <div className="tool-icon rounded-3 mb-2 align-self-start p-2">
                                 <AnalyzeIcon />
                             </div>
-                            <h5 className="card-title pt-2 pt-2">RFP Analyzer</h5>
-                            <p className="card-text">Analyze an RFP and receive insights based on our services, NAICS codes, and qualifications.</p>
+                            <h5 className="card-title pt-2 pt-2">Graphic Generator</h5>
+                            <p className="card-text">Quickly create tailored graphics for any proposal.</p>
                         </div>
                     </Link>
                 </div>
@@ -115,8 +115,8 @@ function DevPage() {
                 </div>
             </div>
 
-            <div className="col-12 col-md-6 col-lg-4 mb-4">
-                <div className="card card-tool h-100 rounded shadow-sm bg-white py-3 pointer">
+            <div className="col-12 col-md-6 col-lg-4 mb-4" disabled>
+                <div className="card card-tool h-100 rounded shadow-sm bg-white py-3 pointer card-disabled">
                 <div className="card-body text-left d-flex flex-column">
                     <div className="tool-icon rounded-3 mb-2 align-self-start p-2">
                         <NaicsIcon />
@@ -129,7 +129,7 @@ function DevPage() {
 
 
             <div className="col-12 col-md-6 col-lg-4 mb-4">
-                <div className="card card-tool h-100 rounded shadow-sm bg-white py-3 pointer">
+                <div className="card card-tool h-100 rounded shadow-sm bg-white py-3 pointer card-disabled">
                 <div className="card-body text-left d-flex flex-column">
                     <div className="tool-icon rounded-3 mb-2 align-self-start p-2">
                         <PerformanceIcon />
@@ -141,7 +141,7 @@ function DevPage() {
             </div>
 
             <div className="col-12 col-md-6 col-lg-4 mb-4">
-                <div className="card card-tool h-100 rounded shadow-sm bg-white py-3 pointer">
+                <div className="card card-tool h-100 rounded shadow-sm bg-white py-3 pointer card-disabled">
                 <div className="card-body text-left d-flex flex-column">
                     <div className="tool-icon rounded-3 mb-2 align-self-start p-2">
                         <AiSummaryIcon />
@@ -153,7 +153,7 @@ function DevPage() {
             </div>
 
             <div className="col-12 col-md-6 col-lg-4 mb-4">
-                <div className="card card-tool h-100 rounded shadow-sm bg-white py-3 pointer">
+                <div className="card card-tool h-100 rounded shadow-sm bg-white py-3 pointer card-disabled">
                 <div className="card-body text-left d-flex flex-column">
                     <div className="tool-icon rounded-3 mb-2 align-self-start p-2">
                         <CalendarIcon />
@@ -165,7 +165,7 @@ function DevPage() {
             </div>
 
             <div className="col-12 col-md-6 col-lg-4 mb-4">
-                <div className="card card-tool h-100 rounded shadow-sm bg-white py-3 pointer">
+                <div className="card card-tool h-100 rounded shadow-sm bg-white py-3 pointe card-disabled">
                 <div className="card-body text-left d-flex flex-column">
                     <div className="tool-icon rounded-3 mb-2 align-self-start p-2">
                         <DollarIcon />
@@ -177,7 +177,7 @@ function DevPage() {
             </div>
 
             <div className="col-12 col-md-6 col-lg-4 mb-4">
-                <div className="card card-tool h-100 rounded shadow-sm bg-white py-3 pointer">
+                <div className="card card-tool h-100 rounded shadow-sm bg-white py-3 pointer card-disabled">
                 <div className="card-body text-left d-flex flex-column">
                     <div className="tool-icon rounded-3 mb-2 align-self-start p-2">
                         <ProbabilityIcon />
