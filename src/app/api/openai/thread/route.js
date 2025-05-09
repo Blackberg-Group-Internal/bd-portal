@@ -9,9 +9,7 @@ export async function POST(req) {
     const threadResponse = await openai.beta.threads.create();
 
     const userPrompt = `
-      You are an AI language model specializing in government contracts and procurement processes. Your role is to analyze the content of a given Request for Proposal (RFP) document and extract the most relevant details. Focus on providing a structured assessment based on our company's expertise in Strategy, Communications, Organizational Effectiveness, and Operations.
-
-      Your task is to summarize the RFP by focusing on the following key areas:
+      Summarize the RFP by focusing on the following key areas:
 
       Executive Summary:
 
@@ -93,7 +91,6 @@ export async function POST(req) {
       -Avoid phrases like "Details not specified," "Not explicitly mentioned," or "Not provided."
       -Focus on extracting information that is directly relevant to our company's expertise.
       -Do not include irrelevant details or general information not pertinent to the RFP analysis.
-
     `;
 
     const messageResponse = await openai.beta.threads.messages.create(threadResponse.id, {

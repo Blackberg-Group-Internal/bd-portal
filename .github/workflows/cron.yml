@@ -1,0 +1,13 @@
+name: Daily RFP Cron
+
+on:
+  schedule:
+    - cron: '0 3 * * *' # every day at 3AM UTC
+  workflow_dispatch:
+
+jobs:
+  trigger-cron:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger Cron Job
+        run: curl -X GET ${{ secrets.VERCEL_CRON_URL }}

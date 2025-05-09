@@ -33,3 +33,19 @@
 .pointer {
     cursor: pointer;
 }
+
+.bg-light-green {
+    background: $jade-green-50;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+    background: $jade-green;
+}
+
+input[type="range"]::-webkit-slider-thumb:active {
+    background: $jade-green-200;
+}
+
+.ms-n2 {
+    margin-left: -8px;
+}

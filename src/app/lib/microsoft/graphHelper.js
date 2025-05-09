@@ -414,6 +414,32 @@ export async function createUploadSession(folderPath, fileName, userAccessToken)
   }
 }
 
+export async function createUploadSessionCron(folderPath, fileName) {
+  const siteId = "871f4fc4-277d-44b7-8776-759d5c51c429";
+  const driveId = "b!xE8fh30nt0SHdnWdXFHEKTzU3LKnVJJAsgMV8Ij6KKRtXG_wHCViQoQJbMU201re";
+  const accessToken = await getAccessToken();
+
+  try {
+    const sanitizedFilename = sanitizeFilename(fileName);
+    const createUploadSessionUrl = `https://graph.microsoft.com/v1.0/sites/${siteId}/drives/${driveId}/items/${folderPath}:/${sanitizedFilename}:/createUploadSession`;
+    const uploadSessionResponse = await axios.post(createUploadSessionUrl, {}, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        'Content-Type': 'application/json',
+      },
+    });
+
+    if (uploadSessionResponse.status === 200) {
+      return uploadSessionResponse.data.uploadUrl;
+    } else {
+      throw new Error('Failed to create upload session');
+    }
+  } catch (error) {
+    console.error('Error creating upload session:', error);
+    throw new Error('File upload session creation failed');
+  }
+}
+
 const sanitizeFilename = (filename) => {
   const dotIndex = filename.lastIndexOf('.');
   let name = filename.substring(0, dotIndex);

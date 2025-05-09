@@ -29,6 +29,7 @@ import gsap from 'gsap';
 import Link from 'next/link';
 import HomeIcon from '../../../../../public/images/icons/home.svg';
 import ChevronIcon from '../../../../../public/images/icons/chevron.svg';
+import AddOpportunityButton from '@/app/components/dev/AddOpportunityButton';
 
 function RfpSummarizer() {
   const { data: session, status } = useSession();
@@ -221,7 +222,8 @@ useEffect(() => {
 
                   if (parsedEvent?.event === 'thread.message.completed') {
                     setLoading(false);
-                    getMatchScore(rfpThreadIdRef.current, rfpAssistantIdRef.current, fullMessage);
+                    //getMatchScore(rfpThreadIdRef.current, rfpAssistantIdRef.current, fullMessage);
+                    getAnalysis(rfpThreadIdRef.current, rfpAssistantIdRef.current);
                   }
 
                 } catch (err) {
@@ -432,74 +434,73 @@ const getMatchScore = async (threadId, assistantId, analysisResult) => {
   }
 };
 
-  const getAnalysis = async (threadId, assistantId, analysisResult, matchScore) => {
+  const getAnalysis = async (threadId, assistantId) => {
     try {
       const userPrompt = `
-      Now, analyze the provided RFP document and extract key details to provide a structured assessment.
+        Analyze the provided RFP document and extract key details to provide a structured assessment.
 
-      Important Instructions:
-      -Output only properly formatted JSON. No additional text, explanation, or comments should be included.
-      -Your response must be strictly valid JSON, with the fields provided below.
-      -Do not include any human-readable language outside the JSON.
-      -For fields where information is missing or not explicitly stated in the RFP, infer the most likely value based on context. Ensure all inferences are logical and justifiable.
-      
-      Data Extraction and Inference Requirements:
-      Extract the following information from the provided RFP document and return the data in JSON format:
+        Important Instructions:
+        - Output only properly formatted JSON. No additional text, explanation, or comments should be included.
+        - Your response must be strictly valid JSON, with the fields provided below.
+        - Do not include any human-readable language outside the JSON.
+        - For fields where information is missing or not explicitly stated in the RFP, infer the most likely value based on context. Ensure all inferences are logical and justifiable.
 
-      RFP Title: Provide the title of the RFP document. If not explicitly stated, infer a suitable title based on the content.
+        Data Extraction and Inference Requirements:
+        Extract the following information from the provided RFP document and return the data in JSON format:
 
-      Issuing Organization: Name of the entity issuing the RFP. If not explicitly stated, infer based on available information.
+        - Title: Provide the title of the RFP document. If not explicitly stated, infer a suitable title based on the content.
+        - Issuing Organization: Name of the entity issuing the RFP. If not explicitly stated, infer based on available information.
+        - State: Location of the issuing organization. If not specified, infer from addresses, contact details, or contextual clues.
+        - RFP Number: Unique identifier or reference number for the RFP. If not provided, generate a plausible identifier based on the document.
+        - Deadline: Due date for proposal submissions. If not stated, return "N/A".
+        - Deadline Time: Time with time zone. If not provided, return "N/A".
+        - Contact Name: Name of the point of contact. If missing, return "N/A".
+        - Contact Email: Email of the point of contact. If missing, return "N/A".
+        - Contact Phone: Phone number of the point of contact. If missing, return "N/A".
+        - Type of Contract: Specify the type of contract being offered (e.g., Fixed Price, Time and Materials). If not stated, infer based on the nature of the work described.
+        - NAICS: Extract the relevant NAICS code that aligns with the opportunity. If not present, determine the best fitting code based on the nature of the opportunity. Only provide the code, not the description. Do not leave empty.
+        - Branch: Identify the relevant branch (options: "LOCAL", "STATE", "INTERNATIONAL", "FEDERAL", "COMMERCIAL", "NONPROFIT").
+        - Questions Due: Deadline for submitting questions, in "YYYY-MM-DD" format. If not available, return "N/A".
+        - Award Date: Award announcement date, in "YYYY-MM-DD" format. If not available, return "N/A".
+        - Notary: Boolean value (true/false). Indicate if a notary is required.
 
-      State: Location of the issuing organization. If not specified, infer from addresses, contact details, or contextual clues.
+        Guardrails:
 
-      RFP Number: Unique identifier or reference number for the RFP. If not provided, generate a plausible identifier based on the document.
+        Inference Guidelines:
+        - When inferring information, ensure that all inferences are logical, justifiable, and based on context provided in the RFP.
+        - Avoid wild guesses; only infer when there is sufficient context to support the inference.
+        - For placeholders, use reasonable and professional approximations.
 
-      Deadline: Due date for proposal submissions. If not stated, return "N/A".
+        Formatting Guidelines:
+        - Ensure the JSON output is properly formatted and valid.
+        - Do not include any additional text outside of the JSON structure.
+        - All string values should be enclosed in double quotes.
+        - Use consistent date formats (e.g., "YYYY-MM-DD") and time formats (e.g., "HH:MM AM/PM Timezone").
 
-      Deadline Time: Time with time zone. If not provided, return "N/A".
+        Data Consistency:
+        - Fill all fields with either extracted data or logically inferred values.
+        - Do not leave any fields empty.
+        - Ensure numerical fields are integers where appropriate.
 
-      Contact Information: Provide the contact name, email, and phone number. If some details are missing, return "N/A".
+        Your output must follow this format exactly:
 
-      Type of Contract: Specify the type of contract being offered (e.g., Fixed Price, Time and Materials). If not stated, infer based on the nature of the work described.
-
-      Key Dates: List important dates such as pre-bid meetings, question submission deadlines, and award announcements. If dates are missing, return "N/A".
-
-      NAICS: Extract the relevant NAICS code that aligns with the opportunity. If not present, determine the best fitting code based on the nature of the opportunity. Only provide the code, not the description. Do not leave empty.    
-
-      Guardrails:
-      
-      Inference Guidelines:
-      - When inferring information, ensure that all inferences are logical, justifiable, and based on context provided in the RFP.
-      - Avoid wild guesses; only infer when there is sufficient context to support the inference.
-      - For placeholders, use reasonable and professional approximations.
-      
-      Formatting Guidelines:
-      - Ensure the JSON output is properly formatted and valid.
-      - Do not include any additional text outside of the JSON structure.
-      - All string values should be enclosed in double quotes.
-      - Use consistent date formats (e.g., "YYYY-MM-DD") and time formats (e.g., "HH:MM AM/PM Timezone").
-      
-      Data Consistency:
-      - Fill all fields with either extracted data or logically inferred values.
-      - Do not leave any fields empty.
-      - Ensure numerical fields are integers where appropriate.
-
-      Your output should follow this format exactly:
-
-      {
-        "title": "",
-        "issuingOrganization": "",
-        "state": "",
-        "rfpNumber": "",
-        "deadline": "",
-        "deadlineTime": "",
-        "contactName": "",
-        "contactEmail": "",
-        "contactPhone": "",
-        "typeOfContract": "",
-        "keyDates": [],
-        "naics": "",
-      }
+        {
+          "title": "",
+          "issuingOrganization": "",
+          "state": "",
+          "rfpNumber": "",
+          "deadline": "",
+          "deadlineTime": "",
+          "contactName": "",
+          "contactEmail": "",
+          "contactPhone": "",
+          "typeOfContract": "",
+          "naics": "",
+          "branch": "",
+          "questionsDue": "",
+          "awardDate": "",
+          "notary": false
+        }
       `;
 
       await axios.post('/api/openai/message', { threadId: threadId, userPrompt });
@@ -703,6 +704,12 @@ const getMatchScore = async (threadId, assistantId, analysisResult) => {
     const formattedDate = new Date().toISOString().replace(/[:.]/g, '-');
     return `${formattedTitle}-${formattedDate}`;
   };
+
+  const handleOpportunityAdded = (newOpportunity) => {
+    //setOpportunities(prev => [newOpportunity, ...prev]);
+    //todo
+  };
+
   
 
   return (
@@ -786,7 +793,12 @@ const getMatchScore = async (threadId, assistantId, analysisResult) => {
               <div className="col-12 col-md-6 col-xl-4 mb-4 mt-4 mt-md-0" ref={cardsContainer1Ref}>
 
               <div className="col-12 d-flex flex-column gap-2">
-
+              <div className="d-flex flex-column">
+                      <AddOpportunityButton
+                          onOpportunityAdded={handleOpportunityAdded}
+                          initialData={rfpDetails} 
+                        />
+                    </div>
                 <div className="d-flex gap-2">
              
                 <div className="card  card-tool card-tool--no-hover rounded shadow-sm bg-white py-3 pointer w-50 tile-animate">

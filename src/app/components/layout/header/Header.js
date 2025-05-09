@@ -44,6 +44,20 @@ const Header = () => {
 
                     setProfile(userProfile);
                     setUserPhoto(hygraphUser[0].image.url);
+                    console.log('Hygraph Data: ', hygraphUser[0]);
+
+                    const res = await fetch('/api/employees/get-by-name', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ firstName, lastName }),
+                      });
+                      const data = await res.json();
+
+                      console.log("Current Emp Data: ", data);
+                      if (res.ok && data.employee) {
+                        localStorage.setItem('employee', JSON.stringify(data.employee));
+                      }
+
                     localStorage.setItem('userProfilePhoto', hygraphUser[0].image.url)
                 } catch (error) {
                     console.error("Failed to fetch user data:", error);

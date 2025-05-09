@@ -1,3 +1,6 @@
+// Run this after schema updates:
+// npx prisma migrate dev --name add-opportunity-table
+
 generator client {
   provider = "prisma-client-js"
 }
@@ -63,6 +66,9 @@ model Employee {
   image          String?
   skills         String?
   slug           String   @unique
+  active         Boolean  @default(true) 
+  opportunityTeams OpportunityTeam[]
+  messages OpportunityMessage[]
 }
 
 model NAICSCode {
@@ -99,3 +105,134 @@ model PSCCode {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 }
+
+model Opportunity {
+  id                  Int       @id @default(autoincrement())
+  userId              String
+  createdAt           DateTime  @default(now())
+  updatedAt           DateTime  @updatedAt
+  filename            String
+  threadId            String
+  assistantId         String
+  documentLink        String
+  summary             String
+  deadline            DateTime?
+  naics               String?
+  likes               Int       @default(0)
+  dislikes            Int       @default(0)
+  slug                String    @unique
+  contactEmail        String?
+  contactName         String?
+  contactPhone        String?
+  issuingOrganization String?
+  matchScore          Int?
+  requirements        String?
+  state               String?
+  title               String    @default("")
+  tags                String[]
+
+  // Review & tracking
+  reviewStatus        ReviewStatus @default(PENDING)
+  reviewedBy          String[]     // userIds
+  reviewedAt          DateTime?
+  approved            Boolean      @default(false)
+  approvedAt          DateTime?
+
+  // New fields
+  lead                String[]     // userIds
+  support             String[]     // userIds
+  reviewer            String[]     // userIds
+  priority            Priority     @default(MEDIUM)
+  questionsDue        DateTime?
+  stage               OpportunityStage @default(CAPTURE)
+  status              OpportunityStatus @default(NOT_STARTED)
+  note                String?
+  sourceLink          String?
+  branch              OpportunityBranch @default(FEDERAL)
+  notary              Boolean     @default(false)
+  awardDate           DateTime?
+  department          Department[]
+  sourceId            String?    
+  rfpNumber           String?      
+  processed           Boolean
+  sourceName          String?     
+  importedAt          DateTime     @default(now()) 
+  contractValue       String?    
+  proposal           String?  
+  proposalOutline    String?   
+  opportunityTeam OpportunityTeam[] // one-to-many relationship
+  messages OpportunityMessage[]
+}
+
+enum ReviewStatus {
+  PENDING
+  IN_REVIEW
+  APPROVED
+  REJECTED
+}
+
+enum Priority {
+  LOW
+  MEDIUM
+  HIGH
+  CRITICAL
+}
+
+enum OpportunityStage {
+  CAPTURE
+  PROPOSAL
+  SUBMITTED
+  WON
+  LOST
+  NO_BID
+}
+
+enum OpportunityStatus {
+  NOT_STARTED
+  WORKING_ON_IT
+  SUPPORT_NEEDED
+  SUBMITTED
+}
+
+enum OpportunityBranch {
+  LOCAL
+  STATE
+  INTERNATIONAL
+  FEDERAL
+  COMMERCIAL
+  NONPROFIT
+}
+
+enum Department {
+  COMMUNICATIONS
+  CREATIVE
+  EVENTS
+  WEB
+  PROJECT_MANAGEMENT
+}
+
+model OpportunityTeam {
+  id             Int       @id @default(autoincrement())
+  opportunityId  Int
+  employeeId     Int
+  role           String?   // Optional: Define role in the project (e.g., "Lead", "Developer")
+
+  opportunity    Opportunity @relation(fields: [opportunityId], references: [id])
+  employee       Employee    @relation(fields: [employeeId], references: [id])
+
+  createdAt      DateTime @default(now())
+
+  @@unique([opportunityId, employeeId]) // Prevent duplicate assignments
+}
+
+model OpportunityMessage {
+  id            Int        @id @default(autoincrement())
+  opportunityId Int
+  employeeId    Int
+  message       String
+  createdAt     DateTime   @default(now())
+
+  opportunity   Opportunity @relation(fields: [opportunityId], references: [id])
+  employee      Employee    @relation(fields: [employeeId], references: [id])
+}
+

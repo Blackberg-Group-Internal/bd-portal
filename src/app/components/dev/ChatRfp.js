@@ -338,10 +338,10 @@ const ChatBot = ({ threadId, assistantId }) => {
 
   return (
     <>
-        <div className="chat-window chat-window--rfp card shadow-sm mb-2" ref={chatContainerRef}>
-          <div className="card-header d-flex justify-content-center align-items-center p-3 bg-primary text-white border-bottom-0 pointer" onClick={toggleChat}>
-            <AiIcon className="icon icon-white me-2" />
-            <p className="mb-0 fw-bold">RFP Chat Assistant</p>
+        <div className="chat-window chat-window--rfp card shadow-none mb-2 border-0" ref={chatContainerRef}>
+          <div className="card-header d-flex justify-content-between align-items-center p-2 btn btn--white text-dark pointer px-3" onClick={toggleChat}>
+            <p className="mb-0 fw-bold d-flex align-items-center w-100">  Chat Assistant
+              <div className="tool-icon rounded-3 me-1 align-self-start p-2 ms-auto">
             <button className="btn btn-text p-0 position-absolute end-0 me-3 pointer"  
               onClick={(e) => {
                 e.stopPropagation();
@@ -349,6 +349,8 @@ const ChatBot = ({ threadId, assistantId }) => {
               }}>
               <CloseIcon className="icon icon-white" />
             </button>
+                            <AiIcon className="ms-2" />
+                                  </div></p>
           </div>
           <div className="card-body chat-body" ref={chatBodyRef} onScroll={handleScroll}>
             {messages.length === 0 && (
@@ -419,7 +421,7 @@ const ChatBot = ({ threadId, assistantId }) => {
               </div>
             ))}
           </div>
-          <div className="card-footer">
+          <div className="card-footer border-top-0">
             <div className="d-flex form-outline py-2">
               <input
                 className="form-control bg-white"
